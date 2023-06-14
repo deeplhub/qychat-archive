@@ -1,0 +1,31 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: qychat-center
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource # 指定druid数据源
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/qychat_db?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: admini
+
+mybatis-plus:
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.xh.**.model.**.*
+
+redis:
+  model: standalone
+  host: 127.0.0.1
+  port: 6379
+  password: admini
+  database: 0
+
+qychat:
+  chatdata:
+    corpid: wwb55a50126edc83d2
+    secret: 1jCvYfSyNF2gYeRT6gxNz9_1RK7GNY8mv6-26JrOjK0
+#    private-key:
+    limit: 1000
+    timeout: 30
