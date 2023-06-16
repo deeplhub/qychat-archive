@@ -14,10 +14,10 @@ import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
 import com.xh.qychat.infrastructure.properties.QyChatProperties;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -31,11 +31,12 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 @Component
-@AllArgsConstructor
 public class QyChatAdapterImpl implements QyChatAdapter {
 
-    private final QyChatProperties chatProperties;
-    private final ChatDataTask chatDataTask;
+    @Resource
+    private QyChatProperties chatProperties;
+    @Resource
+    private ChatDataTask chatDataTask;
 
 
     /**
@@ -202,14 +203,10 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         // 将数组的每个区段分配到不同的线程处理
         for (int i = 0; i < threadNum; i++) {
-            if (dataSize < (i + 1)) {
-                continue;
-            }
-            if (i == threadNum - 1) {
-                cutListData = secretChatDataList.subList(chunkSize * i, dataSize);
-            } else {
-                cutListData = secretChatDataList.subList(chunkSize * i, chunkSize * (i + 1));
-            }
+            if (dataSize < (i + 1)) continue;
+
+            cutListData = (i == threadNum - 1) ? secretChatDataList.subList(i * chunkSize, dataSize)
+                    : secretChatDataList.subList(i * chunkSize, (i + 1) * chunkSize);
 
             // 线程异常解密数据
             futureList.add(chatDataTask.handle(sdk, cutListData));

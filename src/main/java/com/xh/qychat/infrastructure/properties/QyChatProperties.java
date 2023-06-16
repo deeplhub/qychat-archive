@@ -3,8 +3,10 @@ package com.xh.qychat.infrastructure.properties;
 import cn.hutool.core.io.resource.ResourceUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @Data
+@Component
 @ConfigurationProperties(prefix = "qychat.chatdata")
 public class QyChatProperties {
 

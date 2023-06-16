@@ -40,13 +40,12 @@ public class ChatDataTask {
 
             list.add(chatData);
         }
-        log.info("解密会话记录数据完成.");
+        log.debug("线程 [{}] 执行解密会话内容完成，共执行行数 [{}].", Thread.currentThread().getName(), list.size());
         return new AsyncResult<>(JSONUtil.toList(JSONUtil.toJsonStr(list), ChatDataModel.class));
     }
 
 
     private ChatDataModel decrypt(Long sdk, ChatDataModel data) {
-        log.debug("消息ID：{}，开始解密...", data.getMsgid());
         byte[] decoderData = Base64.getDecoder().decode(data.getEncryptRandomKey());
 
         long newSlice = 0;
@@ -55,7 +54,7 @@ public class ChatDataTask {
             String encryptKey = new String(decrypt, CommonConstants.CHARSET_UTF8);
 
             if (StrUtil.isBlank(encryptKey)) {
-                log.info("消息ID：{}，加密密钥为空", data.getMsgid());
+                log.debug("线程 [{}] 消息ID：{}，解密密钥为空", Thread.currentThread().getName(), data.getMsgid());
                 return null;
             }
 
@@ -63,7 +62,7 @@ public class ChatDataTask {
             newSlice = Finance.NewSlice();
             Finance.DecryptData(sdk, encryptKey, data.getEncryptChatMsg(), newSlice);
         } catch (Exception e) {
-            log.error("解密失败！", e);
+            log.error("线程 [{}] 解密 [{}] 消息内容失败！", Thread.currentThread().getName(), data.getMsgid(), e);
             return null;
         }
 

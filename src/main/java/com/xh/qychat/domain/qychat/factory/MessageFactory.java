@@ -26,19 +26,18 @@ public class MessageFactory {
             entity.setAction(item.getAction());
             entity.setFromid(item.getFrom());
 
-            if ("send" .equals(item.getAction())) {
+            if ("send".equals(item.getAction())) {
                 entity.setTolist(item.getTolist());
                 entity.setRoomid(StrUtil.isNotBlank(item.getRoomid()) ? item.getRoomid() : null);
                 entity.setMsgtype(item.getMsgtype());
                 entity.setContent(item.getText());
-            } else if ("switch" .equals(item.getAction())) {
+            } else if ("switch".equals(item.getAction())) {
                 entity.setMsgtype("switch");
             } else {
                 entity.setMsgtype("revoke");
             }
 
-            Date date = item.getMsgtime() != null ? new Date(item.getMsgtime()) : new Date();
-            entity.setMsgtime(date);
+            entity.setMsgtime(item.getMsgtime() != null ? new Date(item.getMsgtime()) : new Date());
 
             entityList.add(entity);
         });

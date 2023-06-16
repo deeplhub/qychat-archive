@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Component;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -32,8 +32,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2020/1/7
  */
 @Slf4j
+@Component
 @AllArgsConstructor
-@EnableAsync
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class CustomizedTaskExecutorConfiguration {
 
