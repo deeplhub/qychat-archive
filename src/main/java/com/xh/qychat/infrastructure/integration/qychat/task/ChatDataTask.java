@@ -45,11 +45,20 @@ public class ChatDataTask {
     }
 
 
+    /**
+     * 解密会话内容
+     *
+     * @param sdk
+     * @param data
+     * @return
+     */
     private ChatDataModel decrypt(Long sdk, ChatDataModel data) {
         byte[] decoderData = Base64.getDecoder().decode(data.getEncryptRandomKey());
 
         long newSlice = 0;
         try {
+            // 密钥长度：2048 bit，密钥格式：PKCS#8，输出格式：PEM/Base64
+            // 密钥在线生成：http://web.chacuo.net/netrsakeypair
             byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatProperties.getPrivateKey()));
             String encryptKey = new String(decrypt, CommonConstants.CHARSET_UTF8);
 

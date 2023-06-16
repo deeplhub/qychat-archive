@@ -31,4 +31,13 @@ public class QyChatProperties {
      * 超时时间，单位秒
      */
     private Long timeout = 10L;
+
+    private Callback callback;
+
+
+    @Data
+    class Callback {
+        private String token;
+        private String encodingAesKey;
+    }
 }

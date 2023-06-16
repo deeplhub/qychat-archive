@@ -1,6 +1,7 @@
 package com.xh.qychat.test.api;
 
 import com.tencent.wework.Finance;
+import com.xh.qychat.domain.task.event.WXMsgCryptEvent;
 import com.xh.qychat.infrastructure.properties.QyChatProperties;
 import com.xh.qychat.infrastructure.util.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -42,22 +43,56 @@ public class QyChatApiTest {
 
         String encryptRandomKey = "bRgL1p/SbCzLaKbxYenc/870zuB+PNsd1qr3viR6hrIFGkzjlfxRlCCLEMDpR6ayBJ/7QDVvY67Uzzqj39jA/n3gLG7qG61k/+flOk/8pHGf7Yf1UXb7i6GhV0VI2WZTIWaBUXIEdQSXVcy8/TTPigd7x33SinQF9ic1pAqUe59rY0WFv1tb4xKicauTqEpOgtYq0GkXWQfZGOQnJJOF6P33N4jbFm6hPqvx4W0+rpCiGSh9qZ79EpEGuaBAyTJFSIXThnJet4uZloJ13ajoKrSaeLnJJQB7WzgDvER2jPpk5ylfLFPbhCvDvC37SvRkis8OruKlQkV/5r/8iP2e2A==";
 
-//        byte[] encodedKey2 = Base64.getDecoder().decode(privateKey);
-//        PKCS8EncodedKeySpec keySpec2 = new PKCS8EncodedKeySpec(encodedKey2);
-//
-//        byte[] encryptedData = Base64.getDecoder().decode(encryptRandomKey);
-//
-//        // 私钥解密
-//        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-//        cipher.init(Cipher.DECRYPT_MODE, KeyFactory.getInstance("RSA").generatePrivate(keySpec2));
-//        byte[] decryptedData = cipher.doFinal(encryptedData);
-//
-//        System.out.println(new String(decryptedData, "UTF-8"));
-
         byte[] decoderData = Base64.getDecoder().decode(encryptRandomKey);
         byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatProperties.getPrivateKey()));
         System.out.println(new String(decrypt, "UTF-8"));
+    }
 
+
+    @Test
+    public void call() throws Exception {
 
     }
+
+    public static void main(String[] args) {
+        String corpid = "wx5823bf96d3bd56c7";
+        String token = "QDG6eK";
+
+        String encodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";
+
+
+        String msgSignature = "5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3";
+        String timestamp = "1409659589";
+        String nonce = "263014780";
+        String echostr = "P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ==";
+
+
+//        WXBizJsonMsgCrypt crypt = new WXBizJsonMsgCrypt(token, encodingAESKey, corpid);
+////        String sha1 = SHA1.getSHA1(token, timestamp, nonce, echostr);
+////        System.out.println(sha1);
+//
+//        String s1 = crypt.VerifyURL(msgSignature, timestamp, nonce, echostr);
+//        System.out.println(s1);
+
+        System.out.println("==========================================================================================");
+
+//        String[] array = new String[]{token, timestamp, nonce, echostr};
+//        StringBuffer sb = new StringBuffer();
+//        // 字符串排序
+//        Arrays.sort(array);
+//        for (int i = 0; i < 4; i++) {
+//            sb.append(array[i]);
+//        }
+//        String str = sb.toString();
+//
+//        System.out.println(DigestUtil.sha1Hex(str.getBytes()));
+
+//        String s = Stream.of(token, timestamp, nonce, echostr).sorted().collect(Collectors.joining());
+//        System.out.println(DigestUtil.sha1Hex(s.getBytes()));
+
+        WXMsgCryptEvent crypt1 = new WXMsgCryptEvent(token, encodingAESKey, corpid);
+        String s2 = crypt1.verifyURL(msgSignature, timestamp, nonce, echostr);
+        System.out.println(s2);
+    }
+
 }

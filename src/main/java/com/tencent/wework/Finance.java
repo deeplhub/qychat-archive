@@ -1,19 +1,8 @@
 package com.tencent.wework;
 
-/* sdk返回数据
-typedef struct Slice_t {
-    char* buf;
-    int len;
-} Slice_t;
-
-typedef struct MediaData {
-    char* outindexbuf;
-    int out_len;
-    char* data;
-    int data_len;
-    int is_finish;
-} MediaData_t;
-*/
+/**
+ * 企业微信会话sdk
+ */
 
 public class Finance {
     public native static long NewSdk();
