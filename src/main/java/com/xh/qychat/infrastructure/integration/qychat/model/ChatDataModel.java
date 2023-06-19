@@ -190,6 +190,13 @@ public class ChatDataModel extends ResponseModel {
     private String content;
 
 
+    /**
+     * 重写 getContent 方法
+     * <p>
+     * lombok只对函数名进行检测，如果存在了setLoginIp的函数名，@Setter注解就不会再生成
+     *
+     * @return
+     */
     public String getContent() {
         if (this.text != null) return this.text.toString();
         if (this.image != null) return this.image.toString();
