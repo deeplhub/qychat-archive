@@ -1,7 +1,6 @@
 package com.xh.qychat.test.api;
 
 import com.tencent.wework.Finance;
-import com.xh.qychat.domain.task.event.WXMsgCryptEvent;
 import com.xh.qychat.infrastructure.properties.QyChatProperties;
 import com.xh.qychat.infrastructure.util.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -90,9 +89,9 @@ public class QyChatApiTest {
 //        String s = Stream.of(token, timestamp, nonce, echostr).sorted().collect(Collectors.joining());
 //        System.out.println(DigestUtil.sha1Hex(s.getBytes()));
 
-        WXMsgCryptEvent crypt1 = new WXMsgCryptEvent(token, encodingAESKey, corpid);
-        String s2 = crypt1.verifyURL(msgSignature, timestamp, nonce, echostr);
-        System.out.println(s2);
+//        WXMsgCrypt crypt1 = new WXMsgCrypt(token, encodingAESKey, corpid);
+//        String s2 = crypt1.verifyURL(msgSignature, timestamp, nonce, echostr);
+//        System.out.println(s2);
     }
 
 }

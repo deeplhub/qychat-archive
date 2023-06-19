@@ -1,6 +1,6 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
-import com.xh.qychat.domain.qychat.factory.MessageFactory;
+import com.xh.qychat.domain.qychat.event.MessageEvent;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.MessageContentDomainService;
@@ -27,7 +27,7 @@ public class MessageContentDomainServiceImpl extends MessageContentServiceImpl i
 
     @Override
     public boolean saveBath(List<ChatDataModel> dataModelList) {
-        List<MessageContentEntity> entity = MessageFactory.createMessageContentEntity(dataModelList);
+        List<MessageContentEntity> entity = MessageEvent.create(dataModelList);
 
         return super.saveBatch(entity, 1000);
     }

@@ -5,4 +5,4 @@ spring:
   profiles:
     active: dev
   application:
-    name: qychat-center
+    name: qychat-archive

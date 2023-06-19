@@ -2,8 +2,10 @@ server:
   port: 8001
 
 spring:
+  profiles:
+    active: dev
   application:
-    name: qychat-center
+    name: qychat-archive
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource # 指定druid数据源
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,9 +25,10 @@ redis:
   database: 0
 
 qychat:
+  sdk:
+    path: D:/Workspace/JavaWorkspace/practice/qychat-archive
   chatdata:
     corpid: wwb55a50126edc83d2
     secret: 1jCvYfSyNF2gYeRT6gxNz9_1RK7GNY8mv6-26JrOjK0
-#    private-key:
     limit: 1000
     timeout: 30

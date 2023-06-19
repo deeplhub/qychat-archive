@@ -30,6 +30,11 @@ public class MessageContentEntity {
     private String msgid;
 
     /**
+     * 公钥版本号
+     */
+    private String publickeyVer;
+
+    /**
      * 消息动作，send-发送消息,recall-撤回消息,switch-切换企业日志
      */
     private String action;
@@ -55,7 +60,7 @@ public class MessageContentEntity {
     private Date msgtime;
 
     /**
-     * 文本消息为：text/image/file
+     * 消息类型
      */
     private String msgtype;
 
@@ -65,15 +70,12 @@ public class MessageContentEntity {
     private String content;
 
     /**
-     * 创建时间
+     * 媒体状态：1.未加载媒体，2.正在加载媒体，3.媒体加载完成，4.媒体加载失败
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private Integer mediaStatus;
 
     /**
-     * 更新时间
+     * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
+    private Date createTime;
 }

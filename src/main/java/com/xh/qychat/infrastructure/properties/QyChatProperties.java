@@ -32,11 +32,11 @@ public class QyChatProperties {
      */
     private Long timeout = 10L;
 
-    private Callback callback;
+    private Receive receive;
 
 
     @Data
-    class Callback {
+    public class Receive {
         private String token;
         private String encodingAesKey;
     }

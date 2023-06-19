@@ -1,5 +1,6 @@
 package com.xh.qychat.infrastructure.integration.qychat.model;
 
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -74,78 +75,112 @@ public class ChatDataModel extends ResponseModel {
     /**
      * 文本
      */
-    private String text;
+    private JSONObject text;
 
     /**
      * 图片
      */
-    private String image;
+    private JSONObject image;
 
     /**
      * 撤回消息
      */
-    private String revoke;
+    private JSONObject revoke;
 
     /**
      * 同意会话聊天内容
      */
-    private String agree;
+    private JSONObject agree;
 
     /**
      * 语音
      */
-    private String voice;
+    private JSONObject voice;
 
     /**
      * 视频
      */
-    private String video;
+    private JSONObject video;
 
     /**
      * 名片
      */
-    private String card;
+    private JSONObject card;
 
     /**
      * 位置
      */
-    private String location;
+    private JSONObject location;
 
     /**
      * 表情
      */
-    private String emotion;
+    private JSONObject emotion;
 
     /**
      * 文件
      */
-    private String file;
+    private JSONObject file;
 
     /**
      * 链接
      */
-    private String link;
+    private JSONObject link;
 
     /**
      * 小程序消息
      */
-    private String weapp;
+    private JSONObject weapp;
 
     /**
      * 会话记录消息
      */
-    private String chatrecord;
+    private JSONObject chatrecord;
+
+    /**
+     * 待办消息
+     */
+    private JSONObject todo;
+    /**
+     * 投票消息
+     */
+    private JSONObject vote;
+    /**
+     * 填表消息
+     */
+    private JSONObject collect;
 
     /**
      * 红包消息
      */
-    private String redpacket;
-
+    private JSONObject redpacket;
     /**
-     * 文件名称，仅限文件类
+     * 会议邀请消息
      */
-    private String filename;
-//    private String time;
-//    private String user;
+    private JSONObject meeting;
+    /**
+     * 在线文档消息
+     */
+    private JSONObject doc;
+    /**
+     * MarkDown格式消息
+     */
+    private JSONObject markdown;
+    /**
+     * 图文消息
+     */
+    private JSONObject news;
+    /**
+     * 日程消息
+     */
+    private JSONObject calendar;
+    /**
+     * 混合消息
+     */
+    private JSONObject mixed;
+    /**
+     * 微盘文件
+     */
+    private JSONObject info;
 
 }

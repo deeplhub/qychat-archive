@@ -78,6 +78,7 @@ public class ChatDataTask {
         // 解密后的消息
         ChatDataModel chatData = JSONUtil.toBean(Finance.GetContentFromSlice(newSlice), ChatDataModel.class);
         chatData.setSeq(data.getSeq());
+        chatData.setPublickeyVer(data.getPublickeyVer());
 
         return chatData;
     }

@@ -32,18 +32,37 @@ public class SpringBeanUtils implements ApplicationContextAware {
         SpringBeanUtils.applicationContext = applicationContext;
     }
 
-    //取得存储在静态变量中的ApplicationContext.
+    /**
+     * 取得存储在静态变量中的ApplicationContext
+     */
     public static ApplicationContext getApplicationContext() {
         checkApplicationContext();
         return applicationContext;
     }
 
-    //从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+    /**
+     * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     *
+     * @param beanName
+     * @param <T>
+     * @return bean 不存在时返回空
+     */
     public static <T> T getBean(String beanName) {
         checkApplicationContext();
-        return (T) applicationContext.getBean(beanName);
+        try {
+            return (T) applicationContext.getBean(beanName);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    /**
+     * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     *
+     * @param beanName
+     * @param <T>
+     * @return
+     */
     public static <T> T getBeanThrow(String beanName) {
         T bean = getBean(beanName);
         if (bean == null) {
@@ -53,8 +72,15 @@ public class SpringBeanUtils implements ApplicationContextAware {
     }
 
 
-    //从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
-    //如果有多个Bean符合Class, 取出第一个.
+    /**
+     * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     * <p>
+     * 如果有多个Bean符合Class, 取出第一个
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public static <T> T getBean(Class<T> clazz) {
         checkApplicationContext();
         Map beanMaps = applicationContext.getBeansOfType(clazz);
