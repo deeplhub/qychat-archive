@@ -10,6 +10,8 @@ import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.constants.QychatConstants;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
 import com.xh.qychat.infrastructure.properties.QyChatProperties;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
@@ -39,6 +41,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     private ChatDataTask chatDataTask;
 
 
+    private String getAccessToken(String corpid, String secret) {
+
+        return this.getAccessToken(corpid, secret, QychatConstants.QYCHAT_TOKEN_KEY);
+    }
+
     /**
      * 获取accessToken
      *
@@ -47,13 +54,16 @@ public class QyChatAdapterImpl implements QyChatAdapter {
      * @param key
      * @return
      */
-    private static String getAccessToken(String corpid, String secret, String key) {
+    private String getAccessToken(String corpid, String secret, String key) {
         log.info("获取 TOKEN...");
         JedisPoolRepository jedisPoolRepository = SpringBeanUtils.getBean(JedisPoolRepository.class);
 
         String accessToken = jedisPoolRepository.get(key);
+        long keyExpire = jedisPoolRepository.getKeyExpire(key);
 
-        if (StrUtil.isNotBlank(accessToken)) return accessToken;
+        // 当 token 不为空，且过期时间小于 5s 时生成新的 token
+        // 原因：保证 token 有效性
+        if (StrUtil.isNotBlank(accessToken) && keyExpire > 5) return accessToken;
 
         JSONObject jsonObject = new JSONObject();
 
@@ -217,42 +227,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
 
     @Override
-    public ChatRoomModel getChatRoomDetail(String roomid) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.putOpt("chat_id", roomid);
-
-        String result = null;
-        try {
-            String accessToken = this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret(), QychatConstants.QYCHAT_TOKEN_KEY);
-            String uri = QychatConstants.GROUP_CHAT_GET_URL + accessToken;
-            log.info("获取客户群详情，请求地址：{}，请求参数：{}", uri, jsonObject);
-            result = HttpUtil.post(uri, jsonObject.toString());
-            log.info("获取客户群详情，响应结果：{}", result);
-        } catch (Exception e) {
-            String format = StrUtil.format("客户群ID：{}，获取客户群详情异常", roomid);
-            log.error(format, e);
-            throw new RuntimeException(format);
-        }
-
-        ChatRoomModel room = JSONUtil.toBean(result, ChatRoomModel.class);
-
-        if (room.getErrcode() != 0) {
-            log.warn("获取客户群详情，解析异常 errcode：" + room.getErrmsg());
-            return null;
-        }
-
-        room = room.getGroup_chat();
-
-        if (StrUtil.isBlank(room.getChat_id())) {
-            log.warn(room.getChat_id() + " - 未知的客户群详情");
-            return null;
-        }
-
-        return room;
-    }
-
-
-    @Override
     public void download(String sdkfileid, String fileName) {
         log.debug("下载会话记录文件...");
 
@@ -292,6 +266,121 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             Finance.DestroySdk(sdk);
         }
 
+    }
+
+    @Override
+    public ChatRoomModel getChatRoomDetail(String roomid) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putOpt("chat_id", roomid);
+
+        String result = null;
+        try {
+            String accessToken = this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret(), QychatConstants.QYCHAT_TOKEN_KEY);
+            String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
+
+            log.info("获取客户群详情，请求地址：{}，请求参数：{}", uri, jsonObject);
+            result = HttpUtil.post(uri, jsonObject.toString());
+            log.info("获取客户群详情，响应结果：{}", result);
+        } catch (Exception e) {
+            String format = StrUtil.format("客户群ID：{}，获取客户群详情异常", roomid);
+            log.error(format, e);
+            throw new RuntimeException(format);
+        }
+
+        ChatRoomModel room = JSONUtil.toBean(result, ChatRoomModel.class);
+
+        if (room.getErrcode() != 0) {
+            log.warn("获取客户群详情，解析异常 errcode：" + room.getErrmsg());
+            return null;
+        }
+
+        room = room.getGroup_chat();
+
+        if (StrUtil.isBlank(room.getChat_id())) {
+            log.warn(room.getChat_id() + " - 未知的客户群详情");
+            return null;
+        }
+
+        return room;
+    }
+
+    @Override
+    public MemberModel getMemberDetail(String userId) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret()));
+        jsonObject.putOpt("userid", userId);
+
+        String result = null;
+        try {
+            log.info("获取成员（内部联系人）详情，请求地址：{}，请求参数：{}", QychatConstants.MEMBER_DETAIL_URL, jsonObject);
+            result = HttpUtil.get(QychatConstants.MEMBER_DETAIL_URL, jsonObject);
+            log.info("获取成员（内部联系人）详情，响应结果：{}", result);
+        } catch (Exception e) {
+            String format = StrUtil.format("客户ID：{}，获取成员（内部联系人）详情异常", userId);
+            log.error(format, e);
+            throw new RuntimeException(format);
+        }
+
+        MemberModel memberModel = JSONUtil.toBean(result, MemberModel.class);
+
+        if (memberModel.getErrcode() != 0) {
+            log.warn("获取成员（内部联系人）详情，解析异常 errcode：" + memberModel.getErrmsg());
+            return new MemberModel();
+        }
+
+        return memberModel;
+    }
+
+    @Override
+    public CustomerModel getCustomerDetail(String userId) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret()));
+        jsonObject.putOpt("external_userid", userId);// 外部联系人的userid，注意不是企业成员的帐号
+
+        String result = null;
+        try {
+            log.info("获取客户（外部联系人）详情，请求地址：{}，请求参数：{}", QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
+            result = HttpUtil.get(QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
+            log.info("获取客户（外部联系人）详情，响应结果：{}", result);
+        } catch (Exception e) {
+            String format = StrUtil.format("客户ID：{}，获取客户（外部联系人）详情异常", userId);
+            log.error(format, e);
+            throw new RuntimeException(format);
+        }
+
+        CustomerModel customerModel = JSONUtil.toBean(result, CustomerModel.class);
+
+        if (customerModel.getErrcode() != 0) {
+            log.warn("获取客户（外部联系人）详情，解析异常 errcode：" + customerModel.getErrmsg());
+            return null;
+        }
+
+        // 外部联系人详情
+        return customerModel.getExternalContact();
+    }
+
+    @Override
+    public MemberModel getPersonnelDetail(String userId) {
+        MemberModel memberModel = new MemberModel();
+
+        // 获取客户详情（外部联系人）
+        if (userId.startsWith("wb") || userId.startsWith("wo") || userId.startsWith("wm")) {
+            CustomerModel customerDetail = this.getCustomerDetail(userId);
+
+            // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
+            customerDetail.setExternalUserid(userId);
+            customerDetail.setType(1);
+            customerDetail.setName("外部未知客户");
+
+            memberModel.setCustomerModel(customerDetail);
+
+            return memberModel;
+        }
+
+        // 获取成员详情（内部联系人）
+        return this.getMemberDetail(userId);
     }
 
 }

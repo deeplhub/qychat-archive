@@ -26,15 +26,20 @@ public interface QychatConstants {
     /**
      * 获取客户群详情
      */
-    String GROUP_CHAT_GET_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/groupchat/get?access_token=";
+    String CHAT_ROOM_DETAIL_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/groupchat/get?access_token=";
 
     /**
      * 获取客户群列表
      */
     String GROUP_CHAT_LIST_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/groupchat/list";
 
+    /**
+     * 读取成员（内部联系人）
+     */
+    String MEMBER_DETAIL_URL = "https://qyapi.weixin.qq.com/cgi-bin/user/get";
 
-    String OUTSIDER_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/get";
-
-    String INSIDER_URL = "https://qyapi.weixin.qq.com/cgi-bin/user/get";
+    /**
+     * 获取客户详情（外部联系人）
+     */
+    String CUSTOMER_DETAIL_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/get";
 }

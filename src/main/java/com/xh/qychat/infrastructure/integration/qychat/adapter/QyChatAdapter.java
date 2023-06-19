@@ -2,6 +2,8 @@ package com.xh.qychat.infrastructure.integration.qychat.adapter;
 
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 
 import java.util.List;
 
@@ -43,4 +45,35 @@ public interface QyChatAdapter {
      */
     ChatRoomModel getChatRoomDetail(String roomid);
 
+    /**
+     * 获取成员详情（内部联系人）
+     * <p>
+     * https://developer.work.weixin.qq.com/document/path/90196
+     *
+     * @param userId
+     * @return
+     */
+    MemberModel getMemberDetail(String userId);
+
+    /**
+     * 获取客户详情（外部联系人）
+     *
+     * <p>
+     * https://developer.work.weixin.qq.com/document/path/92114
+     *
+     * @param userId
+     * @return
+     */
+    CustomerModel getCustomerDetail(String userId);
+
+
+    /**
+     * 获取人员详情
+     * <p>
+     * 整合成员详情（内部联系人）和客户详情（外部联系人）两个接口的数据
+     *
+     * @param userId
+     * @return
+     */
+    MemberModel getPersonnelDetail(String userId);
 }
