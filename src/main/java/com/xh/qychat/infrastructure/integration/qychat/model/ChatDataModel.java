@@ -183,4 +183,40 @@ public class ChatDataModel extends ResponseModel {
      */
     private JSONObject info;
 
+
+    /**
+     * 获取文本
+     */
+    private String content;
+
+
+    public String getContent() {
+        if (this.text != null) return this.text.toString();
+        if (this.image != null) return this.image.toString();
+        if (this.revoke != null) return this.revoke.toString();
+        if (this.agree != null) return this.agree.toString();
+        if (this.voice != null) return this.voice.toString();
+        if (this.video != null) return this.video.toString();
+        if (this.card != null) return this.card.toString();
+        if (this.location != null) return this.location.toString();
+        if (this.emotion != null) return this.emotion.toString();
+        if (this.file != null) return this.file.toString();
+        if (this.link != null) return this.link.toString();
+        if (this.weapp != null) return this.weapp.toString();
+        if (this.chatrecord != null) return this.chatrecord.toString();
+        if (this.todo != null) return this.todo.toString();
+        if (this.vote != null) return this.vote.toString();
+        if (this.collect != null) return this.collect.toString();
+        if (this.redpacket != null) return this.redpacket.toString();
+        if (this.meeting != null) return this.meeting.toString();
+        if (this.doc != null) return this.doc.toString();
+        if (this.markdown != null) return this.markdown.toString();
+        if (this.news != null) return this.news.toString();
+        if (this.calendar != null) return this.calendar.toString();
+        if (this.mixed != null) return this.mixed.toString();
+        if (this.info != null) return this.info.toString();
+
+        return content;
+    }
+
 }

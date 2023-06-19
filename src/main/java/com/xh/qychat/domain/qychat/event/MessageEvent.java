@@ -21,6 +21,7 @@ public class MessageEvent {
 
         dataModelList.parallelStream().forEach(item -> {
             MessageContentEntity entity = new MessageContentEntity();
+
             entity.setSeq(item.getSeq());
             entity.setMsgid(item.getMsgid());
             entity.setAction(item.getAction());
@@ -29,30 +30,35 @@ public class MessageEvent {
             entity.setMsgtime(item.getMsgtime() != null ? new Date(item.getMsgtime()) : new Date());
             entity.setCreateTime(new Date());
 
-            switch (item.getAction()) {
-                case "switch":
-                    entity.setMsgtype("switch");
-                    break;
-                case "revoke":
-                    entity.setMsgtype("revoke");
-                    break;
-                case "send":
-                    expand(item, entity);
-                    break;
-                default:
-                    break;
-            }
+            getActionMessage(item, entity);
+
             entityList.add(entity);
         });
 
         return entityList;
     }
 
-    private static void expand(ChatDataModel dataModel, MessageContentEntity entity) {
+    private static void getActionMessage(ChatDataModel item, MessageContentEntity entity) {
+        switch (item.getAction()) {
+            case "send": // 发送消息
+                getSendMessage(item, entity);
+                break;
+            case "revoke": // 撤回消息
+                entity.setMsgtype("revoke");
+                break;
+            case "switch": // 切换企业日志
+                entity.setMsgtype("switch");
+                break;
+            default:
+                break;
+        }
+    }
+
+    private static void getSendMessage(ChatDataModel dataModel, MessageContentEntity entity) {
         entity.setTolist(dataModel.getTolist());
         entity.setRoomid(StrUtil.isNotBlank(dataModel.getRoomid()) ? dataModel.getRoomid() : null);
         entity.setMsgtype(dataModel.getMsgtype());
-//        entity.setContent(item.getText());
+        entity.setContent(dataModel.getContent());
 
         MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "StrategyImpl");
         if (strategy != null) {
@@ -60,25 +66,4 @@ public class MessageEvent {
         }
     }
 
-
-//    private String getContent(ChatDataModel model) {
-//        String content = null;
-//        if (StrUtil.isNotBlank(model.getImage())) {
-//            content = model.getImage();
-//        } else if (StrUtil.isNotBlank(model.getWeapp())) {
-//            content = model.getWeapp();
-//        } else if (StrUtil.isNotBlank(model.getRedpacket())) {
-//            content = model.getRedpacket();
-//        } else if (StrUtil.isNotBlank(model.getFile())) {
-//            content = model.getFile();
-//        } else if (StrUtil.isNotBlank(model.getVideo())) {
-//            content = model.getVideo();
-//        } else if (StrUtil.isNotBlank(model.getVoice())) {
-//            content = model.getVoice();
-//        } else if (StrUtil.isNotBlank(model.getChatrecord())) {
-//            content = model.getChatrecord();
-//        }
-//
-//        return content;
-//    }
 }

@@ -7,6 +7,8 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import org.springframework.stereotype.Component;
 
 /**
+ * 图片消息
+ *
  * @author H.Yang
  * @date 2023/6/19
  */
