@@ -357,30 +357,13 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             return null;
         }
 
+        // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
+        customerModel.setExternalUserid(userId);
+        customerModel.setType(1);
+        customerModel.setName("外部未知客户");
+
         // 外部联系人详情
         return customerModel.getExternalContact();
-    }
-
-    @Override
-    public MemberModel getPersonnelDetail(String userId) {
-        MemberModel memberModel = new MemberModel();
-
-        // 获取客户详情（外部联系人）
-        if (userId.startsWith("wb") || userId.startsWith("wo") || userId.startsWith("wm")) {
-            CustomerModel customerDetail = this.getCustomerDetail(userId);
-
-            // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
-            customerDetail.setExternalUserid(userId);
-            customerDetail.setType(1);
-            customerDetail.setName("外部未知客户");
-
-            memberModel.setCustomerModel(customerDetail);
-
-            return memberModel;
-        }
-
-        // 获取成员详情（内部联系人）
-        return this.getMemberDetail(userId);
     }
 
 }
