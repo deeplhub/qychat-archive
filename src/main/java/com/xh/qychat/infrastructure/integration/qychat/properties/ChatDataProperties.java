@@ -21,6 +21,10 @@ public class ChatDataProperties {
      */
     private String corpid;
 
+    /**
+     * 会话存档中的 secret
+     */
+
     private String secret;
 
     /**

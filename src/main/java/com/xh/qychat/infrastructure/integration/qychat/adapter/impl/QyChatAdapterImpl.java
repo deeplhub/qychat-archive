@@ -12,8 +12,9 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
-import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
+import com.xh.qychat.infrastructure.integration.qychat.properties.CustomerProperties;
+import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Resource
     private ChatDataProperties chatProperties;
+    @Resource
+    private CustomerProperties customerProperties;
     @Resource
     private ChatDataTask chatDataTask;
 
@@ -276,8 +279,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         String result = null;
         try {
-//            String accessToken = this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret(), QychatConstants.QYCHAT_TOKEN_KEY);
-            String accessToken = this.getAccessToken(chatProperties.getCorpid(), "pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4", QychatConstants.QYCHAT_TOKEN_KEY);
+            String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
             String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
 
             log.info("获取客户群详情，请求地址：{}，请求参数：{}", uri, jsonObject);
@@ -336,9 +338,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Override
     public CustomerModel getCustomerDetail(String userId) {
+        String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
+
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), "pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4"));
+        jsonObject.putOpt("access_token", accessToken);
         jsonObject.putOpt("external_userid", userId);// 外部联系人的userid，注意不是企业成员的帐号
 
         String result = null;

@@ -16,7 +16,15 @@ public interface QychatConstants {
      */
     Long MAX_FILE_SIZE = 20 * 1024 * 1024L;
 
+    /**
+     * 企业微信 token
+     */
     String QYCHAT_TOKEN_KEY = "QYCHAT_TOKEN";
+
+    /**
+     * 客户联系 token
+     */
+    String QYCHAT_CUSTOMER_TOKEN_KEY = "QYCHAT_CUSTOMER_TOKEN";
 
     /**
      * 获取accessToken
