@@ -12,6 +12,11 @@ import lombok.Data;
 public class CustomerModel extends ResponseModel {
 
     /**
+     * 外部联系人的userid
+     */
+    private String externalUserid;
+
+    /**
      * 外部联系人的名称
      */
     private String name;
@@ -38,9 +43,19 @@ public class CustomerModel extends ResponseModel {
     private String unionid;
 
     /**
-     * 外部联系人的userid
+     * 外部联系人的职位，如果外部企业或用户选择隐藏职位，则不返回，仅当联系人类型是企业微信用户时有此字段
      */
-    private String externalUserid;
+    private String position;
+
+    /**
+     * 外部联系人所在企业的简称，仅当联系人类型是企业微信用户时有此字段
+     */
+    private String corpName;
+
+    /**
+     * 外部联系人所在企业的主体名称，仅当联系人类型是企业微信用户时有此字段。
+     */
+    private String corpFullName;
 
     /**
      * 外部联系人详情

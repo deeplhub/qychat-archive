@@ -27,9 +27,9 @@ public class MemberModel extends ResponseModel {
     private String mobile;
 
     /**
-     * 性别。0表示未定义，1表示男性，2表示女性。
+     * 成员所属部门id列表，仅返回该应用有查看权限的部门id；
      */
-    private Integer gender;
+    private Integer[] department;
 
     /**
      * 职务信息
@@ -37,9 +37,9 @@ public class MemberModel extends ResponseModel {
     private String position;
 
     /**
-     * 成员所属部门id列表，仅返回该应用有查看权限的部门id；
+     * 性别。0表示未定义，1表示男性，2表示女性。
      */
-    private String department;
+    private Integer gender;
 
     /**
      * 邮箱
@@ -50,6 +50,16 @@ public class MemberModel extends ResponseModel {
      * 企业邮箱
      */
     private String bizMail;
+
+    /**
+     * 表示在所在的部门内是否为部门负责人，数量与department一致；
+     */
+    private Integer[] isLeaderInDept;
+
+    /**
+     * 直属上级UserID
+     */
+    private String[] directLeader;
 
     /**
      * 头像url

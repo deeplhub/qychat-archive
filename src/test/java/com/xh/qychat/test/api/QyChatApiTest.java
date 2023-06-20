@@ -60,17 +60,17 @@ public class QyChatApiTest {
 
     @Test
     public void getMemberDetail() {
-
+        qychatAdapter.getMemberDetail("LinKang");
     }
 
     @Test
     public void getCustomerDetail() {
-
+        qychatAdapter.getCustomerDetail("wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q");
     }
 
     @Test
     public void getPersonnelDetail() {
-
+        qychatAdapter.getPersonnelDetail("wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q");
     }
 
     public static void main(String[] args) {

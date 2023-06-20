@@ -272,10 +272,12 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     public ChatRoomModel getChatRoomDetail(String roomid) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.putOpt("chat_id", roomid);
+        jsonObject.putOpt("need_name", 1);// 是否需要返回群成员的名字group_chat.member_list.name。0-不返回；1-返回。默认不返回
 
         String result = null;
         try {
-            String accessToken = this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret(), QychatConstants.QYCHAT_TOKEN_KEY);
+//            String accessToken = this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret(), QychatConstants.QYCHAT_TOKEN_KEY);
+            String accessToken = this.getAccessToken(chatProperties.getCorpid(), "pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4", QychatConstants.QYCHAT_TOKEN_KEY);
             String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
 
             log.info("获取客户群详情，请求地址：{}，请求参数：{}", uri, jsonObject);
@@ -294,10 +296,10 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             return null;
         }
 
-        room = room.getGroup_chat();
+        room = room.getGroupChat();
 
-        if (StrUtil.isBlank(room.getChat_id())) {
-            log.warn(room.getChat_id() + " - 未知的客户群详情");
+        if (StrUtil.isBlank(room.getChatId())) {
+            log.warn(room.getChatId() + " - 未知的客户群详情");
             return null;
         }
 
@@ -336,7 +338,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     public CustomerModel getCustomerDetail(String userId) {
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret()));
+        jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), "pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4"));
         jsonObject.putOpt("external_userid", userId);// 外部联系人的userid，注意不是企业成员的帐号
 
         String result = null;
@@ -357,13 +359,18 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             return null;
         }
 
+        // 外部联系人详情
+        customerModel = customerModel.getExternalContact();
+        if (customerModel != null) {
+            return customerModel;
+        }
+
         // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
         customerModel.setExternalUserid(userId);
         customerModel.setType(1);
         customerModel.setName("外部未知客户");
 
-        // 外部联系人详情
-        return customerModel.getExternalContact();
+        return customerModel;
     }
 
 }
