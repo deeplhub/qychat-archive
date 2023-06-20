@@ -49,7 +49,7 @@ public class ChatDataProperties {
 
 
     @Data
-    public class Receive {
+    public static class Receive {
         private String token;
         private String encodingAesKey;
     }

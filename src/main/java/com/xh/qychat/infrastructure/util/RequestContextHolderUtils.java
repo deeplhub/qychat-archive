@@ -46,19 +46,31 @@ public class RequestContextHolderUtils {
         return ContextLoader.getCurrentWebApplicationContext().getServletContext();
     }
 
-    public static Map<String, Object> getMapHolder() {
-        Map<String, Object> map = new HashMap<>();
-        Enumeration<String> headerNames = RequestContextHolderUtils.getRequest().getHeaderNames();
+    public static Map<String, String> getHeaderMap() {
+        Map<String, String> map = new HashMap<>();
+        Enumeration<String> headerNames = getRequest().getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
             // 排除Cookie字段
             if ("Cookie".equalsIgnoreCase(key)) {
                 continue;
             }
-            String value = RequestContextHolderUtils.getRequest().getHeader(key);
+            String value = getRequest().getHeader(key);
             map.put(key, value);
         }
 
+        return map;
+    }
+
+
+    public static Map<String, String> getParameterMap() {
+        Map<String, String> map = new HashMap<>();
+        Enumeration<String> parameterNames = getRequest().getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String key = parameterNames.nextElement();
+            String value = getRequest().getParameter(key);
+            map.put(key, value + "");
+        }
         return map;
     }
 

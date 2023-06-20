@@ -6,6 +6,7 @@ import cn.hutool.crypto.symmetric.SymmetricCrypto;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,8 +17,8 @@ import java.util.stream.Stream;
  */
 public class WXMsgCrypt {
 
-    private String token, receiveId;
-    private byte[] aesKey;
+    private final String token, receiveId;
+    private final byte[] aesKey;
 
     /**
      * @param token          企业微信后台，开发者设置的token
@@ -29,7 +30,7 @@ public class WXMsgCrypt {
 
         this.token = token;
         this.receiveId = receiveId;
-        aesKey = Base64.decode(encodingAesKey + "=");
+        this.aesKey = Base64.decode(encodingAesKey + "=");
     }
 
     /**
@@ -40,13 +41,17 @@ public class WXMsgCrypt {
      * @return 解密之后的echostr
      */
     public String verifyURL(String msgSignature, String timestamp, String nonce, String echostr) {
-        String signature = Stream.of(token, timestamp, nonce, echostr).sorted().collect(Collectors.joining());
-        signature = DigestUtil.sha1Hex(signature.getBytes());
+        String signature = this.sha1Hex(timestamp, nonce, echostr);
 
         if (!signature.equals(msgSignature)) {
             throw new RuntimeException("不合法的secret参数");
         }
         return this.decrypt(echostr);
+    }
+
+    private String sha1Hex(String timestamp, String nonce, String echostr) {
+        String signature = Stream.of(token, timestamp, nonce, echostr).sorted().collect(Collectors.joining());
+        return DigestUtil.sha1Hex(signature.getBytes());
     }
 
     /**
@@ -62,7 +67,6 @@ public class WXMsgCrypt {
 
         // 解密
         byte[] original = crypto.decrypt(encrypted);
-        System.out.println(new String(original));
 
         String jsonContent, fromReceiveid;
         try {
@@ -74,8 +78,8 @@ public class WXMsgCrypt {
 
             int jsonLength = recoverNetworkBytesOrder(networkOrder);
 
-            jsonContent = new String(Arrays.copyOfRange(bytes, 20, 20 + jsonLength), "utf-8");
-            fromReceiveid = new String(Arrays.copyOfRange(bytes, 20 + jsonLength, bytes.length), "utf-8");
+            jsonContent = new String(Arrays.copyOfRange(bytes, 20, 20 + jsonLength), StandardCharsets.UTF_8);
+            fromReceiveid = new String(Arrays.copyOfRange(bytes, 20 + jsonLength, bytes.length), StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("不合法的msgtype参数");
@@ -96,6 +100,33 @@ public class WXMsgCrypt {
             sourceNumber |= orderBytes[i] & 0xff;
         }
         return sourceNumber;
+    }
+
+
+    /**
+     * 检验消息的真实性，并且获取解密后的明文.
+     * <ol>
+     * 	<li>利用收到的密文生成安全签名，进行签名验证</li>
+     * 	<li>若验证通过，则提取json中的加密消息</li>
+     * 	<li>对消息进行解密</li>
+     * </ol>
+     *
+     * @param msgSignature 签名串，对应URL参数的msg_signature
+     * @param timestamp    时间戳，对应URL参数的timestamp
+     * @param nonce        随机串，对应URL参数的nonce
+     * @param encrypt      加密的消息
+     * @return 解密后的原文
+     */
+    public String decrypt(String msgSignature, String timestamp, String nonce, String encrypt) {
+        String signature = this.sha1Hex(timestamp, nonce, encrypt);
+
+        // 和URL中的签名比较是否相等
+        if (!signature.equals(msgSignature)) {
+            throw new RuntimeException("不合法的secret参数");
+        }
+
+        // 解密
+        return this.decrypt(encrypt);
     }
 
 }

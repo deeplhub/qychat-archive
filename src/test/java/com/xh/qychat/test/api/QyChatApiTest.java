@@ -1,10 +1,13 @@
 package com.xh.qychat.test.api;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.tencent.wework.Finance;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.RsaUtils;
+import com.xh.qychat.infrastructure.util.wx.WXMsgCrypt;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,44 +77,35 @@ public class QyChatApiTest {
     }
 
     public static void main(String[] args) {
-        String corpid = "wx5823bf96d3bd56c7";
-        String token = "QDG6eK";
-
-        String encodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";
-
-
-        String msgSignature = "5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3";
-        String timestamp = "1409659589";
-        String nonce = "263014780";
-        String echostr = "P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ==";
+        String corpid = "wwb55a50126edc83d2";
+        String token = "2JJYzvrzaZ2Kcqyh4";
+        String encodingAESKey = "S3Y1UxBb7LIxMDYtNm9CkQmyhVQ7xqwIXxyayrvRPMl";
 
 
-//        WXBizJsonMsgCrypt crypt = new WXBizJsonMsgCrypt(token, encodingAESKey, corpid);
-////        String sha1 = SHA1.getSHA1(token, timestamp, nonce, echostr);
-////        System.out.println(sha1);
+        String msgSignature = "fdea7cc6d2013518448b810e5ca37fa804717b63";
+        String timestamp = "1687624986";
+        String nonce = "1687252722";
+
+        String body = "<xml><ToUserName><![CDATA[wwb55a50126edc83d2]]></ToUserName><Encrypt><![CDATA[KDSEeBdaiQq3bHY7wkhXg7Vo994kBSkABR7gJoiYvslq8WTsry3vmRPXnN7dzvYpYyAf4KH4DsPxK0J070GrXKp3rVnQMr6J4NCXx+xi0Lz45a4okZA3R2hVVuMr47IKkAkRLOPOnV/fLbJo9UHnEVSQBlBS/0te5ewBMslIsh2D7yh/XYKZ7xglVWlnnMBAkbarncR5pqYZeGK/njSwpbfY5NfGcQrE6UsW8f389c/kP/VxYjB0uAaqTKZ/HwGU/keGKfGKNpL1baV7LmQiK38Y7m6PIU2e/owDyGN1zZAWae40S0oubZiTS+6NDEZFuk1G9zEjhPo883ONf2sYNb5S3A5km1UxIc9VGjm6UuxSmkI5dxKW49BcH/1VHZwk]]></Encrypt><AgentID><![CDATA[2000004]]></AgentID></xml>";
+
+//        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(XML.toJSONObject(xml)));
+
+//        JSONObject jsonObject = JSONUtil.parseObj(XML.toJSONObject(body));
 //
-//        String s1 = crypt.VerifyURL(msgSignature, timestamp, nonce, echostr);
-//        System.out.println(s1);
-
-        System.out.println("==========================================================================================");
-
-//        String[] array = new String[]{token, timestamp, nonce, echostr};
-//        StringBuffer sb = new StringBuffer();
-//        // 字符串排序
-//        Arrays.sort(array);
-//        for (int i = 0; i < 4; i++) {
-//            sb.append(array[i]);
-//        }
-//        String str = sb.toString();
+//        WXBizJsonMsgCrypt wxcpt = new WXBizJsonMsgCrypt(token, encodingAESKey, corpid);
 //
-//        System.out.println(DigestUtil.sha1Hex(str.getBytes()));
+//        String sMsg = wxcpt.DecryptMsg(msgSignature, timestamp, nonce, body);
+//        System.out.println("after decrypt msg: " + sMsg);
 
-//        String s = Stream.of(token, timestamp, nonce, echostr).sorted().collect(Collectors.joining());
-//        System.out.println(DigestUtil.sha1Hex(s.getBytes()));
 
-//        WXMsgCrypt crypt1 = new WXMsgCrypt(token, encodingAESKey, corpid);
-//        String s2 = crypt1.verifyURL(msgSignature, timestamp, nonce, echostr);
-//        System.out.println(s2);
+        JSONObject jsonObject = JSONUtil.parseFromXml(body);
+        jsonObject = jsonObject.getJSONObject("xml");
+
+        WXMsgCrypt crypt = new WXMsgCrypt(token, encodingAESKey, corpid);
+        String s2 = crypt.decrypt(msgSignature, timestamp, nonce, jsonObject.getStr("Encrypt"));
+        System.out.println(s2);
+
+        System.out.println();
     }
 
 }

@@ -1,15 +1,13 @@
 package com.xh.qychat.controller.facade;
 
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.RequestContextHolderUtils;
 import com.xh.qychat.infrastructure.util.wx.WXMsgCrypt;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -52,29 +50,57 @@ public class ApiController {
     @GetMapping("/wxWorkPush")
     String verify() {
         // 解析 url 上的参数值
-        Map<String, Object> holderMap = RequestContextHolderUtils.getMapHolder();
-        log.info("RequestContextHolder：{}", JSONUtil.toJsonStr(holderMap));
-
-        String msgSignature = (String) holderMap.get("msg_signature");
-        String timestamp = (String) holderMap.get("timestamp");
-        String nonce = (String) holderMap.get("nonce");
-        String echostr = (String) holderMap.get("echostr");
+        Map<String, String> parameterMap = RequestContextHolderUtils.getParameterMap();
+        log.info("RequestContextHolder：{}", JSONUtil.toJsonStr(parameterMap));
 
         ChatDataProperties.Receive receive = chatDataProperties.getReceive();
         WXMsgCrypt crypt = new WXMsgCrypt(receive.getToken(), receive.getEncodingAesKey(), chatDataProperties.getCorpid());
-        echostr = crypt.verifyURL(msgSignature, timestamp, nonce, echostr);
+        String echostr = crypt.verifyURL(
+                parameterMap.get("msg_signature"),
+                parameterMap.get("timestamp"),
+                parameterMap.get("nonce"),
+                parameterMap.get("echostr")
+        );
         log.info("Verify URL：{}", echostr);
 
         return echostr;
     }
 
 
+    /**
+     * 接收消息请
+     * <p>
+     * 用户回复消息或者点击事件响应时，企业会收到回调消息，此消息是经过企业微信加密之后的密文以post形式发送给企业，
+     * <p>
+     * 企业收到post请求之后:
+     * 1.解析出url上的参数，包括消息体签名(msg_signature)，时间戳(timestamp)以及随机数字串(nonce)
+     * 2.验证消息体签名的正确性。
+     * 3.将post请求的数据进行json解析，并将"encrypt"标签的内容进行解密，解密出来的明文即是用户回复消息的明文，明文格式请参考官方文档
+     * 第2，3步可以用企业微信提供的库函数DecryptMsg来实现。
+     *
+     * @param body
+     * @return
+     */
     @PostMapping("/wxWorkPush")
-    String weChatPush(String body) {
+    String weChatPush(@RequestBody String body) {
         log.info("body：{}", body);
         // 解析 url 上的参数值
-        Map<String, Object> holderMap = RequestContextHolderUtils.getMapHolder();
-        log.info("RequestContextHolder：{}", JSONUtil.toJsonStr(holderMap));
+        Map<String, String> parameterMap = RequestContextHolderUtils.getParameterMap();
+        log.info("RequestContextHolder：{}", JSONUtil.toJsonStr(parameterMap));
+
+        JSONObject jsonObject = JSONUtil.parseFromXml(body);
+        jsonObject = jsonObject.getJSONObject("xml");
+
+        ChatDataProperties.Receive receive = chatDataProperties.getReceive();
+        WXMsgCrypt crypt = new WXMsgCrypt(receive.getToken(), receive.getEncodingAesKey(), chatDataProperties.getCorpid());
+
+        String s2 = crypt.decrypt(
+                parameterMap.get("msg_signature"),
+                parameterMap.get("timestamp"),
+                parameterMap.get("nonce"),
+                jsonObject.getStr("Encrypt")
+        );
+
 
         return "";
     }
