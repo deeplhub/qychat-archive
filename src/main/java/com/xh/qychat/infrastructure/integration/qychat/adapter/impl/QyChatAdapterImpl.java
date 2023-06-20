@@ -13,7 +13,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
-import com.xh.qychat.infrastructure.properties.QyChatProperties;
+import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Resource
-    private QyChatProperties chatProperties;
+    private ChatDataProperties chatProperties;
     @Resource
     private ChatDataTask chatDataTask;
 

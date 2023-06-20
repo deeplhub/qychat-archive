@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.tencent.wework.Finance;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
-import com.xh.qychat.infrastructure.properties.QyChatProperties;
+import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.RsaUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import java.util.concurrent.Future;
 @Component
 public class ChatDataTask {
 
-    private final QyChatProperties qychatProperties;
+    private final ChatDataProperties qychatDataProperties;
 
     @Async("customizedTaskExecutor")
     public Future<List<ChatDataModel>> handle(Long sdk, List<ChatDataModel> cutListData) {
@@ -59,7 +59,7 @@ public class ChatDataTask {
         try {
             // 密钥长度：2048 bit，密钥格式：PKCS#8，输出格式：PEM/Base64
             // 密钥在线生成：http://web.chacuo.net/netrsakeypair
-            byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatProperties.getPrivateKey()));
+            byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatDataProperties.getPrivateKey()));
             String encryptKey = new String(decrypt, CommonConstants.CHARSET_UTF8);
 
             if (StrUtil.isBlank(encryptKey)) {

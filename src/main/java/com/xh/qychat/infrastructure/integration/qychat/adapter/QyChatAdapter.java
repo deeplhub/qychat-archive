@@ -32,7 +32,7 @@ public interface QyChatAdapter {
     void download(String sdkfileid, String fileName);
 
     /**
-     * 获取客户群详情
+     * 获取群详情
      * <p>
      * 通过客户群ID，获取详情。包括群名、群成员列表、群成员入群时间、入群方式。（客户群是由具有客户群使用权限的成员创建的外部群）
      * <p>

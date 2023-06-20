@@ -2,7 +2,7 @@ package com.xh.qychat.controller.facade;
 
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.application.service.TaskApplication;
-import com.xh.qychat.infrastructure.properties.QyChatProperties;
+import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.RequestContextHolderUtils;
 import com.xh.qychat.infrastructure.util.wx.WXMsgCrypt;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class ApiController {
     @Resource
     private TaskApplication taskApplication;
     @Resource
-    private QyChatProperties qyChatProperties;
+    private ChatDataProperties chatDataProperties;
 
 //    @GetMapping("/pullChatData")
 //    Result pullChatData() {
@@ -60,8 +60,8 @@ public class ApiController {
         String nonce = (String) holderMap.get("nonce");
         String echostr = (String) holderMap.get("echostr");
 
-        QyChatProperties.Receive receive = qyChatProperties.getReceive();
-        WXMsgCrypt crypt = new WXMsgCrypt(receive.getToken(), receive.getEncodingAesKey(), qyChatProperties.getCorpid());
+        ChatDataProperties.Receive receive = chatDataProperties.getReceive();
+        WXMsgCrypt crypt = new WXMsgCrypt(receive.getToken(), receive.getEncodingAesKey(), chatDataProperties.getCorpid());
         echostr = crypt.verifyURL(msgSignature, timestamp, nonce, echostr);
         log.info("Verify URL：{}", echostr);
 

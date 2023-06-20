@@ -1,7 +1,9 @@
 package com.xh.qychat.test.api;
 
 import com.tencent.wework.Finance;
-import com.xh.qychat.infrastructure.properties.QyChatProperties;
+import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
+import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -22,7 +24,9 @@ import java.util.Base64;
 public class QyChatApiTest {
 
     @Resource
-    private QyChatProperties qychatProperties;
+    private ChatDataProperties qychatDataProperties;
+    @Resource
+    private QyChatAdapter qychatAdapter;
 
     @Test
     public void getChatData() {
@@ -43,13 +47,29 @@ public class QyChatApiTest {
         String encryptRandomKey = "bRgL1p/SbCzLaKbxYenc/870zuB+PNsd1qr3viR6hrIFGkzjlfxRlCCLEMDpR6ayBJ/7QDVvY67Uzzqj39jA/n3gLG7qG61k/+flOk/8pHGf7Yf1UXb7i6GhV0VI2WZTIWaBUXIEdQSXVcy8/TTPigd7x33SinQF9ic1pAqUe59rY0WFv1tb4xKicauTqEpOgtYq0GkXWQfZGOQnJJOF6P33N4jbFm6hPqvx4W0+rpCiGSh9qZ79EpEGuaBAyTJFSIXThnJet4uZloJ13ajoKrSaeLnJJQB7WzgDvER2jPpk5ylfLFPbhCvDvC37SvRkis8OruKlQkV/5r/8iP2e2A==";
 
         byte[] decoderData = Base64.getDecoder().decode(encryptRandomKey);
-        byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatProperties.getPrivateKey()));
+        byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(qychatDataProperties.getPrivateKey()));
         System.out.println(new String(decrypt, "UTF-8"));
     }
 
 
     @Test
-    public void call() throws Exception {
+    public void getChatRoomDetail() {
+        ChatRoomModel chatRoomDetail = qychatAdapter.getChatRoomDetail("wrgQjpQAAAhSGCNKPd_I3hJ5vFvGFogA");
+        System.out.println();
+    }
+
+    @Test
+    public void getMemberDetail() {
+
+    }
+
+    @Test
+    public void getCustomerDetail() {
+
+    }
+
+    @Test
+    public void getPersonnelDetail() {
 
     }
 

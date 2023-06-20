@@ -1,14 +1,20 @@
-package com.xh.qychat.infrastructure.properties;
+package com.xh.qychat.infrastructure.integration.qychat.properties;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * 会话存档
+ *
+ * @author H.Yang
+ * @date 2023/6/20
+ */
 @Data
 @Component
 @ConfigurationProperties(prefix = "qychat.chatdata")
-public class QyChatProperties {
+public class ChatDataProperties {
 
     /**
      * 企业微信ID
@@ -32,6 +38,9 @@ public class QyChatProperties {
      */
     private Long timeout = 10L;
 
+    /**
+     * 接收消息事件
+     */
     private Receive receive;
 
 
