@@ -3,7 +3,7 @@ package com.xh.qychat.test.application;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.application.service.TaskApplication;
-import com.xh.qychat.domain.qychat.event.factory.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;

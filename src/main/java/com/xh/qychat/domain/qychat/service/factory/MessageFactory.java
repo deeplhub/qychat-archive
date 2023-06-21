@@ -1,7 +1,7 @@
-package com.xh.qychat.domain.qychat.event;
+package com.xh.qychat.domain.qychat.service.factory;
 
 import cn.hutool.core.util.StrUtil;
-import com.xh.qychat.domain.qychat.event.factory.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author H.Yang
  * @date 2023/6/14
  */
-public class MessageEvent {
+public class MessageFactory {
 
     public static List<MessageContentEntity> create(List<ChatDataModel> dataModelList) {
         List<MessageContentEntity> entityList = new ArrayList<>(dataModelList.size());

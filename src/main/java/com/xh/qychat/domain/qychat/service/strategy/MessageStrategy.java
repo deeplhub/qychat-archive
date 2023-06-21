@@ -1,4 +1,4 @@
-package com.xh.qychat.domain.qychat.event.factory;
+package com.xh.qychat.domain.qychat.service.strategy;
 
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;

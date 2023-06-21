@@ -1,8 +1,8 @@
-package com.xh.qychat.domain.qychat.event.factory.impl;
+package com.xh.qychat.domain.qychat.service.strategy.impl;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.event.factory.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import org.springframework.stereotype.Component;
