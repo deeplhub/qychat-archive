@@ -2,6 +2,7 @@ package com.xh.qychat.domain.task.event;
 
 import com.xh.qychat.domain.task.event.async.ChatRoomCallable;
 import com.xh.qychat.infrastructure.config.CustomizedTaskExecutor;
+import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
@@ -22,14 +23,9 @@ import java.util.stream.Collectors;
 public class ChatRoomEvent {
     private static CustomizedTaskExecutor taskExecutor;
 
-    /**
-     * 核心线程数
-     */
-    private static final int threadSize = Runtime.getRuntime().availableProcessors() * 2;
-
     public static void createTaskExecutor() {
         taskExecutor = SpringBeanUtils.getBean(CustomizedTaskExecutor.class);
-        taskExecutor.setCorePoolSize(threadSize);
+        taskExecutor.setCorePoolSize(CommonConstants.IO_INTENSIVE_THREAD_SIZE);
         taskExecutor.initialize();
     }
 
@@ -79,7 +75,7 @@ public class ChatRoomEvent {
         // 数据大小
         int dataSize = roomids.size();
         // 批次大小（每个线程要处理数据量）
-        int batchSize = (dataSize - 1) / threadSize + 1;
+        int batchSize = (dataSize - 1) / CommonConstants.IO_INTENSIVE_THREAD_SIZE + 1;
         // 批次处理数
         int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
 
