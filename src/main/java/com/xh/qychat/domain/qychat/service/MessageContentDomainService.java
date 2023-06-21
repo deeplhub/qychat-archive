@@ -1,8 +1,6 @@
 package com.xh.qychat.domain.qychat.service;
 
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
-
-import java.util.List;
+import com.xh.qychat.domain.qychat.model.MessageContent;
 
 /**
  * @author H.Yang
@@ -15,5 +13,5 @@ public interface MessageContentDomainService {
      */
     Long getMaxSeq();
 
-    boolean saveBath(List<ChatDataModel> dataModelList);
+    boolean saveBath(MessageContent messageContent);
 }
