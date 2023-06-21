@@ -56,38 +56,7 @@ public class ChatRoomEvent {
 
     public static List<ChatRoomModel> listChatRoomDetail2(Set<String> roomids) {
         long beginTime = System.currentTimeMillis();
-        List<String> roomidList = new ArrayList<>(roomids);
-
-        // 数据大小
-        int dataSize = roomids.size();
-        // 批次大小（每个线程要处理数据量）
-        int batchSize = (dataSize - 1) / threadSize + 1;
-        // 批次处理数
-        int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
-
-        QyChatAdapter qychatAdapter = SpringBeanUtils.getBean("qyChatAdapterImpl");
-
-        List<Future<List<ChatRoomModel>>> futureList = new ArrayList<>();
-
-        // 根据批次数遍历数据
-        for (int i = 0; i < batchCount; i++) {
-            int start = i * batchSize;
-            int end = Math.min(start + batchSize, dataSize);
-
-            // 批次数据
-            List<String> batchData = roomidList.subList(start, end);
-            log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
-
-
-            Future<List<ChatRoomModel>> future = taskExecutor.submit(() -> {
-                List<ChatRoomModel> roomModels = batchData.stream().map(roomid -> qychatAdapter.getChatRoomDetail(roomid)).collect(Collectors.toList());
-                log.info("线程 [{}] 执行获取群详情完成.", Thread.currentThread().getName());
-                return roomModels;
-            });
-
-            futureList.add(future);
-        }
-
+        List<Future<List<ChatRoomModel>>> futureList = exec(new ArrayList<>(roomids));
 
         List<ChatRoomModel> listData = new ArrayList<>(roomids.size());
         try {
@@ -105,5 +74,39 @@ public class ChatRoomEvent {
         return listData;
     }
 
+
+    private static List<Future<List<ChatRoomModel>>> exec(List<String> roomids) {
+        // 数据大小
+        int dataSize = roomids.size();
+        // 批次大小（每个线程要处理数据量）
+        int batchSize = (dataSize - 1) / threadSize + 1;
+        // 批次处理数
+        int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
+
+        QyChatAdapter qychatAdapter = SpringBeanUtils.getBean("qyChatAdapterImpl");
+
+        List<Future<List<ChatRoomModel>>> futureList = new ArrayList<>();
+
+        // 根据批次数遍历数据
+        for (int i = 0; i < batchCount; i++) {
+            int start = i * batchSize;
+            int end = Math.min(start + batchSize, dataSize);
+
+            // 批次数据
+            List<String> batchData = roomids.subList(start, end);
+            log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
+
+
+            Future<List<ChatRoomModel>> future = taskExecutor.submit(() -> {
+                List<ChatRoomModel> roomModels = batchData.stream().map(roomid -> qychatAdapter.getChatRoomDetail(roomid)).collect(Collectors.toList());
+                log.info("线程 [{}] 执行获取群详情完成.", Thread.currentThread().getName());
+                return roomModels;
+            });
+
+            futureList.add(future);
+        }
+
+        return futureList;
+    }
 
 }
