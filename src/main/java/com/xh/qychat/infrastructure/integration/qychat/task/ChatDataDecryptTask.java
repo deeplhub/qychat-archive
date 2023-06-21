@@ -19,13 +19,15 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
+ * 聊天数据解密
+ *
  * @author H.Yang
  * @date 2023/6/14
  */
 @Slf4j
 @AllArgsConstructor
 @Component
-public class ChatDataTask {
+public class ChatDataDecryptTask {
 
     private final ChatDataProperties qychatDataProperties;
 
@@ -41,7 +43,8 @@ public class ChatDataTask {
             list.add(chatData);
         }
         log.debug("线程 [{}] 执行解密会话内容完成，共执行行数 [{}].", Thread.currentThread().getName(), list.size());
-        return new AsyncResult<>(JSONUtil.toList(JSONUtil.toJsonStr(list), ChatDataModel.class));
+//        return new AsyncResult<>(JSONUtil.toList(JSONUtil.toJsonStr(list), ChatDataModel.class));
+        return new AsyncResult<>(list);
     }
 
 

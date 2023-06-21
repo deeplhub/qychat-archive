@@ -20,7 +20,7 @@ public enum ResponseEnum implements BaseEnum<Integer, String, ResponseEnum> {
      *
      ***********************************************************************/
     BODY_NOT_MATCH(400, "参数解析失败"),
-//    SIGNATURE_NOT_MATCH(401, "数字签名不匹配"),
+    //    SIGNATURE_NOT_MATCH(401, "数字签名不匹配"),
 //    NOT_LOGIN(401, "用户未登录"),
     REQUEST_PARAMETERS(402, "参数不存在或参数有误"),
     PERMISSION_DENIED(403, "无权访问"),
@@ -39,15 +39,15 @@ public enum ResponseEnum implements BaseEnum<Integer, String, ResponseEnum> {
      *
      ***********************************************************************/
     INTERNAL_SERVER_FAIL(500, "服务器内部错误"),
-//    FEIGN_FAILED(500, "Feign调用错误"),
+    //    FEIGN_FAILED(500, "Feign调用错误"),
 //    SERVER_BUSY(503, "服务器正忙，请稍后再试"),
     INVOKE_SQL_FAIL(500, "SQL语法异常"),
-//    DATA_NON_EXISTENT(505, "数据不存在"),
+    //    DATA_NON_EXISTENT(505, "数据不存在"),
 //    DATA_ALREADY_EXISTED(506, "数据已存在"),
 //    VERIFY_SIGNATURE_FAIL(507, "签名验证失败"),
 //    PERMISSION_DENIED_NOTIN_WHITE(511, "无权访问:白名单未配置"),
 //    PERMISSION_DENIED_IN_BLACK(512, "无权访问:黑名单已配置"),
-//    DATABASE_FAIL(513, "数据库异常"),
+    DATABASE_FAIL(513, "数据库异常"),
     REDIS_FAIL(514, "Redis异常"),
 
 

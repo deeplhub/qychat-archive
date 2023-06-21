@@ -14,7 +14,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.integration.qychat.properties.CustomerProperties;
-import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataTask;
+import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataDecryptTask;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     @Resource
     private CustomerProperties customerProperties;
     @Resource
-    private ChatDataTask chatDataTask;
+    private ChatDataDecryptTask chatDataDecryptTask;
 
 
     private String getAccessToken(String corpid, String secret) {
@@ -222,7 +222,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
                     : secretChatDataList.subList(i * chunkSize, (i + 1) * chunkSize);
 
             // 线程异常解密数据
-            futureList.add(chatDataTask.handle(sdk, cutListData));
+            futureList.add(chatDataDecryptTask.handle(sdk, cutListData));
         }
 
         return futureList;

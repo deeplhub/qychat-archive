@@ -9,6 +9,12 @@ import com.xh.qychat.infrastructure.common.model.Result;
  */
 public class ResponseEvent {
     public static Result reply(boolean isSuccess) {
+
         return isSuccess ? Result.operateSucceed() : Result.failed(ResponseEnum.INTERNAL_SERVER_FAIL);
+    }
+
+    public static Result reply(boolean isSuccess, ResponseEnum response) {
+
+        return isSuccess ? Result.operateSucceed() : Result.failed(response);
     }
 }

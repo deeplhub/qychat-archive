@@ -7,6 +7,7 @@ import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentService
 import com.xh.qychat.domain.qychat.service.MessageContentDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,9 +27,13 @@ public class MessageContentDomainServiceImpl extends MessageContentServiceImpl i
     }
 
     @Override
+    @Transactional
     public boolean saveBath(MessageContent messageContent) {
         List<MessageContentEntity> entity = MessageContentFactory.createEntity(messageContent);
-
+        if (entity.isEmpty()) {
+            log.warn("保存消息内容出现错误，数据为空");
+            return true;
+        }
         return super.saveBatch(entity, 1000);
     }
 }
