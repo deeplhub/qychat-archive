@@ -31,9 +31,6 @@ public class TaskDomainServiceImpl implements TaskDomainService {
 
     @Override
     public List<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
-        ChatRoomEvent.createTaskExecutor();
-        // TODO 分别验证两个事件并统计每个事件的执行时间，先出耗时最短的
-//        return ChatRoomEvent.listChatRoomDetail(roomids);
-        return ChatRoomEvent.listChatRoomDetail2(roomids);
+        return ChatRoomEvent.getTaskExecutor().setChatAdapter(qychatAdapter).listChatRoomDetail(roomids);
     }
 }
