@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ChatRoomFactory {
 
-    public static List<ChatRoomEntity> createOrModifyEntity(ChatRoom chatRoom, List<ChatRoomEntity> chatRoomEntities) {
-        Map<String, ChatRoomEntity> dictMap = chatRoomEntities.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
+    public static List<ChatRoomEntity> createOrModifyEntity(ChatRoom chatRoom, List<ChatRoomEntity> chatRoomList) {
+        Map<String, ChatRoomEntity> dictMap = chatRoomList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
 
         List<ChatRoomModel> chatRoomModelList = chatRoom.getChatRoomModelList();
         List<ChatRoomEntity> entityList = new LinkedList<>();

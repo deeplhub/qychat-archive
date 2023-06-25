@@ -39,13 +39,12 @@ public class TaskApplicationImpl implements TaskApplication {
         List<ChatDataModel> dataModelList = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(new MessageContent(dataModelList));
-
-//        Set<String> roomIds = dataModelList.parallelStream().filter(o -> StrUtil.isNotBlank(o.getRoomid())).map(o -> o.getRoomid()).collect(Collectors.toSet());
         return ResponseEvent.reply(isSuccess);
     }
 
     @Override
     public Result pullChatRoom() {
+        // TODO 数据量大了需要分页
         Set<String> roomIds = messageContentDomain.listRoomIdGoupByRoomId();
 
         List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomIds);

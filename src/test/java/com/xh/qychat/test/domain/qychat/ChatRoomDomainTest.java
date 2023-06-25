@@ -17,9 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -57,7 +55,7 @@ public class ChatRoomDomainTest {
 
         ChatRoomService chatRoomService = SpringBeanUtils.getBean(ChatRoomServiceImpl.class);
         List<ChatRoomEntity> chatRoomEntities = chatRoomService.listByChatId(chatIds);
-        Map<String, ChatRoomEntity> dictMap = chatRoomEntities.stream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
+//        Map<String, ChatRoomEntity> dictMap = chatRoomEntities.stream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
         System.out.println();
 
     }

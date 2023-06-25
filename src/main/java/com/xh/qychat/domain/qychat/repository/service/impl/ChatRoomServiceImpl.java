@@ -23,13 +23,6 @@ public class ChatRoomServiceImpl extends ServiceImpl<ChatRoomMapper, ChatRoomEnt
     @Override
     public List<ChatRoomEntity> listByChatId(Set<String> chatIds) {
 
-//        QueryWrapper<ChatRoomEntity> queryWrapper = new QueryWrapper<>();
-//
-//        queryWrapper.lambda().select(ChatRoomEntity::getId, ChatRoomEntity::getChatId, ChatRoomEntity::getSign);
-//        queryWrapper.lambda().in(ChatRoomEntity::getChatId, chatIds);
-//
-//        return super.list(queryWrapper);
-
         // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
         return super.baseMapper.listByChatId(chatIds);
     }
