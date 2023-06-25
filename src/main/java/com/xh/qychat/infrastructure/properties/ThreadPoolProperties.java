@@ -1,5 +1,6 @@
 package com.xh.qychat.infrastructure.properties;
 
+import com.xh.qychat.infrastructure.constants.CommonConstants;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -58,6 +59,6 @@ public class ThreadPoolProperties {
      * @return
      */
     public int getProcessors() {
-        return Runtime.getRuntime().availableProcessors();
+        return CommonConstants.AVAILABLE_PROCESSORS;
     }
 }

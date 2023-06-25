@@ -20,5 +20,11 @@ public interface TaskDomainService {
      */
     List<ChatDataModel> pullChatData(Long seq);
 
+    /**
+     * 获取群详情
+     *
+     * @param roomids 群ID列表
+     * @return
+     */
     List<ChatRoomModel> listChatRoomDetail(Set<String> roomids);
 }

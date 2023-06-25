@@ -31,8 +31,6 @@ public class TaskDomainServiceImpl implements TaskDomainService {
 
     @Override
     public List<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
-        ChatRoomEvent.createTaskExecutor();
-//        return ChatRoomEvent.listChatRoomDetail(roomids);
-        return ChatRoomEvent.listChatRoomDetail2(roomids);
+        return ChatRoomEvent.getTaskExecutor().setChatAdapter(qychatAdapter).listChatRoomDetail(roomids);
     }
 }

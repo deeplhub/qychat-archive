@@ -5,7 +5,9 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tencent.wework.Finance;
+import com.xh.qychat.infrastructure.config.CustomizedTaskExecutor;
 import com.xh.qychat.infrastructure.constants.CacheConstants;
+import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.constants.QychatConstants;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
@@ -14,8 +16,8 @@ import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.integration.qychat.properties.CustomerProperties;
-import com.xh.qychat.infrastructure.integration.qychat.task.ChatDataDecryptTask;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
+import com.xh.qychat.infrastructure.util.RsaUtils;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,9 +26,11 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @author H.Yang
@@ -40,8 +44,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     private ChatDataProperties chatProperties;
     @Resource
     private CustomerProperties customerProperties;
-    @Resource
-    private ChatDataDecryptTask chatDataDecryptTask;
 
 
     private String getAccessToken(String corpid, String secret) {
@@ -190,7 +192,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         long beginTime = System.currentTimeMillis();
         List<ChatDataModel> listData = new ArrayList<>(secretChatDataList.size());
-        List<Future<List<ChatDataModel>>> futureList = this.exec(sdk, secretChatDataList);
+        List<Future<List<ChatDataModel>>> futureList = this.pieceExec(sdk, secretChatDataList);
 
         try {
             for (Future<List<ChatDataModel>> future : futureList) {
@@ -205,27 +207,74 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         return listData;
     }
 
+    private List<Future<List<ChatDataModel>>> pieceExec(Long sdk, List<ChatDataModel> chatDataList) {
+        // 数据大小
+        int dataSize = chatDataList.size();
+        // 批次大小（每个线程要处理数据量）
+        int batchSize = (dataSize - 1) / CommonConstants.IO_INTENSIVE_THREAD_SIZE + 1;
+        // 批次处理数
+        int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
 
-    private List<Future<List<ChatDataModel>>> exec(Long sdk, List<ChatDataModel> secretChatDataList) {
-        int dataSize = secretChatDataList.size();
-        int threadNum = Runtime.getRuntime().availableProcessors() + 1;
-        int chunkSize = dataSize / threadNum;
+        CustomizedTaskExecutor taskExecutor = SpringBeanUtils.getBean(CustomizedTaskExecutor.class);
 
         List<Future<List<ChatDataModel>>> futureList = new ArrayList<>();
-        List<ChatDataModel> cutListData = null;
 
-        // 将数组的每个区段分配到不同的线程处理
-        for (int i = 0; i < threadNum; i++) {
-            if (dataSize < (i + 1)) continue;
+        // 根据批次数遍历数据
+        for (int i = 0; i < batchCount; i++) {
+            int start = i * batchSize;
+            int end = Math.min(start + batchSize, dataSize);
 
-            cutListData = (i == threadNum - 1) ? secretChatDataList.subList(i * chunkSize, dataSize)
-                    : secretChatDataList.subList(i * chunkSize, (i + 1) * chunkSize);
+            // 批次数据
+            List<ChatDataModel> batchData = chatDataList.subList(start, end);
+            log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
-            // 线程异常解密数据
-            futureList.add(chatDataDecryptTask.handle(sdk, cutListData));
+            Future<List<ChatDataModel>> future = taskExecutor.submit(() -> {
+                log.info("线程 [{}] 执行获取群详情...", Thread.currentThread().getName());
+                return batchData.stream().map(o -> this.decrypt(sdk, o)).collect(Collectors.toList());
+            });
+
+            futureList.add(future);
         }
 
         return futureList;
+    }
+
+    /**
+     * 解密会话内容
+     *
+     * @param sdk
+     * @param data
+     * @return
+     */
+    private ChatDataModel decrypt(Long sdk, ChatDataModel data) {
+        byte[] decoderData = Base64.getDecoder().decode(data.getEncryptRandomKey());
+
+        long newSlice = 0;
+        try {
+            // 密钥长度：2048 bit，密钥格式：PKCS#8，输出格式：PEM/Base64
+            // 密钥在线生成：http://web.chacuo.net/netrsakeypair
+            byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(chatProperties.getPrivateKey()));
+            String encryptKey = new String(decrypt, CommonConstants.CHARSET_UTF8);
+
+            if (StrUtil.isBlank(encryptKey)) {
+                log.debug("线程 [{}] 消息ID：{}，解密密钥为空", Thread.currentThread().getName(), data.getMsgid());
+                return null;
+            }
+
+            // 将获取到的数据进行解密操作
+            newSlice = Finance.NewSlice();
+            Finance.DecryptData(sdk, encryptKey, data.getEncryptChatMsg(), newSlice);
+        } catch (Exception e) {
+            log.error("线程 [{}] 解密 [{}] 消息内容失败！", Thread.currentThread().getName(), data.getMsgid(), e);
+            return null;
+        }
+
+        // 解密后的消息
+        ChatDataModel chatData = JSONUtil.toBean(Finance.GetContentFromSlice(newSlice), ChatDataModel.class);
+        chatData.setSeq(data.getSeq());
+        chatData.setPublickeyVer(data.getPublickeyVer());
+
+        return chatData;
     }
 
 
