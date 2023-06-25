@@ -39,7 +39,7 @@ public interface QychatConstants {
     /**
      * 获取客户群列表
      */
-    String GROUP_CHAT_LIST_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/groupchat/list";
+    String CHAT_ROOM_ID_URL = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/groupchat/list?access_token=";
 
     /**
      * 读取成员（内部联系人）

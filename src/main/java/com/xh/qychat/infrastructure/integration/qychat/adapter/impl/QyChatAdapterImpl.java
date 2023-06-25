@@ -25,9 +25,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -70,27 +68,32 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         // 原因：保证 token 有效性
         if (StrUtil.isNotBlank(accessToken) && keyExpire > 5) return accessToken;
 
-        JSONObject jsonObject = new JSONObject();
+        synchronized (this) {
+            accessToken = jedisPoolRepository.get(key);
+            if (StrUtil.isNotBlank(accessToken)) return accessToken;
 
-        jsonObject.putOpt("corpid", corpid);
-        jsonObject.putOpt("corpsecret", secret);
+            JSONObject jsonObject = new JSONObject();
 
-        try {
-            log.debug("获取 TOKEN ，请求地址：{}，请求参数：{}", QychatConstants.TOKEN_URL, jsonObject);
-            String data = HttpUtil.get(QychatConstants.TOKEN_URL, jsonObject);
-            log.debug("获取 TOKEN ，响应结果：{}", data);
+            jsonObject.putOpt("corpid", corpid);
+            jsonObject.putOpt("corpsecret", secret);
 
-            if (StrUtil.isBlank(data)) throw new RuntimeException("获取 TOKEN 异常");
+            try {
+                log.debug("获取 TOKEN ，请求地址：{}，请求参数：{}", QychatConstants.TOKEN_URL, jsonObject);
+                String data = HttpUtil.get(QychatConstants.TOKEN_URL, jsonObject);
+                log.debug("获取 TOKEN ，响应结果：{}", data);
 
-            jsonObject = JSONUtil.parseObj(data);
+                if (StrUtil.isBlank(data)) throw new RuntimeException("获取 TOKEN 异常");
 
-            accessToken = jsonObject.getStr("access_token");
-            if (StrUtil.isBlank(accessToken)) throw new RuntimeException("获取 TOKEN 异常");
+                jsonObject = JSONUtil.parseObj(data);
 
-            jedisPoolRepository.setex(key, accessToken, CacheConstants.DEFAULT_EXPIRE_TIME);
-        } catch (RuntimeException e) {
-            log.error("获取accessToken出错：" + e);
-            throw new RuntimeException("获取accessToken出错!");
+                accessToken = jsonObject.getStr("access_token");
+                if (StrUtil.isBlank(accessToken)) throw new RuntimeException("获取 TOKEN 异常");
+
+                jedisPoolRepository.setex(key, accessToken, CacheConstants.DEFAULT_EXPIRE_TIME);
+            } catch (RuntimeException e) {
+                log.error("获取accessToken出错：" + e);
+                throw new RuntimeException("获取accessToken出错!");
+            }
         }
 
         return accessToken;
@@ -159,9 +162,8 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             if (!chatList.isEmpty()) {
                 chatDataModel = chatList.get(chatList.size() - 1);
 
-                if (chatDataList != null) {
-                    chatDataList.addAll(chatList);
-                }
+                chatDataList.addAll(chatList);
+
                 seq = chatDataModel.getSeq() + 1;
                 // 递归
                 this.pageSecretChatData(seq, sdk, chatDataList);
@@ -318,6 +320,51 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             Finance.DestroySdk(sdk);
         }
 
+    }
+
+    @Override
+    public Set<String> listRoomId() {
+        JSONObject body = new JSONObject();
+
+        body.putOpt("status_filter", 0);// 客户群跟进状态过滤。默认为0
+        body.putOpt("limit", 1000);// 分页，预期请求的数据量，取值范围 1 ~ 1000
+
+        return this.listRoomId(body, new HashSet<>());
+    }
+
+    private Set<String> listRoomId(JSONObject bodyObject, Set<String> roomIds) {
+        String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
+        String uri = QychatConstants.CHAT_ROOM_ID_URL + accessToken;
+
+        JSONObject jsonObject = null;
+        try {
+            log.info("获取客户群ID列表，请求地址：{}，请求参数：{}", uri, bodyObject);
+            String result = HttpUtil.post(uri, bodyObject.toString());
+            log.info("获取客户群详情，响应结果：{}", result);
+
+            jsonObject = JSONUtil.toBean(result, JSONObject.class);
+        } catch (Exception e) {
+            log.error("获取客户群列表异常", e);
+            throw new RuntimeException("获取客户群列表异常", e);
+        }
+
+        if (jsonObject.getInt("errcode") != 0) throw new RuntimeException("获取客户群详情失败，异常码：" + jsonObject.getStr("errmsg"));
+
+        List<JSONObject> groupChatList = jsonObject.getBeanList("group_chat_list", JSONObject.class);
+        Set<String> chatIds = groupChatList.stream().map(o -> o.getStr("chat_id")).collect(Collectors.toSet());
+
+        if (chatIds != null && chatIds.size() > 0) {
+            roomIds.addAll(chatIds);
+        }
+
+        // 分页游标，下次请求时填写以获取之后分页的记录。如果该字段返回空则表示已没有更多数据
+        String nextCursor = jsonObject.getStr("next_cursor");
+        if (StrUtil.isNotBlank(nextCursor)) {
+            bodyObject.putOpt("cursor", nextCursor);
+            this.listRoomId(bodyObject, roomIds);
+        }
+
+        return roomIds;
     }
 
     @Override

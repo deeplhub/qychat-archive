@@ -6,6 +6,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author H.Yang
@@ -30,6 +31,18 @@ public interface QyChatAdapter {
      * @return
      */
     void download(String sdkfileid, String fileName);
+
+    /**
+     * 获取客户群列表
+     * <p>
+     * 该接口用于获取配置过客户群管理的客户群列表。
+     * ss
+     * <p>
+     * https://developer.work.weixin.qq.com/document/path/92120
+     *
+     * @return
+     */
+    Set<String> listRoomId();
 
     /**
      * 获取群详情

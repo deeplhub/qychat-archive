@@ -1,7 +1,8 @@
 package com.xh.qychat.test.domain.task;
 
+import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.task.service.TaskDomainService;
-import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
+import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,9 +25,6 @@ public class TaskDomainServiceTest {
 
     @Resource
     private TaskDomainService taskDomainService;
-    @Resource
-    private QyChatAdapter qychatAdapter;
-
 
     @Test
     public void listChatRoomDetail() {
@@ -34,6 +33,9 @@ public class TaskDomainServiceTest {
         roomids.add("wrgQjpQAAAaFYrQK4kXgqebXxe-xH01w");
         roomids.add("wrgQjpQAAAAHkfoGc8g-iXpb6-6m_S_A");
 
-        taskDomainService.listChatRoomDetail(roomids);
+        List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomids);
+
+        log.info("chatroom list:{}", JSONUtil.toJsonStr(list));
+
     }
 }

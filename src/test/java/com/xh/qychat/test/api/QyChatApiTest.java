@@ -76,6 +76,13 @@ public class QyChatApiTest {
         qychatAdapter.getPersonnelDetail("wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q");
     }
 
+    @Test
+    public void listRoomId() {
+
+        qychatAdapter.listRoomId();
+
+    }
+
     public static void main(String[] args) {
         String corpid = "wwb55a50126edc83d2";
         String token = "2JJYzvrzaZ2Kcqyh4";

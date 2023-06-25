@@ -48,6 +48,11 @@ public class ChatRoomModel extends ResponseModel {
      */
     private List<RoomMemberModel> memberList;
 
+    /**
+     * 群管理员列表
+     */
+    private List<AdminRoomMemberModel> adminList;
+
 
     @Data
     public class RoomMemberModel {
@@ -93,4 +98,10 @@ public class ChatRoomModel extends ResponseModel {
          */
         private String name;
     }
+
+    @Data
+    public class AdminRoomMemberModel {
+        private String userid;
+    }
+
 }
