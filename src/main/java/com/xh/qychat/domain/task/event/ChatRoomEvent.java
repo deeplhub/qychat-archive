@@ -90,7 +90,6 @@ public class ChatRoomEvent {
             List<String> batchData = roomids.subList(start, end);
             log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
-
             Future<List<ChatRoomModel>> future = taskExecutor.submit(() -> {
                 List<ChatRoomModel> roomModels = batchData.stream().map(roomid -> qychatAdapter.getChatRoomDetail(roomid)).collect(Collectors.toList());
                 log.info("线程 [{}] 执行获取群详情完成.", Thread.currentThread().getName());

@@ -1,6 +1,5 @@
 package com.xh.qychat.domain.qychat.repository.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomEntity;
 import com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMapper;
@@ -23,11 +22,15 @@ public class ChatRoomServiceImpl extends ServiceImpl<ChatRoomMapper, ChatRoomEnt
 
     @Override
     public List<ChatRoomEntity> listByChatId(Set<String> chatIds) {
-        QueryWrapper<ChatRoomEntity> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.lambda().select(ChatRoomEntity::getId, ChatRoomEntity::getChatId, ChatRoomEntity::getSign);
-        queryWrapper.lambda().in(ChatRoomEntity::getChatId, chatIds);
+//        QueryWrapper<ChatRoomEntity> queryWrapper = new QueryWrapper<>();
+//
+//        queryWrapper.lambda().select(ChatRoomEntity::getId, ChatRoomEntity::getChatId, ChatRoomEntity::getSign);
+//        queryWrapper.lambda().in(ChatRoomEntity::getChatId, chatIds);
+//
+//        return super.list(queryWrapper);
 
-        return super.list(queryWrapper);
+        // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
+        return super.baseMapper.listByChatId(chatIds);
     }
 }

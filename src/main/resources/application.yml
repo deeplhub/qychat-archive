@@ -16,6 +16,7 @@ spring:
 mybatis-plus:
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.xh.**.model.**.*
+  mapper-locations:  classpath:mappers/*Mapper.xml
 
 redis:
   model: standalone
