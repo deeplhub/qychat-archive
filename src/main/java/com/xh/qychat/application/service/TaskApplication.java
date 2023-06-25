@@ -8,7 +8,17 @@ import com.xh.qychat.infrastructure.common.model.Result;
  */
 public interface TaskApplication {
 
+    /**
+     * 拉取聊天数据
+     *
+     * @return
+     */
     Result pullChatData();
 
+    /**
+     * 拉取群详情
+     *
+     * @return
+     */
     Result pullChatRoom();
 }

@@ -59,4 +59,5 @@ public class ChatRoomDomainTest {
         System.out.println();
 
     }
+
 }

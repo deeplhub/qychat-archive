@@ -1,9 +1,8 @@
 package com.xh.qychat.domain.qychat.repository.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
-
-import java.util.Set;
 
 public interface MessageContentService extends IService<MessageContentEntity> {
 
@@ -12,5 +11,6 @@ public interface MessageContentService extends IService<MessageContentEntity> {
      */
     Long getMaxSeq();
 
-    Set<String> listRoomIdGoupByRoomId();
+    Page<String> pageListRoomIdGoupByRoomId(Integer pageNum, Integer limit);
+
 }

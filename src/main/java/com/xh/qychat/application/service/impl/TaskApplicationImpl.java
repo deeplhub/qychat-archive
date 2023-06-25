@@ -1,5 +1,6 @@
 package com.xh.qychat.application.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
@@ -14,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author H.Yang
@@ -44,13 +45,25 @@ public class TaskApplicationImpl implements TaskApplication {
 
     @Override
     public Result pullChatRoom() {
-        // TODO 数据量大了需要分页
-        Set<String> roomIds = messageContentDomain.listRoomIdGoupByRoomId();
-
-        List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomIds);
-
-        boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(new ChatRoom(list));
+        boolean isSuccess = this.recursionRoomId(1, 100);
         return ResponseEvent.reply(isSuccess);
     }
 
+    public boolean recursionRoomId(Integer pageNum, Integer limit) {
+        Page<String> page = messageContentDomain.pageListRoomIdGoupByRoomId(pageNum, limit);
+
+        List<String> records = page.getRecords();
+        if (!records.isEmpty()) {
+            List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
+
+            boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(new ChatRoom(list));
+            if (!isSuccess) {
+                throw new RuntimeException("save chat room fail");
+            }
+
+            this.recursionRoomId(pageNum, limit);
+        }
+
+        return true;
+    }
 }

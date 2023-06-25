@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author H.Yang
@@ -38,9 +37,4 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
         return super.saveBatch(entityList, 1000);
     }
 
-    @Override
-    public Set<String> listRoomIdGoupByRoomId() {
-
-        return super.listRoomIdGoupByRoomId();
-    }
 }

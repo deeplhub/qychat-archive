@@ -1,8 +1,7 @@
 package com.xh.qychat.domain.qychat.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.domain.qychat.model.MessageContent;
-
-import java.util.Set;
 
 /**
  * @author H.Yang
@@ -20,7 +19,10 @@ public interface MessageContentDomain {
     /**
      * 获取所有群ID
      *
+     * @param pageNum
+     * @param limit
      * @return
      */
-    Set<String> listRoomIdGoupByRoomId();
+    Page<String> pageListRoomIdGoupByRoomId(Integer pageNum, Integer limit);
+
 }
