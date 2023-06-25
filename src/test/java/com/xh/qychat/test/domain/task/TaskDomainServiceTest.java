@@ -29,9 +29,7 @@ public class TaskDomainServiceTest {
     @Test
     public void listChatRoomDetail() {
         Set<String> roomids = new HashSet<>();
-        roomids.add("wrgQjpQAAA19wAonp7c_ys_7m0HsWjXw");
-        roomids.add("wrgQjpQAAAaFYrQK4kXgqebXxe-xH01w");
-        roomids.add("wrgQjpQAAAAHkfoGc8g-iXpb6-6m_S_A");
+        roomids.add("wrgQjpQAAAbuqJrTx96r1Z9W35Y0Qihg");
 
         List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomids);
 

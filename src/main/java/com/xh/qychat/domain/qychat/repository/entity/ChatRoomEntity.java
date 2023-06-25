@@ -3,10 +3,9 @@ package com.xh.qychat.domain.qychat.repository.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * <p>
@@ -45,22 +44,12 @@ public class ChatRoomEntity {
     private String owner;
 
     /**
-     * 客户ID
+     * 群信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=群ID+群名称+群公告+群主ID
      */
-    private Long customerId;
-
-    /**
-     * 客户名称
-     */
-    private String customerName;
+    private String sign;
 
     /**
      * 群创建时间
-     */
-    private Date groupCreateTime;
-
-    /**
-     * 创建时间
      */
     private Date createTime;
 
@@ -68,22 +57,4 @@ public class ChatRoomEntity {
      * 更新时间
      */
     private Date updateTime;
-
-
-    public String getVerify() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.isEmpty(chatId)).append("|");
-        sb.append(this.isEmpty(name)).append("|");
-        sb.append(this.isEmpty(notice)).append("|");
-        sb.append(this.isEmpty(owner)).append("|");
-
-        return sb.toString().replace(" ", "");
-    }
-
-    private String isEmpty(Object obj) {
-        if (obj != null) {
-            return obj + "";
-        }
-        return "";
-    }
 }

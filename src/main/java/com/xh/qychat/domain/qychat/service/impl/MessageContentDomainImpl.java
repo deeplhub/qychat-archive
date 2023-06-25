@@ -4,12 +4,13 @@ import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
-import com.xh.qychat.domain.qychat.service.MessageContentDomainService;
+import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author H.Yang
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class MessageContentDomainServiceImpl extends MessageContentServiceImpl implements MessageContentDomainService {
+public class MessageContentDomainImpl extends MessageContentServiceImpl implements MessageContentDomain {
 
 
     @Override
@@ -29,11 +30,17 @@ public class MessageContentDomainServiceImpl extends MessageContentServiceImpl i
     @Override
     @Transactional
     public boolean saveBath(MessageContent messageContent) {
-        List<MessageContentEntity> entity = MessageContentFactory.createEntity(messageContent);
-        if (entity.isEmpty()) {
+        List<MessageContentEntity> entityList = MessageContentFactory.createEntity(messageContent);
+        if (entityList.isEmpty()) {
             log.warn("保存消息内容出现错误，数据为空");
             return true;
         }
-        return super.saveBatch(entity, 1000);
+        return super.saveBatch(entityList, 1000);
+    }
+
+    @Override
+    public Set<String> listRoomIdGoupByRoomId() {
+
+        return super.listRoomIdGoupByRoomId();
     }
 }

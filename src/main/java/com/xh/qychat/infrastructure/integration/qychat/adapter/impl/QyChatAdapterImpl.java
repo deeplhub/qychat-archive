@@ -395,6 +395,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         }
 
         room = room.getGroupChat();
+        room.setSign(room.getSign());
 
         if (StrUtil.isBlank(room.getChatId())) {
             log.warn(room.getChatId() + " - 未知的客户群详情");

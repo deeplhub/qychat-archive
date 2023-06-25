@@ -1,5 +1,7 @@
 package com.xh.qychat.infrastructure.integration.qychat.model;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -37,6 +39,11 @@ public class ChatRoomModel extends ResponseModel {
      * 群的创建时间
      */
     private Long createTime;
+
+    /**
+     * 此属性字段是应用扩展字段，非返回值
+     */
+    private String sign;
 
     /**
      * 获取客户群详情
@@ -102,6 +109,24 @@ public class ChatRoomModel extends ResponseModel {
     @Data
     public class AdminRoomMemberModel {
         private String userid;
+    }
+
+    public String getSign() {
+        String verify = this.getVerify();
+        return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
+    }
+
+    public String getVerify() {
+        String sb = this.isEmpty(this.chatId) +
+                this.isEmpty(this.name) +
+                this.isEmpty(this.notice) +
+                this.isEmpty(this.owner);
+
+        return sb.replace(" ", "");
+    }
+
+    private String isEmpty(Object obj) {
+        return (obj != null) ? obj + "" : "";
     }
 
 }

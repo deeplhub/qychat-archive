@@ -9,4 +9,6 @@ import com.xh.qychat.infrastructure.common.model.Result;
 public interface TaskApplication {
 
     Result pullChatData();
+
+    Result pullChatRoom();
 }
