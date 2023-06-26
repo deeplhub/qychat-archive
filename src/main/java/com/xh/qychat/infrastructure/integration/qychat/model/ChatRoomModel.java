@@ -63,8 +63,9 @@ public class ChatRoomModel extends ResponseModel {
 
     @Data
     public class RoomMemberModel {
+
         /**
-         * 群成员id
+         * 成员ID
          */
         private String userid;
 
@@ -78,25 +79,7 @@ public class ChatRoomModel extends ResponseModel {
         /**
          * 入群时间
          */
-        private String joinTime;
-
-        /**
-         * 入群方式。
-         * 1 - 由群成员邀请入群（直接邀请入群）
-         * 2 - 由群成员邀请入群（通过邀请链接入群）
-         * 3 - 通过扫描群二维码入群
-         */
-        private Integer joinScene;
-
-        /**
-         * 邀请者。目前仅当是由本企业内部成员邀请入群时会返回该值
-         */
-        private String invitor;
-
-        /**
-         * 在群里的昵称
-         */
-        private String groupNickname;
+        private Integer joinTime;
 
         /**
          * 名字。仅当 need_name = 1 时返回
@@ -104,6 +87,31 @@ public class ChatRoomModel extends ResponseModel {
          * 如果是企业微信联系人，则返回其设置对外展示的别名或实名
          */
         private String name;
+
+        /**
+         * 此属性字段是应用扩展字段，非返回值
+         * <p>
+         * 用户信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=成员ID+入群时间+入群方式+邀请者+昵称+名字
+         */
+        private String sign;
+
+        public String getSign() {
+            String verify = this.getVerify();
+            return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
+        }
+
+        public String getVerify() {
+            String sb = this.isEmpty(this.userid) +
+                    this.isEmpty(this.type) +
+                    this.isEmpty(this.joinTime) +
+                    this.isEmpty(this.name);
+
+            return sb.replace(" ", "");
+        }
+
+        private String isEmpty(Object obj) {
+            return (obj != null) ? obj + "" : "";
+        }
     }
 
     @Data

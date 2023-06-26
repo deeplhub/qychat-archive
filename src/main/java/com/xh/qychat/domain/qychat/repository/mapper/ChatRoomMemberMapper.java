@@ -1,8 +1,7 @@
 package com.xh.qychat.domain.qychat.repository.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xh.qychat.domain.qychat.model.Member;
-import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
+import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,14 +10,14 @@ import java.util.Set;
 
 /**
  * <p>
- * 企业微信成员信息表
+ * 微信群与用户关系 Mapper 接口
  * </p>
  *
  * @author H.Yang
  * @since 2023-04-19
  */
 @Mapper
-public interface MemberMapper extends BaseMapper<MemberEntity> {
+public interface ChatRoomMemberMapper extends BaseMapper<ChatRoomMemberEntity> {
 
-    List<Member> listByCharId(@Param("charIds") Set<String> charIds);
+    List<ChatRoomMemberEntity> listByChatId(@Param("chatIds") Set<String> chatIds);
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMemberMapper">
+
+
+    <select id="listByChatId" resultType="com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity">
+        SELECT a.chat_id, a.user_id FROM qychat_chat_room_member a
+        INNER JOIN
+        <foreach collection="chatIds" item="chatId" separator=" union all " open="(" close=") b">
+            SELECT #{chatId} AS room_id FROM dual
+        </foreach>
+        ON b.room_id=a.chat_id
+    </select>
+
+</mapper>

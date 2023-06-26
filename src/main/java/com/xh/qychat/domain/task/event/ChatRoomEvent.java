@@ -7,9 +7,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -50,11 +48,11 @@ public class ChatRoomEvent {
         return this;
     }
 
-    public List<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
+    public Set<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
         long beginTime = System.currentTimeMillis();
         List<Future<List<ChatRoomModel>>> futureList = exec(new ArrayList<>(roomids));
 
-        List<ChatRoomModel> listData = new ArrayList<>(roomids.size());
+        Set<ChatRoomModel> listData = new HashSet<>(roomids.size());
         try {
             for (Future<List<ChatRoomModel>> future : futureList) {
                 listData.addAll(future.get());
@@ -91,7 +89,7 @@ public class ChatRoomEvent {
             log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
             Future<List<ChatRoomModel>> future = taskExecutor.submit(() -> {
-                List<ChatRoomModel> roomModels = batchData.stream().map(roomid -> qychatAdapter.getChatRoomDetail(roomid)).collect(Collectors.toList());
+                List<ChatRoomModel> roomModels = batchData.stream().map(roomid -> qychatAdapter.getChatRoomDetail(roomid)).filter(Objects::nonNull).collect(Collectors.toList());
                 log.info("线程 [{}] 执行获取群详情完成.", Thread.currentThread().getName());
                 return roomModels;
             });

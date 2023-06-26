@@ -389,10 +389,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         ChatRoomModel room = JSONUtil.toBean(result, ChatRoomModel.class);
 
-        if (room.getErrcode() != 0) {
-            log.warn("获取客户群详情，解析异常 errcode：" + room.getErrmsg());
-            return null;
-        }
+        if (room.getErrcode() != 0) return null;
 
         room = room.getGroupChat();
         room.setSign(room.getSign());
@@ -474,4 +471,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         return customerModel;
     }
 
+
+    public static void main(String[] args) {
+        String json = "{\"errcode\":0,\"errmsg\":\"ok\",\"group_chat\":{\"chat_id\":\"wrgQjpQAAA-sqkjJyJJyz8sTyblzOsFA\",\"name\":\"51IDC-VIP|上海脉创\",\"create_time\":1686204402,\"member_list\":[{\"userid\":\"Dou\",\"type\":1,\"join_time\":1686210420,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"豆家旺\"},{\"userid\":\"AnChangZhiBan2\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"锐速值班2\"},{\"userid\":\"AnChangZhiBan1\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"锐速值班1\"},{\"userid\":\"RiMuTuYuan\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"孙超\"},{\"userid\":\"wmgQjpQAAApScN_eJTRGnk7ZVbSrzVKA\",\"type\":2,\"join_time\":1686204501,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"biubiubiu\"},{\"userid\":\"wmgQjpQAAA5XLsmmmXGd_YH5oAklhTww\",\"type\":2,\"join_time\":1686204439,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"a-\uD83D\uDC30\uD83C\uDF38Amy丹\uD83C\uDF38\"},{\"userid\":\"wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q\",\"type\":2,\"join_time\":1686296504,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"木糖纯\"},{\"userid\":\"wmgQjpQAAAI9EVu-ODVoypi889rT4YUQ\",\"type\":2,\"join_time\":1686204823,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"沈励阳\",\"name\":\"GINTAMA\"}],\"admin_list\":{},\"owner\":\"RiMuTuYuan\"}}";
+
+        ChatRoomModel room = JSONUtil.toBean(json, ChatRoomModel.class);
+        System.out.println(room);
+    }
 }

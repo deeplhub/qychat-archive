@@ -28,7 +28,7 @@ public class ChatRoomDomainImpl extends ChatRoomServiceImpl implements ChatRoomD
         List<ChatRoomEntity> chatRoomList = super.listByChatId(chatIds);
         List<ChatRoomEntity> entityList = ChatRoomFactory.createOrModifyEntity(chatRoom, chatRoomList);
         if (entityList.isEmpty()) {
-            log.warn("保存群信息出现错误，数据为空");
+            log.warn("批量保存/更新群信息时数据为空");
             return true;
         }
 

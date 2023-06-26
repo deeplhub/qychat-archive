@@ -30,7 +30,7 @@ public class TaskDomainServiceImpl implements TaskDomainService {
     }
 
     @Override
-    public List<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
+    public Set<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
         return ChatRoomEvent.getTaskExecutor().setChatAdapter(qychatAdapter).listChatRoomDetail(roomids);
     }
 }

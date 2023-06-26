@@ -26,5 +26,5 @@ public interface TaskDomainService {
      * @param roomids 群ID列表
      * @return
      */
-    List<ChatRoomModel> listChatRoomDetail(Set<String> roomids);
+    Set<ChatRoomModel> listChatRoomDetail(Set<String> roomids);
 }

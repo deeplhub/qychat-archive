@@ -3,11 +3,10 @@ package com.xh.qychat.domain.qychat.repository.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 /**
  * <p>
@@ -24,7 +23,7 @@ public class MemberEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 成员ID
@@ -90,6 +89,11 @@ public class MemberEntity implements Serializable {
      * 该成员对此客户备注的手机号码
      */
     private String followRemarkMobiles;
+
+    /**
+     * 用户信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=成员ID+入群时间+入群方式+邀请者+昵称+名字
+     */
+    private String sign;
 
     /**
      * 创建时间

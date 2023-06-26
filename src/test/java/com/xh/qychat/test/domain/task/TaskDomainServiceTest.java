@@ -1,8 +1,6 @@
 package com.xh.qychat.test.domain.task;
 
-import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.task.service.TaskDomainService;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,9 +28,9 @@ public class TaskDomainServiceTest {
         Set<String> roomids = new HashSet<>();
         roomids.add("wrgQjpQAAAbuqJrTx96r1Z9W35Y0Qihg");
 
-        List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomids);
-
-        log.info("chatroom list:{}", JSONUtil.toJsonStr(list));
+//        List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomids);
+//
+//        log.info("chatroom list:{}", JSONUtil.toJsonStr(list));
 
     }
 }

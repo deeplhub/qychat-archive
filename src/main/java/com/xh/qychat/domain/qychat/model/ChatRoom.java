@@ -4,7 +4,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author H.Yang
@@ -14,9 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ChatRoom {
 
-    private List<ChatRoomModel> chatRoomModelList;
+    private Set<ChatRoomModel> chatRoomModelList;
 
-    public ChatRoom(List<ChatRoomModel> chatRoomModelList) {
+    public ChatRoom(Set<ChatRoomModel> chatRoomModelList) {
         this.chatRoomModelList = chatRoomModelList;
     }
 }

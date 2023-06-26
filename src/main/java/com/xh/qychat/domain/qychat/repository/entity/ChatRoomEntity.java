@@ -21,7 +21,7 @@ public class ChatRoomEntity {
 
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 群ID

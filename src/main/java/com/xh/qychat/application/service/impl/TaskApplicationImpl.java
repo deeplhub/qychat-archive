@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
+import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
+import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import com.xh.qychat.domain.task.service.TaskDomainService;
 import com.xh.qychat.infrastructure.common.model.Result;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author H.Yang
@@ -32,6 +35,8 @@ public class TaskApplicationImpl implements TaskApplication {
     private MessageContentDomain messageContentDomain;
     @Resource
     private ChatRoomDomain chatRoomDomain;
+    @Resource
+    private MemberDomain memberDomain;
 
 
     @Override
@@ -45,7 +50,7 @@ public class TaskApplicationImpl implements TaskApplication {
 
     @Override
     public Result pullChatRoom() {
-        boolean isSuccess = this.recursionRoomId(1, 100);
+        boolean isSuccess = this.recursionRoomId(1, 10);
         return ResponseEvent.reply(isSuccess);
     }
 
@@ -54,14 +59,18 @@ public class TaskApplicationImpl implements TaskApplication {
 
         List<String> records = page.getRecords();
         if (!records.isEmpty()) {
-            List<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
-
+            Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
+            if (list.size() == 0) {
+                return this.recursionRoomId(pageNum + 1, limit);
+            }
             boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(new ChatRoom(list));
             if (!isSuccess) {
                 throw new RuntimeException("save chat room fail");
             }
 
-            this.recursionRoomId(pageNum, limit);
+            memberDomain.saveOrUpdateBatch(new Member(list));
+
+            this.recursionRoomId(pageNum + 1, limit);
         }
 
         return true;
