@@ -26,4 +26,10 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> i
         // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
         return super.baseMapper.listByCharId(userIds);
     }
+
+    @Override
+    public List<MemberEntity> listByCharId(String chatId) {
+
+        return super.baseMapper.listEntityByCharId(chatId);
+    }
 }

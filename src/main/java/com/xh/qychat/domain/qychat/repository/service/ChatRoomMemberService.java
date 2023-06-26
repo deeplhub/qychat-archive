@@ -3,7 +3,6 @@ package com.xh.qychat.domain.qychat.repository.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,6 +15,5 @@ import java.util.Set;
  */
 public interface ChatRoomMemberService extends IService<ChatRoomMemberEntity> {
 
-    List<ChatRoomMemberEntity> listByChatId(Set<String> chatIds);
-
+    boolean dissolution(String chatId, Set<String> userIds);
 }

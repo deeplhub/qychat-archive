@@ -13,4 +13,10 @@
         ON c.chat_id=b.chat_id
 
     </select>
+    <select id="listEntityByCharId" resultType="com.xh.qychat.domain.qychat.repository.entity.MemberEntity">
+        SELECT b.chat_id, a.id AS memberId, a.user_id, a.sign
+        FROM qychat_member a
+        INNER JOIN qychat_chat_room_member b ON b.user_id=a.user_id
+        WHERE b.chat_id=#{charId}
+    </select>
 </mapper>

@@ -103,7 +103,6 @@ public class ChatRoomModel extends ResponseModel {
         public String getVerify() {
             String sb = this.isEmpty(this.userid) +
                     this.isEmpty(this.type) +
-                    this.isEmpty(this.joinTime) +
                     this.isEmpty(this.name);
 
             return sb.replace(" ", "");

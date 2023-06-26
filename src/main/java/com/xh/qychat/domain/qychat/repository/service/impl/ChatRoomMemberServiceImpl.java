@@ -1,12 +1,12 @@
 package com.xh.qychat.domain.qychat.repository.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMemberMapper;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
+import com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMemberMapper;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,8 +21,12 @@ import java.util.Set;
 public class ChatRoomMemberServiceImpl extends ServiceImpl<ChatRoomMemberMapper, ChatRoomMemberEntity> implements ChatRoomMemberService {
 
     @Override
-    public List<ChatRoomMemberEntity> listByChatId(Set<String> chatIds) {
-        // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
-        return super.baseMapper.listByChatId(chatIds);
+    public boolean dissolution(String chatId, Set<String> userIds) {
+        QueryWrapper<ChatRoomMemberEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().eq(ChatRoomMemberEntity::getChatId, chatId);
+        queryWrapper.lambda().notIn(ChatRoomMemberEntity::getUserId, userIds);
+
+        return super.remove(queryWrapper);
     }
 }

@@ -18,4 +18,6 @@ import java.util.Set;
 public interface MemberService extends IService<MemberEntity> {
 
     List<Member> listByCharId(Set<String> userIds);
+
+    List<MemberEntity> listByCharId(String chatId);
 }

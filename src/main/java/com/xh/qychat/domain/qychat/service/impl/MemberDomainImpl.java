@@ -1,14 +1,14 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xh.qychat.domain.qychat.model.Member;
-import com.xh.qychat.domain.qychat.model.factory.MemberFactory;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
 import com.xh.qychat.domain.qychat.repository.service.impl.MemberServiceImpl;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
+import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,51 +29,45 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
     @Override
     public boolean saveOrUpdateBatch(Member member) {
-        // TODO 这里只能一个群一个群的遍历，如果一次性处理会造成用户重复
-        Set<String> chatIds = member.listChatId();
-        List<Member> memberList = super.listByCharId(chatIds);
-        Set<MemberEntity> entityList = MemberFactory.getSingleton().createOrModifyEntity(member.getChatRoomModelList(), memberList);
-        if (entityList.isEmpty()) {
-            return true;
-        }
 
-        log.info("entityList : {}", JSONUtil.toJsonStr(entityList));
+        for (ChatRoomModel chatRoomModel : member.getChatRoomModelList()) {
+            String chatId = chatRoomModel.getChatId();
+            Set<ChatRoomMemberEntity> set = new HashSet<>();
+            Set<MemberEntity> memberEntitySet = new HashSet<>();
+            for (ChatRoomModel.RoomMemberModel roomMemberModel : chatRoomModel.getMemberList()) {
+                String userid = roomMemberModel.getUserid();
 
-        super.saveOrUpdateBatch(entityList, 1000);
+                QueryWrapper<MemberEntity> queryWrapper = new QueryWrapper<>();
+                queryWrapper.lambda().eq(MemberEntity::getUserId, userid);
 
-        Map<String, Set<String>> dbMap = chatRoomMemberService.listByChatId(chatIds)
-                .parallelStream().collect(Collectors.groupingBy(item -> item.getChatId(), Collectors.mapping(item -> item.getUserId(), Collectors.toSet())));
-        Map<String, Set<String>> map = MemberFactory.getSingleton().listChatRoomMemberTree();
+                MemberEntity entity = super.getOne(queryWrapper);
+                entity = (entity == null) ? new MemberEntity() : entity;
 
-        Set<ChatRoomMemberEntity> roomMemberList = new HashSet<>();
-        Map<String, Object> columnMap = new HashMap<>();
-        for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
-            String entryKey = entry.getKey();
-            boolean isEqual = CollUtil.isEqualList(entry.getValue(), dbMap.get(entryKey));
-
-            if (!isEqual) {
-                columnMap.put("chat_id", entryKey);
-
-                for (String userId : entry.getValue()) {
-                    ChatRoomMemberEntity entity = new ChatRoomMemberEntity();
-                    entity.setChatId(entryKey);
-                    entity.setUserId(userId);
-
-                    roomMemberList.add(entity);
+                if (roomMemberModel.getSign().equals(entity.getSign())) {
+                    continue;
                 }
 
+                entity.setUserId(roomMemberModel.getUserid());
+                entity.setName(roomMemberModel.getName());
+                entity.setType(roomMemberModel.getType());
+                entity.setSign(roomMemberModel.getSign());
+                entity.setCreateTime(DateUtil.date(roomMemberModel.getJoinTime()));
+
+                memberEntitySet.add(entity);
+
+                ChatRoomMemberEntity chatRoomMemberEntity = new ChatRoomMemberEntity();
+                chatRoomMemberEntity.setChatId(chatId);
+                chatRoomMemberEntity.setUserId(userid);
+
+                set.add(chatRoomMemberEntity);
             }
+
+            super.saveOrUpdateBatch(memberEntitySet, 1000);
+            chatRoomMemberService.dissolution(chatId, set.parallelStream().map(o -> o.getUserId()).collect(Collectors.toSet()));
+            chatRoomMemberService.saveBatch(set, 1000);
         }
 
-        if (columnMap.isEmpty()) {
-            return true;
-        }
 
-        log.info("columnMap : {}", JSONUtil.toJsonStr(columnMap));
-        log.info("roomMemberList : {}", JSONUtil.toJsonStr(roomMemberList));
-
-        chatRoomMemberService.removeByMap(columnMap);
-        return chatRoomMemberService.saveBatch(roomMemberList, 1000);
-
+        return true;
     }
 }

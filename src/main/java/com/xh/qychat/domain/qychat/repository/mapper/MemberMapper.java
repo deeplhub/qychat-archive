@@ -21,4 +21,6 @@ import java.util.Set;
 public interface MemberMapper extends BaseMapper<MemberEntity> {
 
     List<Member> listByCharId(@Param("charIds") Set<String> charIds);
+
+    List<MemberEntity> listEntityByCharId(String charId);
 }
