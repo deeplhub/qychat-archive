@@ -77,11 +77,6 @@ public class ChatRoomModel extends ResponseModel {
         private Integer type;
 
         /**
-         * 入群时间
-         */
-        private Integer joinTime;
-
-        /**
          * 名字。仅当 need_name = 1 时返回
          * 如果是微信用户，则返回其在微信中设置的名字
          * 如果是企业微信联系人，则返回其设置对外展示的别名或实名

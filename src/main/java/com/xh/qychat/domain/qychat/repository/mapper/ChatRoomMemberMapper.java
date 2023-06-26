@@ -3,10 +3,6 @@ package com.xh.qychat.domain.qychat.repository.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -19,5 +15,4 @@ import java.util.Set;
 @Mapper
 public interface ChatRoomMemberMapper extends BaseMapper<ChatRoomMemberEntity> {
 
-    List<ChatRoomMemberEntity> listByChatId(@Param("chatIds") Set<String> chatIds);
 }

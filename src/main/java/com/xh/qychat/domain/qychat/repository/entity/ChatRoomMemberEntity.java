@@ -1,7 +1,9 @@
 package com.xh.qychat.domain.qychat.repository.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>
@@ -12,6 +14,8 @@ import lombok.Data;
  * @since 2023-04-19
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("qychat_chat_room_member")
 public class ChatRoomMemberEntity {
 

@@ -2,21 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xh.qychat.domain.qychat.repository.mapper.MemberMapper">
 
-    <select id="listByCharId" resultType="com.xh.qychat.domain.qychat.model.Member">
-        SELECT b.chat_id, a.id AS memberId, a.user_id, a.sign
+    <select id="listByCharId" resultType="com.xh.qychat.domain.qychat.repository.entity.MemberEntity">
+        SELECT a.id, a.user_id, a.sign
         FROM qychat_member a
-        INNER JOIN qychat_chat_room_member b ON b.user_id=a.user_id
-        INNER JOIN
-        <foreach collection="charIds" item="charId" separator=" union all " open="(" close=") c">
-            SELECT #{charId} AS chat_id FROM dual
-        </foreach>
-        ON c.chat_id=b.chat_id
-
-    </select>
-    <select id="listEntityByCharId" resultType="com.xh.qychat.domain.qychat.repository.entity.MemberEntity">
-        SELECT b.chat_id, a.id AS memberId, a.user_id, a.sign
-        FROM qychat_member a
-        INNER JOIN qychat_chat_room_member b ON b.user_id=a.user_id
-        WHERE b.chat_id=#{charId}
+        INNER JOIN qychat_chat_room_member b ON b.user_id = a.user_id
+        WHERE b.chat_id = #{charId}
     </select>
 </mapper>

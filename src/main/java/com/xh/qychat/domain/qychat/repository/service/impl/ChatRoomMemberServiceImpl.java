@@ -29,4 +29,5 @@ public class ChatRoomMemberServiceImpl extends ServiceImpl<ChatRoomMemberMapper,
 
         return super.remove(queryWrapper);
     }
+
 }

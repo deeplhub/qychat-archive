@@ -1,13 +1,10 @@
 package com.xh.qychat.domain.qychat.repository.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -20,7 +17,5 @@ import java.util.Set;
 @Mapper
 public interface MemberMapper extends BaseMapper<MemberEntity> {
 
-    List<Member> listByCharId(@Param("charIds") Set<String> charIds);
-
-    List<MemberEntity> listEntityByCharId(String charId);
+    List<MemberEntity> listByCharId(String charId);
 }

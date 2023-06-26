@@ -1,14 +1,12 @@
 package com.xh.qychat.domain.qychat.repository.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.mapper.MemberMapper;
 import com.xh.qychat.domain.qychat.repository.service.MemberService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -22,14 +20,8 @@ import java.util.Set;
 public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> implements MemberService {
 
     @Override
-    public List<Member> listByCharId(Set<String> userIds) {
-        // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
-        return super.baseMapper.listByCharId(userIds);
-    }
-
-    @Override
     public List<MemberEntity> listByCharId(String chatId) {
 
-        return super.baseMapper.listEntityByCharId(chatId);
+        return super.baseMapper.listByCharId(chatId);
     }
 }

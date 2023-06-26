@@ -1,7 +1,7 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.xh.qychat.domain.qychat.model.ChatRoomTreeNodeModel;
 import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
@@ -11,6 +11,7 @@ import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -51,7 +52,6 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
                 entity.setName(roomMemberModel.getName());
                 entity.setType(roomMemberModel.getType());
                 entity.setSign(roomMemberModel.getSign());
-                entity.setCreateTime(DateUtil.date(roomMemberModel.getJoinTime()));
 
                 memberEntitySet.add(entity);
 
@@ -69,5 +69,50 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean saveOrUpdateBatch2(List<ChatRoomTreeNodeModel> treeNodeModel) {
+        Set<MemberEntity> memberSet = new HashSet<>();
+        Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
+
+        for (ChatRoomTreeNodeModel treeNode : treeNodeModel) {
+            String chatId = treeNode.getChatId();
+
+            List<MemberEntity> memberList = super.listByCharId(chatId);
+            List<MemberEntity> memberEntityList = treeNode.getChildren().parallelStream().map(o -> this.getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
+
+            memberSet.addAll(memberEntityList);
+
+            chatRoomMemberSet.addAll(memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(chatId, o.getUserId())).collect(Collectors.toSet()));
+        }
+
+        super.saveOrUpdateBatch(memberSet, 1000);
+        chatRoomMemberService.saveBatch(chatRoomMemberSet, 1000);
+
+
+//        Map<String, Set<String>> collect = chatRoomMemberSet.parallelStream().collect(Collectors.groupingBy(ChatRoomMemberEntity::getChatId, Collectors.mapping(ChatRoomMemberEntity::getUserId, Collectors.toSet())));
+//        collect.entrySet().parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getKey(), item.getValue()));
+
+        treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNodeModel::getUserid).collect(Collectors.toSet())));
+        return true;
+    }
+
+    private MemberEntity getMemberEntity(ChatRoomTreeNodeModel treeNodeModel, List<MemberEntity> memberList) {
+        Map<String, MemberEntity> entityMap = memberList.parallelStream().collect(Collectors.toMap(MemberEntity::getUserId, o -> o, (k1, k2) -> k2));
+
+        MemberEntity entity = entityMap.get(treeNodeModel.getUserid());
+        entity = (entity == null) ? new MemberEntity() : entity;
+
+        if (treeNodeModel.getSign().equals(entity.getSign())) {
+            return null;
+        }
+        entity.setUserId(treeNodeModel.getUserid());
+        entity.setName(treeNodeModel.getName());
+        entity.setType(treeNodeModel.getType());
+        entity.setSign(treeNodeModel.getSign());
+
+        return entity;
     }
 }

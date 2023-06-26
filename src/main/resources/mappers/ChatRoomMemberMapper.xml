@@ -3,13 +3,4 @@
 <mapper namespace="com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMemberMapper">
 
 
-    <select id="listByChatId" resultType="com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity">
-        SELECT a.chat_id, a.user_id FROM qychat_chat_room_member a
-        INNER JOIN
-        <foreach collection="chatIds" item="chatId" separator=" union all " open="(" close=") b">
-            SELECT #{chatId} AS room_id FROM dual
-        </foreach>
-        ON b.room_id=a.chat_id
-    </select>
-
 </mapper>

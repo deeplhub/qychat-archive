@@ -1,6 +1,9 @@
 package com.xh.qychat.domain.qychat.service;
 
+import com.xh.qychat.domain.qychat.model.ChatRoomTreeNodeModel;
 import com.xh.qychat.domain.qychat.model.Member;
+
+import java.util.List;
 
 /**
  * @author H.Yang
@@ -9,4 +12,6 @@ import com.xh.qychat.domain.qychat.model.Member;
 public interface MemberDomain {
 
     boolean saveOrUpdateBatch(Member member);
+
+    boolean saveOrUpdateBatch2(List<ChatRoomTreeNodeModel> treeNodeModel);
 }

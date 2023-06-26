@@ -1,6 +1,5 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
-import cn.hutool.core.date.DateUtil;
 import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
@@ -65,7 +64,6 @@ public class MemberFactory {
         entity.setName(roomMemberModel.getName());
         entity.setType(roomMemberModel.getType());
         entity.setSign(roomMemberModel.getSign());
-        entity.setCreateTime(DateUtil.date(roomMemberModel.getJoinTime()));
         return entity;
     }
 

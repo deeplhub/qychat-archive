@@ -1,11 +1,9 @@
 package com.xh.qychat.domain.qychat.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -16,8 +14,6 @@ import java.util.Set;
  * @since 2023-04-19
  */
 public interface MemberService extends IService<MemberEntity> {
-
-    List<Member> listByCharId(Set<String> userIds);
 
     List<MemberEntity> listByCharId(String chatId);
 }

@@ -1,12 +1,14 @@
 package com.xh.qychat.domain.qychat.model;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +59,6 @@ public class Member {
                 member.setType(item.getType());
                 member.setName(item.getName());
                 member.setSign(item.getSign());
-                member.setCreateTime(DateUtil.date(item.getJoinTime()));
 
                 memberSet.add(member);
             });
