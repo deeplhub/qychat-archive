@@ -116,6 +116,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     public boolean saveOrUpdate(Member member) {
         MemberEntity entity = super.getByUserId(member.getUserId());
         if (entity == null) throw new RuntimeException("数据不存在");
+
         entity = MemberFactory.getSingleton().create(entity, member);
 
         return super.saveOrUpdate(entity);

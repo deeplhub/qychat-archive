@@ -17,11 +17,14 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author H.Yang
@@ -41,18 +44,66 @@ public class TaskApplicationImpl implements TaskApplication {
 
 
     @Override
+    @Transactional
     public Result pullChatData() {
+        // TODO 最大序列未来可以选择从缓存中读取
         Long maxSeq = messageContentDomain.getMaxSeq();
         List<ChatDataModel> dataModelList = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(new MessageContent(dataModelList));
+        isSuccess = this.pullChatRoom(dataModelList);
+
         return ResponseEvent.reply(isSuccess);
     }
 
+    private boolean pullChatRoom(List<ChatDataModel> dataModelList) {
+        Set<String> roomIds = dataModelList.parallelStream().filter(Objects::nonNull).map(o -> o.getRoomid()).collect(Collectors.toSet());
+
+        Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(roomIds);
+        if (list.isEmpty()) return true;
+
+        boolean isSuccess = this.saveOrUpdateChatRoom(list);
+
+        // TODO 后期建议使用MQ异步调用
+        this.saveOrUpdateMember(list);
+
+        return isSuccess;
+    }
+
     @Override
+    @Transactional
     public Result pullChatRoom() {
         boolean isSuccess = this.listChatRoom(1, 100);
         return ResponseEvent.reply(isSuccess);
+    }
+
+    public boolean listChatRoom(Integer pageNum, Integer limit) {
+        Page<String> page = messageContentDomain.pageListRoomIdGoupByRoomId(pageNum, limit);
+
+        List<String> records = page.getRecords();
+        if (!records.isEmpty()) {
+            Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
+            if (list.isEmpty()) return this.listChatRoom(pageNum + 1, limit);
+
+            this.saveOrUpdateChatRoom(list);
+
+            // TODO 后期建议使用MQ异步调用
+            this.saveOrUpdateMember(list);
+
+            this.listChatRoom(pageNum + 1, limit);
+        }
+
+        return true;
+    }
+
+    private boolean saveOrUpdateChatRoom(Set<ChatRoomModel> list) {
+        boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(ChatRoom.create(list));
+        if (!isSuccess) throw new RuntimeException("save chat room fail");
+        return isSuccess;
+    }
+
+    private void saveOrUpdateMember(Set<ChatRoomModel> list) {
+        memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(list));
     }
 
     @Override
@@ -76,31 +127,4 @@ public class TaskApplicationImpl implements TaskApplication {
         return ResponseEvent.reply(isSuccess);
     }
 
-    public boolean listChatRoom(Integer pageNum, Integer limit) {
-        Page<String> page = messageContentDomain.pageListRoomIdGoupByRoomId(pageNum, limit);
-
-        List<String> records = page.getRecords();
-        if (!records.isEmpty()) {
-            Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
-            if (list.isEmpty()) return this.listChatRoom(pageNum + 1, limit);
-
-            this.saveOrUpdateChatRoom(list);
-
-            // TODO 后期建议使用MQ异步调用
-            this.saveOrUpdateMember(list);
-
-            this.listChatRoom(pageNum + 1, limit);
-        }
-
-        return true;
-    }
-
-    private void saveOrUpdateChatRoom(Set<ChatRoomModel> list) {
-        boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(ChatRoom.create(list));
-        if (!isSuccess) throw new RuntimeException("save chat room fail");
-    }
-
-    private void saveOrUpdateMember(Set<ChatRoomModel> list) {
-        memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(list));
-    }
 }

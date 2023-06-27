@@ -17,6 +17,8 @@ public interface TaskApplication {
 
     /**
      * 拉取群详情
+     * <p>
+     * 包含群下的所有成员的基本信息
      *
      * @return
      */
@@ -24,6 +26,8 @@ public interface TaskApplication {
 
     /**
      * 拉取群详情
+     * <p>
+     * 包含群下的所有成员的基本信息
      *
      * @param roomId 群ID
      * @return
