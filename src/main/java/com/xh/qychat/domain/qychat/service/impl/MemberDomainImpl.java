@@ -8,6 +8,7 @@ import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
 import com.xh.qychat.domain.qychat.repository.service.impl.MemberServiceImpl;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
+import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,18 +63,17 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
                 set.add(chatRoomMemberEntity);
             }
 
-            super.saveOrUpdateBatch(memberEntitySet, 1000);
+            super.saveOrUpdateBatch(memberEntitySet, CommonConstants.BATCH_SIZE);
             chatRoomMemberService.dissolution(chatId, set.parallelStream().map(o -> o.getUserId()).collect(Collectors.toSet()));
-            chatRoomMemberService.saveBatch(set, 1000);
+            chatRoomMemberService.saveBatch(set, CommonConstants.BATCH_SIZE);
         }
-
 
         return true;
     }
 
     @Override
     @Transactional
-    public boolean saveOrUpdateBatch2(List<ChatRoomTreeNodeModel> treeNodeModel) {
+    public boolean saveOrUpdateBatch(List<ChatRoomTreeNodeModel> treeNodeModel) {
         Set<MemberEntity> memberSet = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
 
@@ -90,11 +90,12 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
             chatRoomMemberSet.addAll(memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(chatId, o.getUserId())).collect(Collectors.toSet()));
         }
 
-        super.saveOrUpdateBatch(memberSet, 1000);
+        super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
+
+        // 解除用户和群关系
         treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNodeModel::getUserid).collect(Collectors.toSet())));
 
-        chatRoomMemberService.saveBatch(chatRoomMemberSet, 1000);
-        return true;
+        return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
     }
 
     private MemberEntity getMemberEntity(ChatRoomTreeNodeModel treeNodeModel, List<MemberEntity> memberList) {

@@ -66,8 +66,6 @@ public class TaskApplicationImpl implements TaskApplication {
             if (!isSuccess) throw new RuntimeException("save chat room fail");
 
             // TODO 后期需要改成异步调用
-//            memberDomain.saveOrUpdateBatch(new Member(list));
-
             this.saveOrUpdateMember(list);
 
             this.recursionRoomId(pageNum + 1, limit);
@@ -79,6 +77,6 @@ public class TaskApplicationImpl implements TaskApplication {
     private void saveOrUpdateMember(Set<ChatRoomModel> list) {
         ChatRoomTreeNodeModel chatRoomTreeNodeModel = new ChatRoomTreeNodeModel();
         List<ChatRoomTreeNodeModel> treeNode = chatRoomTreeNodeModel.createTreeNode(list);
-        memberDomain.saveOrUpdateBatch2(treeNode);
+        memberDomain.saveOrUpdateBatch(treeNode);
     }
 }

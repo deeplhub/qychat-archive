@@ -11,7 +11,8 @@ import java.util.List;
  */
 public interface MemberDomain {
 
+    @Deprecated
     boolean saveOrUpdateBatch(Member member);
 
-    boolean saveOrUpdateBatch2(List<ChatRoomTreeNodeModel> treeNodeModel);
+    boolean saveOrUpdateBatch(List<ChatRoomTreeNodeModel> treeNodeModel);
 }

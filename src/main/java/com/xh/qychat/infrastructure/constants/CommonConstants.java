@@ -21,4 +21,6 @@ public interface CommonConstants {
     Integer IO_INTENSIVE_THREAD_SIZE = (int) (AVAILABLE_PROCESSORS / (1 - 0.7));
 
     String CHARSET_UTF8 = "UTF-8";
+
+    int BATCH_SIZE = 1000;
 }

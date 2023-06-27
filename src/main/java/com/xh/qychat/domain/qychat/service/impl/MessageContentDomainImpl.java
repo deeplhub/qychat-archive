@@ -5,6 +5,7 @@ import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
+import com.xh.qychat.infrastructure.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
             log.warn("保存消息内容出现错误，数据为空");
             return true;
         }
-        return super.saveBatch(entityList, 1000);
+        return super.saveBatch(entityList, CommonConstants.BATCH_SIZE);
     }
 
 }
