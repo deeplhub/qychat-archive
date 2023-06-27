@@ -21,4 +21,12 @@ public interface TaskApplication {
      * @return
      */
     Result pullChatRoom();
+
+    /**
+     * 拉取群详情
+     *
+     * @param roomId 群ID
+     * @return
+     */
+    Result pullChatRoom(String roomId);
 }

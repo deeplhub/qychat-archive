@@ -27,12 +27,20 @@ public class ChatRoomFactory {
     public List<ChatRoomEntity> createOrModifyEntity(List<ChatRoom> chatRooms, List<ChatRoomEntity> chatRoomList) {
         Map<String, ChatRoomEntity> dictMap = chatRoomList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
 
-
         return chatRooms.parallelStream().map(o -> getChatRoomEntity(dictMap, o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    public ChatRoomEntity createOrModifyEntity(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity) {
+
+        return this.getChatRoomEntity(chatRoom, chatRoomEntity);
+    }
+
     private ChatRoomEntity getChatRoomEntity(Map<String, ChatRoomEntity> dictMap, ChatRoom chatRoom) {
-        ChatRoomEntity chatRoomEntity = dictMap.get(chatRoom.getChatId());
+
+        return this.getChatRoomEntity(chatRoom, dictMap.get(chatRoom.getChatId()));
+    }
+
+    private ChatRoomEntity getChatRoomEntity(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity) {
         chatRoomEntity = (chatRoomEntity == null) ? new ChatRoomEntity() : chatRoomEntity;
 
         if ((chatRoom.getSign() + "").equals(chatRoomEntity.getSign())) return null;
@@ -48,7 +56,5 @@ public class ChatRoomFactory {
 
     public Set<String> listChatId(List<ChatRoom> chatRooms) {
         return chatRooms.parallelStream().filter(Objects::nonNull).map(o -> o.getChatId()).collect(Collectors.toSet());
-
     }
-
 }

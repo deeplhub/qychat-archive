@@ -10,10 +10,10 @@ import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import com.xh.qychat.domain.task.service.TaskDomainService;
+import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.common.model.Result;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +25,6 @@ import java.util.Set;
  * @author H.Yang
  * @date 2023/6/14
  */
-@Slf4j
 @Service
 public class TaskApplicationImpl implements TaskApplication {
 
@@ -50,7 +49,19 @@ public class TaskApplicationImpl implements TaskApplication {
 
     @Override
     public Result pullChatRoom() {
-        boolean isSuccess = this.listChatRoom(1, 10);
+        boolean isSuccess = this.listChatRoom(1, 100);
+        return ResponseEvent.reply(isSuccess);
+    }
+
+    @Override
+    public Result pullChatRoom(String roomId) {
+        ChatRoomModel chatRoom = taskDomainService.getChatRoomDetail(roomId);
+        if (chatRoom == null) ResponseEvent.failed(ResponseEnum.REQUEST_PARAMETERS);
+
+        boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
+        if (!isSuccess) throw new RuntimeException("save chat room fail");
+
+        isSuccess = memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
         return ResponseEvent.reply(isSuccess);
     }
 

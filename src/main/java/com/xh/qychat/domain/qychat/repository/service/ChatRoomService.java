@@ -16,5 +16,8 @@ import java.util.Set;
  */
 public interface ChatRoomService extends IService<ChatRoomEntity> {
 
+    ChatRoomEntity getByChatId(String chatId);
+
     List<ChatRoomEntity> listByChatId(Set<String> chatIds);
+
 }

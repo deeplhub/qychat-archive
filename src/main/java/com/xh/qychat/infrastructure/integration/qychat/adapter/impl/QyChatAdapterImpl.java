@@ -58,7 +58,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
      * @return
      */
     private String getAccessToken(String corpid, String secret, String key) {
-        log.info("获取 TOKEN...");
         JedisPoolRepository jedisPoolRepository = SpringBeanUtils.getBean(JedisPoolRepository.class);
 
         String accessToken = jedisPoolRepository.get(key);
@@ -102,8 +101,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Override
     public List<ChatDataModel> listChatData(Long seq) {
-        log.debug("获取 {} 开始的会话内容....", seq);
-
         // 获取sdk对象，首次使用初始化
         long sdk = Finance.NewSdk();
         // 初始化
@@ -145,7 +142,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             // 获取会话记录数据
             int ret = Finance.GetChatData(sdk, seq, chatProperties.getLimit(), null, null, chatProperties.getTimeout(), slice);
             if (ret != 0) {
-                throw new RuntimeException("getchatdata ret：" + ret);
+                throw new RuntimeException("GetChatData ret：" + ret);
             }
 
             // 获取消息
@@ -190,9 +187,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
      * @return
      */
     private List<ChatDataModel> process(Long sdk, List<ChatDataModel> secretChatDataList) {
-        log.debug("解密已获取的会话记录数据...");
-
-        long beginTime = System.currentTimeMillis();
         List<ChatDataModel> listData = new ArrayList<>(secretChatDataList.size());
         List<Future<List<ChatDataModel>>> futureList = this.pieceExec(sdk, secretChatDataList);
 
@@ -204,8 +198,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             log.error("多线程处理数据时发生异常", e);
             throw new RuntimeException("多线程处理数据时发生异常");
         }
-        log.info("多线程执行耗时：{}", System.currentTimeMillis() - beginTime);
-
         return listData;
     }
 
@@ -228,10 +220,10 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
             // 批次数据
             List<ChatDataModel> batchData = chatDataList.subList(start, end);
-            log.info("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
+            log.debug("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
             Future<List<ChatDataModel>> future = taskExecutor.submit(() -> {
-                log.info("线程 [{}] 执行获取群详情...", Thread.currentThread().getName());
+                log.debug("线程 [{}] 执行获取群详情...", Thread.currentThread().getName());
                 return batchData.stream().map(o -> this.decrypt(sdk, o)).collect(Collectors.toList());
             });
 
@@ -282,8 +274,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Override
     public void download(String sdkfileid, String fileName) {
-        log.debug("下载会话记录文件...");
-
         int ret = 0;
         long sdk = Finance.NewSdk();
         // 初始化
@@ -329,6 +319,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         body.putOpt("status_filter", 0);// 客户群跟进状态过滤。默认为0
         body.putOpt("limit", 1000);// 分页，预期请求的数据量，取值范围 1 ~ 1000
 
+        // 递归分页查询
         return this.listRoomId(body, new HashSet<>());
     }
 
@@ -361,6 +352,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         String nextCursor = jsonObject.getStr("next_cursor");
         if (StrUtil.isNotBlank(nextCursor)) {
             bodyObject.putOpt("cursor", nextCursor);
+
             this.listRoomId(bodyObject, roomIds);
         }
 
@@ -392,8 +384,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         if (room.getErrcode() != 0) return null;
 
         room = room.getGroupChat();
-//        room.setSign(room.getSign());
-//        room.setCreateTime(room.getCreateTime());
 
         if (StrUtil.isBlank(room.getChatId())) {
             log.warn(room.getChatId() + " - 未知的客户群详情");
@@ -470,13 +460,5 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         customerModel.setName("外部未知客户");
 
         return customerModel;
-    }
-
-
-    public static void main(String[] args) {
-        String json = "{\"errcode\":0,\"errmsg\":\"ok\",\"group_chat\":{\"chat_id\":\"wrgQjpQAAA-sqkjJyJJyz8sTyblzOsFA\",\"name\":\"51IDC-VIP|上海脉创\",\"create_time\":1686204402,\"member_list\":[{\"userid\":\"Dou\",\"type\":1,\"join_time\":1686210420,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"豆家旺\"},{\"userid\":\"AnChangZhiBan2\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"锐速值班2\"},{\"userid\":\"AnChangZhiBan1\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"锐速值班1\"},{\"userid\":\"RiMuTuYuan\",\"type\":1,\"join_time\":1686204402,\"join_scene\":1,\"invitor\":{\"userid\":\"RiMuTuYuan\"},\"group_nickname\":\"\",\"name\":\"孙超\"},{\"userid\":\"wmgQjpQAAApScN_eJTRGnk7ZVbSrzVKA\",\"type\":2,\"join_time\":1686204501,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"biubiubiu\"},{\"userid\":\"wmgQjpQAAA5XLsmmmXGd_YH5oAklhTww\",\"type\":2,\"join_time\":1686204439,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"a-\uD83D\uDC30\uD83C\uDF38Amy丹\uD83C\uDF38\"},{\"userid\":\"wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q\",\"type\":2,\"join_time\":1686296504,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"\",\"name\":\"木糖纯\"},{\"userid\":\"wmgQjpQAAAI9EVu-ODVoypi889rT4YUQ\",\"type\":2,\"join_time\":1686204823,\"join_scene\":1,\"state\":\"\",\"group_nickname\":\"沈励阳\",\"name\":\"GINTAMA\"}],\"admin_list\":{},\"owner\":\"RiMuTuYuan\"}}";
-
-        ChatRoomModel room = JSONUtil.toBean(json, ChatRoomModel.class);
-        System.out.println(room);
     }
 }

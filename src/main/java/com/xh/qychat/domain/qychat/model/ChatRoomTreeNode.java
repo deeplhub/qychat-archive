@@ -64,6 +64,15 @@ public class ChatRoomTreeNode {
         return treeNode;
     }
 
+    public static ChatRoomTreeNode createTreeNode(ChatRoomModel chatRoomModel) {
+        ChatRoomTreeNode node = new ChatRoomTreeNode();
+
+        node.setChatId(chatRoomModel.getChatId());
+        node.setChildren(chatRoomModel.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(member)).collect(Collectors.toList()));
+
+        return node;
+    }
+
     private static ChatRoomTreeNode getChatRoomTreeNode(ChatRoomModel.RoomMemberModel member) {
         ChatRoomTreeNode node = new ChatRoomTreeNode();
 

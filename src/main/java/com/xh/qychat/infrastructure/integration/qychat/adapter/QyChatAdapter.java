@@ -36,7 +36,6 @@ public interface QyChatAdapter {
      * 获取客户群列表
      * <p>
      * 该接口用于获取配置过客户群管理的客户群列表。
-     * ss
      * <p>
      * https://developer.work.weixin.qq.com/document/path/92120
      *

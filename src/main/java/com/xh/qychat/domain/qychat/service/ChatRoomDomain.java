@@ -10,5 +10,7 @@ import java.util.List;
  */
 public interface ChatRoomDomain {
 
+    boolean saveOrUpdate(ChatRoom chatRoom);
+
     boolean saveOrUpdateBatch(List<ChatRoom> chatRooms);
 }

@@ -51,6 +51,11 @@ public class ChatRoom {
         return chatRooms.parallelStream().map(o -> getChatRoom(o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    public static ChatRoom create(ChatRoomModel chatRoomModel) {
+
+        return getChatRoom(chatRoomModel);
+    }
+
     private static ChatRoom getChatRoom(ChatRoomModel chatRoomModel) {
         ChatRoom chatRoom = new ChatRoom();
 

@@ -23,6 +23,15 @@ public class ChatRoomDomainImpl extends ChatRoomServiceImpl implements ChatRoomD
 
     @Override
     @Transactional
+    public boolean saveOrUpdate(ChatRoom chatRoom) {
+        ChatRoomEntity entity = super.getByChatId(chatRoom.getChatId());
+
+        entity = ChatRoomFactory.getSingleton().createOrModifyEntity(chatRoom, entity);
+        return super.saveOrUpdate(entity);
+    }
+
+    @Override
+    @Transactional
     public boolean saveOrUpdateBatch(List<ChatRoom> chatRooms) {
         Set<String> chatIds = ChatRoomFactory.getSingleton().listChatId(chatRooms);
 

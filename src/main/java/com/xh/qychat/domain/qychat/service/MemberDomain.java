@@ -14,5 +14,7 @@ public interface MemberDomain {
     @Deprecated
     boolean saveOrUpdateBatch(Member member);
 
-    boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodeModel);
+    boolean saveOrUpdateBatch(ChatRoomTreeNode treeNode);
+
+    boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes);
 }

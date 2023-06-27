@@ -32,7 +32,6 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
     @Override
     public boolean saveOrUpdateBatch(Member member) {
-
         for (ChatRoomModel chatRoomModel : member.getChatRoomModelList()) {
             String chatId = chatRoomModel.getChatId();
             Set<ChatRoomMemberEntity> set = new HashSet<>();
@@ -74,27 +73,40 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
     @Override
     @Transactional
-    public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodeModel) {
+    public boolean saveOrUpdateBatch(ChatRoomTreeNode treeNode) {
+        String chatId = treeNode.getChatId();
+
+        List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
+
+        List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
+        super.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
+
+        // 解除用户和群关系
+        chatRoomMemberService.dissolution(chatId, treeNode.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet()));
+
+        Set<ChatRoomMemberEntity> chatRoomMemberSet = memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(chatId, o.getUserId())).collect(Collectors.toSet());
+        return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
+    }
+
+    @Override
+    @Transactional
+    public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes) {
         Set<MemberEntity> memberSet = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
 
-        for (ChatRoomTreeNode treeNode : treeNodeModel) {
-            String chatId = treeNode.getChatId();
+        for (ChatRoomTreeNode treeNode : treeNodes) {
+            List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
 
-            Set<String> userIds = treeNode.getChildren().parallelStream().map(o -> o.getUserid()).collect(Collectors.toSet());
-
-            List<MemberEntity> memberList = super.listByUserId(userIds);
-            List<MemberEntity> memberEntityList = treeNode.getChildren().parallelStream().map(o -> MemberFactory.getSingleton().getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
+            List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
 
             memberSet.addAll(memberEntityList);
-
-            chatRoomMemberSet.addAll(memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(chatId, o.getUserId())).collect(Collectors.toSet()));
+            chatRoomMemberSet.addAll(memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(treeNode.getChatId(), o.getUserId())).collect(Collectors.toSet()));
         }
 
         super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
-        treeNodeModel.stream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
+        treeNodes.stream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
 
         return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
     }

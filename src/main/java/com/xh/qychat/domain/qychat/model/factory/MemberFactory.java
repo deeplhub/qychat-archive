@@ -5,6 +5,8 @@ import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +24,17 @@ public class MemberFactory {
 
     public static MemberFactory getSingleton() {
         return MemberFactory.Inner.instance;
+    }
+
+
+    public Set<String> listUserId(ChatRoomTreeNode treeNode) {
+
+        return treeNode.getChildren().parallelStream().map(o -> o.getUserid()).collect(Collectors.toSet());
+    }
+
+    public List<MemberEntity> listMemberEntity(ChatRoomTreeNode treeNode, List<MemberEntity> memberList) {
+
+        return treeNode.getChildren().parallelStream().map(o -> this.getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
 

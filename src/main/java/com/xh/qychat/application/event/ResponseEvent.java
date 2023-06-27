@@ -17,4 +17,14 @@ public class ResponseEvent {
 
         return isSuccess ? Result.operateSucceed() : Result.failed(response);
     }
+
+    public static Result failed(String message) {
+
+        return Result.failed(message);
+    }
+
+    public static Result failed(ResponseEnum response) {
+
+        return Result.failed(response);
+    }
 }
