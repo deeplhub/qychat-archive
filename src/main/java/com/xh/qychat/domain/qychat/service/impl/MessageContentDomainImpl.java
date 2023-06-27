@@ -30,7 +30,7 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
     @Override
     @Transactional
     public boolean saveBath(MessageContent messageContent) {
-        List<MessageContentEntity> entityList = MessageContentFactory.createEntity(messageContent);
+        List<MessageContentEntity> entityList = MessageContentFactory.getSingleton().createEntity(messageContent);
         if (entityList.isEmpty()) {
             log.warn("保存消息内容出现错误，数据为空");
             return true;

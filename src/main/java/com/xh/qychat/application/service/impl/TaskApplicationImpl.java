@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
-import com.xh.qychat.domain.qychat.model.ChatRoomTreeNodeModel;
+import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
@@ -75,8 +75,8 @@ public class TaskApplicationImpl implements TaskApplication {
     }
 
     private void saveOrUpdateMember(Set<ChatRoomModel> list) {
-        ChatRoomTreeNodeModel chatRoomTreeNodeModel = new ChatRoomTreeNodeModel();
-        List<ChatRoomTreeNodeModel> treeNode = chatRoomTreeNodeModel.createTreeNode(list);
+        ChatRoomTreeNode chatRoomTreeNode = new ChatRoomTreeNode();
+        List<ChatRoomTreeNode> treeNode = chatRoomTreeNode.createTreeNode(list);
         memberDomain.saveOrUpdateBatch(treeNode);
     }
 }

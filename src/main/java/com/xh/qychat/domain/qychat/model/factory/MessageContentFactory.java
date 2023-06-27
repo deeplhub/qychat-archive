@@ -19,7 +19,19 @@ import java.util.List;
  */
 public class MessageContentFactory {
 
-    public static List<MessageContentEntity> createEntity(MessageContent messageContent) {
+    private static class Inner {
+        private static final MessageContentFactory instance = new MessageContentFactory();
+    }
+
+    private MessageContentFactory() {
+    }
+
+    public static MessageContentFactory getSingleton() {
+        return MessageContentFactory.Inner.instance;
+    }
+
+
+    public List<MessageContentEntity> createEntity(MessageContent messageContent) {
         List<ChatDataModel> dataModelList = messageContent.getDataModelList();
 
         List<MessageContentEntity> entityList = new ArrayList<>(dataModelList.size());
@@ -35,7 +47,7 @@ public class MessageContentFactory {
             entity.setMsgtime(item.getMsgtime() != null ? new Date(item.getMsgtime()) : new Date());
             entity.setCreateTime(new Date());
 
-            getActionMessage(item, entity);
+            this.getActionMessage(item, entity);
 
             entityList.add(entity);
         });
@@ -43,10 +55,10 @@ public class MessageContentFactory {
         return entityList;
     }
 
-    private static void getActionMessage(ChatDataModel item, MessageContentEntity entity) {
+    private void getActionMessage(ChatDataModel item, MessageContentEntity entity) {
         switch (item.getAction()) {
             case "send": // 发送消息
-                getSendMessage(item, entity);
+                this.getSendMessage(item, entity);
                 break;
             case "revoke": // 撤回消息
                 entity.setMsgtype("revoke");
@@ -59,7 +71,7 @@ public class MessageContentFactory {
         }
     }
 
-    private static void getSendMessage(ChatDataModel dataModel, MessageContentEntity entity) {
+    private void getSendMessage(ChatDataModel dataModel, MessageContentEntity entity) {
         entity.setTolist(dataModel.getTolist());
         entity.setRoomid(StrUtil.isNotBlank(dataModel.getRoomid()) ? dataModel.getRoomid() : null);
         entity.setMsgtype(dataModel.getMsgtype());

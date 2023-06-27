@@ -14,7 +14,19 @@ import java.util.stream.Collectors;
  */
 public class ChatRoomFactory {
 
-    public static List<ChatRoomEntity> createOrModifyEntity(ChatRoom chatRoom, List<ChatRoomEntity> chatRoomList) {
+    private static class Inner {
+        private static final ChatRoomFactory instance = new ChatRoomFactory();
+    }
+
+    private ChatRoomFactory() {
+    }
+
+    public static ChatRoomFactory getSingleton() {
+        return ChatRoomFactory.Inner.instance;
+    }
+
+
+    public List<ChatRoomEntity> createOrModifyEntity(ChatRoom chatRoom, List<ChatRoomEntity> chatRoomList) {
         Map<String, ChatRoomEntity> dictMap = chatRoomList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
 
         Set<ChatRoomModel> chatRoomModelList = chatRoom.getChatRoomModelList();
@@ -22,7 +34,7 @@ public class ChatRoomFactory {
         return chatRoomModelList.parallelStream().map(o -> getChatRoomEntity(dictMap, o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private static ChatRoomEntity getChatRoomEntity(Map<String, ChatRoomEntity> dictMap, ChatRoomModel chatRoomModel) {
+    private ChatRoomEntity getChatRoomEntity(Map<String, ChatRoomEntity> dictMap, ChatRoomModel chatRoomModel) {
         ChatRoomEntity chatRoomEntity = dictMap.get(chatRoomModel.getChatId());
         chatRoomEntity = (chatRoomEntity == null) ? new ChatRoomEntity() : chatRoomEntity;
 
@@ -37,7 +49,7 @@ public class ChatRoomFactory {
         return chatRoomEntity;
     }
 
-    public static Set<String> listChatId(ChatRoom chatRoom) {
+    public Set<String> listChatId(ChatRoom chatRoom) {
         return chatRoom.getChatRoomModelList().parallelStream().filter(Objects::nonNull).map(o -> o.getChatId()).collect(Collectors.toSet());
 
     }

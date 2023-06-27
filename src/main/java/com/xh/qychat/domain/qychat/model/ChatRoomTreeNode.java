@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @date 2023/6/26
  */
 @Data
-public class ChatRoomTreeNodeModel {
+public class ChatRoomTreeNode {
 
     /**
      * 客户群ID
@@ -46,16 +46,16 @@ public class ChatRoomTreeNodeModel {
      */
     private String sign;
 
-    private List<ChatRoomTreeNodeModel> children;
+    private List<ChatRoomTreeNode> children;
 
 
-    public List<ChatRoomTreeNodeModel> createTreeNode(Set<ChatRoomModel> list) {
-        List<ChatRoomTreeNodeModel> treeNode = new LinkedList<>();
+    public List<ChatRoomTreeNode> createTreeNode(Set<ChatRoomModel> list) {
+        List<ChatRoomTreeNode> treeNode = new LinkedList<>();
         for (ChatRoomModel chatRoom : list) {
-            ChatRoomTreeNodeModel node = new ChatRoomTreeNodeModel();
+            ChatRoomTreeNode node = new ChatRoomTreeNode();
             node.setChatId(chatRoom.getChatId());
             node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> {
-                        ChatRoomTreeNodeModel children = new ChatRoomTreeNodeModel();
+                        ChatRoomTreeNode children = new ChatRoomTreeNode();
 
                         children.setUserid(member.getUserid());
                         children.setType(member.getType());

@@ -1,8 +1,9 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.xh.qychat.domain.qychat.model.ChatRoomTreeNodeModel;
+import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
 import com.xh.qychat.domain.qychat.model.Member;
+import com.xh.qychat.domain.qychat.model.factory.MemberFactory;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
@@ -73,17 +74,17 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
     @Override
     @Transactional
-    public boolean saveOrUpdateBatch(List<ChatRoomTreeNodeModel> treeNodeModel) {
+    public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodeModel) {
         Set<MemberEntity> memberSet = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
 
-        for (ChatRoomTreeNodeModel treeNode : treeNodeModel) {
+        for (ChatRoomTreeNode treeNode : treeNodeModel) {
             String chatId = treeNode.getChatId();
 
             Set<String> userIds = treeNode.getChildren().parallelStream().map(o -> o.getUserid()).collect(Collectors.toSet());
 
             List<MemberEntity> memberList = super.listByUserId(userIds);
-            List<MemberEntity> memberEntityList = treeNode.getChildren().parallelStream().map(o -> this.getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
+            List<MemberEntity> memberEntityList = treeNode.getChildren().parallelStream().map(o -> MemberFactory.getSingleton().getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
 
             memberSet.addAll(memberEntityList);
 
@@ -93,26 +94,10 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
-        treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNodeModel::getUserid).collect(Collectors.toSet())));
+        treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
 
         return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
     }
 
-    private MemberEntity getMemberEntity(ChatRoomTreeNodeModel treeNodeModel, List<MemberEntity> memberList) {
-        Map<String, MemberEntity> entityMap = memberList.parallelStream().collect(Collectors.toMap(MemberEntity::getUserId, o -> o, (k1, k2) -> k2));
 
-        MemberEntity entity = entityMap.get(treeNodeModel.getUserid());
-        entity = (entity == null) ? new MemberEntity() : entity;
-
-        if (treeNodeModel.getSign().equals(entity.getSign())) {
-            return null;
-        }
-
-        entity.setUserId(treeNodeModel.getUserid());
-        entity.setName(treeNodeModel.getName());
-        entity.setType(treeNodeModel.getType());
-        entity.setSign(treeNodeModel.getSign());
-
-        return entity;
-    }
 }
