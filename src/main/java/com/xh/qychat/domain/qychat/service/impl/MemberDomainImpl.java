@@ -94,7 +94,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
-        treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
+        treeNodeModel.stream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
 
         return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
     }

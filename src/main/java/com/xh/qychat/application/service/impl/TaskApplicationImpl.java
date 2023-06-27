@@ -60,10 +60,9 @@ public class TaskApplicationImpl implements TaskApplication {
         List<String> records = page.getRecords();
         if (!records.isEmpty()) {
             Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
-            if (list.size() == 0) return this.recursionRoomId(pageNum + 1, limit);
+            if (list.isEmpty()) return this.recursionRoomId(pageNum + 1, limit);
 
-            boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(new ChatRoom(list));
-            if (!isSuccess) throw new RuntimeException("save chat room fail");
+            this.saveOrUpdateChatRoom(list);
 
             // TODO 后期需要改成异步调用
             this.saveOrUpdateMember(list);
@@ -74,9 +73,12 @@ public class TaskApplicationImpl implements TaskApplication {
         return true;
     }
 
+    private void saveOrUpdateChatRoom(Set<ChatRoomModel> list) {
+        boolean isSuccess = chatRoomDomain.saveOrUpdateBatch(ChatRoom.create(list));
+        if (!isSuccess) throw new RuntimeException("save chat room fail");
+    }
+
     private void saveOrUpdateMember(Set<ChatRoomModel> list) {
-        ChatRoomTreeNode chatRoomTreeNode = new ChatRoomTreeNode();
-        List<ChatRoomTreeNode> treeNode = chatRoomTreeNode.createTreeNode(list);
-        memberDomain.saveOrUpdateBatch(treeNode);
+        memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(list));
     }
 }

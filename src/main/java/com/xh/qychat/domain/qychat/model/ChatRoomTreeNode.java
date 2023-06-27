@@ -49,7 +49,7 @@ public class ChatRoomTreeNode {
     private List<ChatRoomTreeNode> children;
 
 
-    public List<ChatRoomTreeNode> createTreeNode(Set<ChatRoomModel> list) {
+    public static List<ChatRoomTreeNode> createTreeNode(Set<ChatRoomModel> list) {
         List<ChatRoomTreeNode> treeNode = new LinkedList<>();
         for (ChatRoomModel chatRoom : list) {
             ChatRoomTreeNode node = new ChatRoomTreeNode();
