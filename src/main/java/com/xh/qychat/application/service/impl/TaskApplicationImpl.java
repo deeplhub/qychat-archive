@@ -61,8 +61,14 @@ public class TaskApplicationImpl implements TaskApplication {
         boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
         if (!isSuccess) throw new RuntimeException("save chat room fail");
 
+        // TODO 后期建议使用MQ异步调用
         isSuccess = memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
         return ResponseEvent.reply(isSuccess);
+    }
+
+    @Override
+    public Result pullPersonnel(String userId) {
+        return null;
     }
 
     public boolean listChatRoom(Integer pageNum, Integer limit) {

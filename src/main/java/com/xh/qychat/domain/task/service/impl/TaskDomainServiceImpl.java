@@ -5,6 +5,7 @@ import com.xh.qychat.domain.task.service.TaskDomainService;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,5 +37,11 @@ public class TaskDomainServiceImpl implements TaskDomainService {
     public ChatRoomModel getChatRoomDetail(String roomid) {
 
         return qychatAdapter.getChatRoomDetail(roomid);
+    }
+
+    @Override
+    public MemberModel getPersonnel(String userId) {
+
+        return qychatAdapter.getPersonnelDetail(userId);
     }
 }

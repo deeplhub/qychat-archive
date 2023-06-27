@@ -29,4 +29,12 @@ public interface TaskApplication {
      * @return
      */
     Result pullChatRoom(String roomId);
+
+    /**
+     * 拉取人员详情
+     *
+     * @param userId 人员ID
+     * @return
+     */
+    Result pullPersonnel(String userId);
 }

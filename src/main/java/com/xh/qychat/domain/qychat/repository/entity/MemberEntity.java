@@ -1,9 +1,10 @@
 package com.xh.qychat.domain.qychat.repository.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,13 +17,7 @@ import java.util.Date;
  */
 @Data
 @TableName("qychat_member")
-public class MemberEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
-
+public class MemberEntity {
     /**
      * 成员ID
      */
@@ -34,12 +29,17 @@ public class MemberEntity implements Serializable {
     private String name;
 
     /**
+     * 手机号码
+     */
+    private String mobile;
+
+    /**
      * 头像
      */
     private String avatar;
 
     /**
-     * 0-企业成员，1-该外部联系人是微信用户，2-该外部联系人是企业微信用户
+     * 成员类型：1 - 企业成员 2 - 外部联系人
      */
     private Integer type;
 
@@ -54,39 +54,24 @@ public class MemberEntity implements Serializable {
     private String position;
 
     /**
-     * 外部联系人所在企业的简称-同上
+     * 邮箱
      */
-    private String corpName;
+    private String email;
 
     /**
-     * 外部联系人所在企业的主体名称-同上
+     * 企业邮箱
      */
-    private String corpFullName;
+    private String bizMail;
 
     /**
-     * 添加了此外部联系人的企业成员userid
+     * 别名
      */
-    private String followUserid;
+    private String alias;
 
     /**
-     * 该成员对此外部联系人的备注
+     * 座机
      */
-    private String followRemark;
-
-    /**
-     * 该成员对此外部联系人的描述
-     */
-    private String followDescription;
-
-    /**
-     * 该成员对此客户备注的企业名称
-     */
-    private String followRemarkCorpName;
-
-    /**
-     * 该成员对此客户备注的手机号码
-     */
-    private String followRemarkMobiles;
+    private String telephone;
 
     /**
      * 用户信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=成员ID+入群时间+入群方式+邀请者+昵称+名字
@@ -96,7 +81,6 @@ public class MemberEntity implements Serializable {
     /**
      * 创建时间
      */
-
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 

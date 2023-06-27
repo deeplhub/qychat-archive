@@ -344,9 +344,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         List<JSONObject> groupChatList = jsonObject.getBeanList("group_chat_list", JSONObject.class);
         Set<String> chatIds = groupChatList.stream().map(o -> o.getStr("chat_id")).collect(Collectors.toSet());
 
-        if (chatIds != null && chatIds.size() > 0) {
-            roomIds.addAll(chatIds);
-        }
+        if (chatIds != null && chatIds.size() > 0) roomIds.addAll(chatIds);
 
         // 分页游标，下次请求时填写以获取之后分页的记录。如果该字段返回空则表示已没有更多数据
         String nextCursor = jsonObject.getStr("next_cursor");
@@ -370,11 +368,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
             String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
 
-            log.info("获取客户群详情，请求地址：{}，请求参数：{}", uri, jsonObject);
+            log.info("获取 [{}] 客户群详情，请求地址：{}，请求参数：{}", roomid, uri, jsonObject);
             result = HttpUtil.post(uri, jsonObject.toString());
-            log.info("获取客户群详情，响应结果：{}", result);
+            log.info("获取 [{}] 客户群详情，响应结果：{}", roomid, result);
         } catch (Exception e) {
-            String format = StrUtil.format("客户群ID：{}，获取客户群详情异常", roomid);
+            String format = StrUtil.format("获取 [{}] 客户群详情异常", roomid);
             log.error(format, e);
             throw new RuntimeException(format);
         }
@@ -385,10 +383,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         room = room.getGroupChat();
 
-        if (StrUtil.isBlank(room.getChatId())) {
-            log.warn(room.getChatId() + " - 未知的客户群详情");
-            return null;
-        }
+        if (StrUtil.isBlank(room.getChatId())) return null;
 
         return room;
     }
@@ -402,11 +397,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         String result = null;
         try {
-            log.info("获取成员（内部联系人）详情，请求地址：{}，请求参数：{}", QychatConstants.MEMBER_DETAIL_URL, jsonObject);
+            log.info("获取 [{}] 成员（内部联系人）详情，请求地址：{}，请求参数：{}", userId, QychatConstants.MEMBER_DETAIL_URL, jsonObject);
             result = HttpUtil.get(QychatConstants.MEMBER_DETAIL_URL, jsonObject);
-            log.info("获取成员（内部联系人）详情，响应结果：{}", result);
+            log.info("获取 [{}] 成员（内部联系人）详情，响应结果：{}", userId, result);
         } catch (Exception e) {
-            String format = StrUtil.format("客户ID：{}，获取成员（内部联系人）详情异常", userId);
+            String format = StrUtil.format("获取 [{}] 成员（内部联系人）详情异常", userId);
             log.error(format, e);
             throw new RuntimeException(format);
         }
@@ -414,7 +409,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         MemberModel memberModel = JSONUtil.toBean(result, MemberModel.class);
 
         if (memberModel.getErrcode() != 0) {
-            log.warn("获取成员（内部联系人）详情，解析异常 errcode：" + memberModel.getErrmsg());
+            log.warn("获取 [{}] 成员（内部联系人）详情，解析异常 errcode：{}", userId, memberModel.getErrmsg());
             return new MemberModel();
         }
 
@@ -432,11 +427,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         String result = null;
         try {
-            log.info("获取客户（外部联系人）详情，请求地址：{}，请求参数：{}", QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
+            log.info("获取 [{}] 客户（外部联系人）详情，请求地址：{}，请求参数：{}", userId, QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
             result = HttpUtil.get(QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
-            log.info("获取客户（外部联系人）详情，响应结果：{}", result);
+            log.info("获取 [{}] 客户（外部联系人）详情，响应结果：{}", userId, result);
         } catch (Exception e) {
-            String format = StrUtil.format("客户ID：{}，获取客户（外部联系人）详情异常", userId);
+            String format = StrUtil.format("获取 [{}] 客户（外部联系人）详情异常", userId);
             log.error(format, e);
             throw new RuntimeException(format);
         }
@@ -444,7 +439,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         CustomerModel customerModel = JSONUtil.toBean(result, CustomerModel.class);
 
         if (customerModel.getErrcode() != 0) {
-            log.warn("获取客户（外部联系人）详情，解析异常 errcode：" + customerModel.getErrmsg());
+            log.warn("获取 [{}] 客户（外部联系人）详情，解析异常 errcode：{}", userId, customerModel.getErrmsg());
             return null;
         }
 

@@ -30,9 +30,16 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> i
     @Override
     public List<MemberEntity> listByUserId(Set<String> userIds) {
         QueryWrapper<MemberEntity> queryWrapper = new QueryWrapper<>();
-
         queryWrapper.lambda().in(MemberEntity::getUserId, userIds);
 
         return super.list(queryWrapper);
+    }
+
+    @Override
+    public MemberEntity getByUserId(String userId) {
+        QueryWrapper<MemberEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(MemberEntity::getUserId, userId);
+
+        return super.getOne(queryWrapper);
     }
 }

@@ -19,4 +19,6 @@ public interface MemberService extends IService<MemberEntity> {
     List<MemberEntity> listByCharId(String chatId);
 
     List<MemberEntity> listByUserId(Set<String> userIds);
+
+    MemberEntity getByUserId(String userId);
 }
