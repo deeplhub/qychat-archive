@@ -13,11 +13,9 @@ import java.util.Date;
 @Data
 @TableName(value = "qychat_message_content")
 public class MessageContentEntity {
-    /**
-     *
-     */
+
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 消息记录值,Uint64类型

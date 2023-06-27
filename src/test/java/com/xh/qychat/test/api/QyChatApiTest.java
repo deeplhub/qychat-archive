@@ -6,6 +6,7 @@ import com.tencent.wework.Finance;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.util.wx.WXMsgCrypt;
 import lombok.extern.slf4j.Slf4j;
@@ -61,8 +62,8 @@ public class QyChatApiTest {
 
     @Test
     public void getPersonnelDetail() {
-        MemberModel memberModel = qychatAdapter.getPersonnelDetail("wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q");
-        System.out.println(JSONUtil.toJsonStr(memberModel));
+        PersonnelModel detail = qychatAdapter.getPersonnelDetail("wmgQjpQAAAdhRlUt4NoZl_t6aad3Kj6Q");
+        System.out.println(JSONUtil.toJsonStr(detail));
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.xh.qychat.domain.task.service;
 
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 
 import java.util.List;
 import java.util.Set;
@@ -37,5 +37,5 @@ public interface TaskDomainService {
      */
     ChatRoomModel getChatRoomDetail(String roomid);
 
-    MemberModel getPersonnel(String userId);
+    PersonnelModel getPersonnel(String userId);
 }

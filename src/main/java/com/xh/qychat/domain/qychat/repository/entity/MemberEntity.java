@@ -1,8 +1,6 @@
 package com.xh.qychat.domain.qychat.repository.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,6 +16,10 @@ import java.util.Date;
 @Data
 @TableName("qychat_member")
 public class MemberEntity {
+
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+
     /**
      * 成员ID
      */
@@ -39,7 +41,7 @@ public class MemberEntity {
     private String avatar;
 
     /**
-     * 成员类型：1 - 企业成员 2 - 外部联系人
+     * 成员类型：1企业成员，2外部联系人
      */
     private Integer type;
 
@@ -64,11 +66,6 @@ public class MemberEntity {
     private String bizMail;
 
     /**
-     * 别名
-     */
-    private String alias;
-
-    /**
      * 座机
      */
     private String telephone;
@@ -77,6 +74,11 @@ public class MemberEntity {
      * 用户信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=成员ID+入群时间+入群方式+邀请者+昵称+名字
      */
     private String sign;
+
+    /**
+     * 备注
+     */
+    private String note;
 
     /**
      * 创建时间

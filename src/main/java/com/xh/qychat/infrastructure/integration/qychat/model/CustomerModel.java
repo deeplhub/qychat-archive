@@ -24,7 +24,7 @@ public class CustomerModel extends ResponseModel {
     /**
      * 外部联系人的类型，1表示该外部联系人是微信用户，2表示该外部联系人是企业微信用户
      */
-    private Integer type;
+//    private Integer type;
 
     /**
      * 外部联系人头像
@@ -56,6 +56,11 @@ public class CustomerModel extends ResponseModel {
      * 外部联系人所在企业的主体名称，仅当联系人类型是企业微信用户时有此字段。
      */
     private String corpFullName;
+
+    /**
+     * 备注
+     */
+    private String note;
 
     /**
      * 外部联系人详情

@@ -17,7 +17,6 @@ import java.util.Date;
 @TableName("qychat_chat_room")
 public class ChatRoomEntity {
 
-
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

@@ -3,13 +3,15 @@ package com.xh.qychat.infrastructure.integration.qychat.model;
 import lombok.Data;
 
 /**
- * 成员详情（内部联系人）
+ * 人员详情
+ * <p>
+ * 成员详情（内部联系人）+客户详情（外部联系人）
  *
  * @author H.Yang
- * @date 2023/6/19
+ * @date 2023/6/27
  */
 @Data
-public class MemberModel extends ResponseModel {
+public class PersonnelModel extends ResponseModel {
 
     /**
      * 成员UserID
@@ -27,11 +29,6 @@ public class MemberModel extends ResponseModel {
     private String mobile;
 
     /**
-     * 成员所属部门id列表，仅返回该应用有查看权限的部门id；
-     */
-    private Integer[] department;
-
-    /**
      * 职务信息
      */
     private String position;
@@ -40,6 +37,7 @@ public class MemberModel extends ResponseModel {
      * 性别。0表示未定义，1表示男性，2表示女性。
      */
     private Integer gender;
+
 
     /**
      * 邮箱
@@ -50,16 +48,6 @@ public class MemberModel extends ResponseModel {
      * 企业邮箱
      */
     private String bizMail;
-
-    /**
-     * 表示在所在的部门内是否为部门负责人，数量与department一致；
-     */
-    private Integer[] isLeaderInDept;
-
-    /**
-     * 直属上级UserID
-     */
-    private String[] directLeader;
 
     /**
      * 头像url
@@ -77,13 +65,12 @@ public class MemberModel extends ResponseModel {
     private String alias;
 
     /**
-     * 激活状态: 1=已激活，2=已禁用，4=未激活，5=退出企业。
+     * 备注
      */
-    private Integer status;
+    private String note;
 
     /**
-     * 对外职务，如果设置了该值，则以此作为对外展示的职务，否则以position来展示。
+     * 外部联系人详情
      */
-    private String externalPosition;
-
+    private PersonnelModel externalContact;
 }

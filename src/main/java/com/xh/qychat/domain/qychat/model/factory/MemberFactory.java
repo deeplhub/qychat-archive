@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
+import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 
 import java.util.List;
@@ -37,7 +38,6 @@ public class MemberFactory {
         return treeNode.getChildren().parallelStream().map(o -> this.getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-
     public MemberEntity getMemberEntity(ChatRoomTreeNode treeNodeModel, List<MemberEntity> memberList) {
         Map<String, MemberEntity> entityMap = memberList.parallelStream().collect(Collectors.toMap(MemberEntity::getUserId, o -> o, (k1, k2) -> k2));
 
@@ -55,4 +55,17 @@ public class MemberFactory {
 
         return entity;
     }
+
+    public MemberEntity create(MemberEntity entity, Member member) {
+
+        entity.setUserId(member.getUserId());
+        entity.setAvatar(member.getAvatar());
+        entity.setGender(member.getGender());
+        entity.setPosition(member.getPosition());
+        entity.setTelephone(member.getTelephone());
+
+        return entity;
+
+    }
+
 }

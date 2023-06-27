@@ -1,9 +1,6 @@
 package com.xh.qychat.infrastructure.integration.qychat.adapter;
 
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.*;
 
 import java.util.List;
 import java.util.Set;
@@ -87,17 +84,5 @@ public interface QyChatAdapter {
      * @param userId
      * @return
      */
-    default MemberModel getPersonnelDetail(String userId) {
-        // 获取客户详情（外部联系人）
-        if (userId.startsWith("wb") || userId.startsWith("wo") || userId.startsWith("wm")) {
-            MemberModel memberModel = new MemberModel();
-
-            memberModel.setCustomerModel(this.getCustomerDetail(userId));
-
-            return memberModel;
-        }
-
-        // 获取成员详情（内部联系人）
-        return this.getMemberDetail(userId);
-    }
+    PersonnelModel getPersonnelDetail(String userId);
 }

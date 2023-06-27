@@ -3,7 +3,7 @@ package com.xh.qychat.test.domain.task;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.service.MemberService;
 import com.xh.qychat.domain.task.service.TaskDomainService;
-import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +40,7 @@ public class TaskDomainServiceTest {
 
     @Test
     public void getPersonnel() {
-        MemberModel personnel = taskDomainService.getPersonnel("ChangHaiYang");
+        PersonnelModel personnel = taskDomainService.getPersonnel("ChangHaiYang");
 
 
         MemberEntity entity = memberService.getByUserId("ChangHaiYang");

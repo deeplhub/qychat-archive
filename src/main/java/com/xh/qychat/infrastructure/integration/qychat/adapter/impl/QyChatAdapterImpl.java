@@ -10,10 +10,7 @@ import com.xh.qychat.infrastructure.constants.CacheConstants;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.constants.QychatConstants;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.CustomerModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.MemberModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.*;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.integration.qychat.properties.CustomerProperties;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
@@ -390,6 +387,76 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
     @Override
     public MemberModel getMemberDetail(String userId) {
+        MemberModel memberModel = JSONUtil.toBean(this.getMember(userId), MemberModel.class);
+
+        if (memberModel.getErrcode() != 0) {
+            log.warn("获取 [{}] 成员（内部联系人）详情，解析异常 errcode：{}", userId, memberModel.getErrmsg());
+            return new MemberModel();
+        }
+
+        return memberModel;
+    }
+
+    @Override
+    public CustomerModel getCustomerDetail(String userId) {
+        CustomerModel customerModel = JSONUtil.toBean(this.getCustomer(userId), CustomerModel.class);
+
+        if (customerModel.getErrcode() != 0) {
+            log.warn("获取 [{}] 客户（外部联系人）详情，解析异常 errcode：{}", userId, customerModel.getErrmsg());
+            return null;
+        }
+
+        // 外部联系人详情
+        customerModel = customerModel.getExternalContact();
+        if (customerModel != null) {
+            return customerModel;
+        }
+
+        // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户
+        customerModel.setExternalUserid(userId);
+        customerModel.setName("外部未知客户");
+        customerModel.setNote("当前客户未被添加为联系人，获取不到客户详情");
+
+        return customerModel;
+    }
+
+
+    @Override
+    public PersonnelModel getPersonnelDetail(String userId) {
+        // 获取客户详情（外部联系人）
+        if (userId.startsWith("wb") || userId.startsWith("wo") || userId.startsWith("wm")) {
+            PersonnelModel model = JSONUtil.toBean(this.getCustomer(userId), PersonnelModel.class);
+            if (model.getErrcode() != 0) {
+                log.warn("获取 [{}] 客户（外部联系人）详情，解析异常 errcode：{}", userId, model.getErrmsg());
+                return null;
+            }
+
+            // 外部联系人详情
+            model = model.getExternalContact();
+            model.setUserid(userId);
+            if (model != null) {
+                return model;
+            }
+
+            // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
+            model.setUserid(userId);
+            model.setName("外部未知客户");
+            model.setNote("当前客户未被添加为联系人，获取不到客户详情");
+
+            return model;
+        }
+
+        // 获取成员详情（内部联系人）
+        PersonnelModel model = JSONUtil.toBean(this.getMember(userId), PersonnelModel.class);
+        if (model.getErrcode() != 0) {
+            log.warn("获取 [{}] 成员（内部联系人）详情，解析异常 errcode：{}", userId, model.getErrmsg());
+            return new PersonnelModel();
+        }
+
+        return model;
+    }
+
+    private String getMember(String userId) {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret()));
@@ -405,19 +472,10 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             log.error(format, e);
             throw new RuntimeException(format);
         }
-
-        MemberModel memberModel = JSONUtil.toBean(result, MemberModel.class);
-
-        if (memberModel.getErrcode() != 0) {
-            log.warn("获取 [{}] 成员（内部联系人）详情，解析异常 errcode：{}", userId, memberModel.getErrmsg());
-            return new MemberModel();
-        }
-
-        return memberModel;
+        return result;
     }
 
-    @Override
-    public CustomerModel getCustomerDetail(String userId) {
+    private String getCustomer(String userId) {
         String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
 
         JSONObject jsonObject = new JSONObject();
@@ -435,25 +493,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             log.error(format, e);
             throw new RuntimeException(format);
         }
-
-        CustomerModel customerModel = JSONUtil.toBean(result, CustomerModel.class);
-
-        if (customerModel.getErrcode() != 0) {
-            log.warn("获取 [{}] 客户（外部联系人）详情，解析异常 errcode：{}", userId, customerModel.getErrmsg());
-            return null;
-        }
-
-        // 外部联系人详情
-        customerModel = customerModel.getExternalContact();
-        if (customerModel != null) {
-            return customerModel;
-        }
-
-        // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
-        customerModel.setExternalUserid(userId);
-        customerModel.setType(1);
-        customerModel.setName("外部未知客户");
-
-        return customerModel;
+        return result;
     }
 }

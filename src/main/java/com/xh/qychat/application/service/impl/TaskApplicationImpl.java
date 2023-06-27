@@ -5,6 +5,7 @@ import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
+import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
@@ -14,6 +15,7 @@ import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.common.model.Result;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -68,7 +70,10 @@ public class TaskApplicationImpl implements TaskApplication {
 
     @Override
     public Result pullPersonnel(String userId) {
-        return null;
+        PersonnelModel personnel = taskDomainService.getPersonnel(userId);
+
+        boolean isSuccess = memberDomain.saveOrUpdate(Member.create(personnel));
+        return ResponseEvent.reply(isSuccess);
     }
 
     public boolean listChatRoom(Integer pageNum, Integer limit) {
