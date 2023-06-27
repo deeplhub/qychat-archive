@@ -51,24 +51,27 @@ public class ChatRoomTreeNode {
 
     public static List<ChatRoomTreeNode> createTreeNode(Set<ChatRoomModel> list) {
         List<ChatRoomTreeNode> treeNode = new LinkedList<>();
+        ChatRoomTreeNode node = null;
         for (ChatRoomModel chatRoom : list) {
-            ChatRoomTreeNode node = new ChatRoomTreeNode();
+            node = new ChatRoomTreeNode();
+
             node.setChatId(chatRoom.getChatId());
-            node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> {
-                        ChatRoomTreeNode children = new ChatRoomTreeNode();
-
-                        children.setUserid(member.getUserid());
-                        children.setType(member.getType());
-                        children.setName(member.getName());
-                        children.setSign(member.getSign());
-
-                        return children;
-                    }).collect(Collectors.toList())
-            );
+            node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(member)).collect(Collectors.toList()));
 
             treeNode.add(node);
         }
 
         return treeNode;
+    }
+
+    private static ChatRoomTreeNode getChatRoomTreeNode(ChatRoomModel.RoomMemberModel member) {
+        ChatRoomTreeNode node = new ChatRoomTreeNode();
+
+        node.setUserid(member.getUserid());
+        node.setType(member.getType());
+        node.setName(member.getName());
+        node.setSign(member.getSign());
+
+        return node;
     }
 }

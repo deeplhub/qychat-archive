@@ -50,24 +50,24 @@ public class TaskApplicationImpl implements TaskApplication {
 
     @Override
     public Result pullChatRoom() {
-        boolean isSuccess = this.recursionRoomId(1, 10);
+        boolean isSuccess = this.listChatRoom(1, 10);
         return ResponseEvent.reply(isSuccess);
     }
 
-    public boolean recursionRoomId(Integer pageNum, Integer limit) {
+    public boolean listChatRoom(Integer pageNum, Integer limit) {
         Page<String> page = messageContentDomain.pageListRoomIdGoupByRoomId(pageNum, limit);
 
         List<String> records = page.getRecords();
         if (!records.isEmpty()) {
             Set<ChatRoomModel> list = taskDomainService.listChatRoomDetail(new HashSet<>(records));
-            if (list.isEmpty()) return this.recursionRoomId(pageNum + 1, limit);
+            if (list.isEmpty()) return this.listChatRoom(pageNum + 1, limit);
 
             this.saveOrUpdateChatRoom(list);
 
-            // TODO 后期需要改成异步调用
+            // TODO 后期建议使用MQ异步调用
             this.saveOrUpdateMember(list);
 
-            this.recursionRoomId(pageNum + 1, limit);
+            this.listChatRoom(pageNum + 1, limit);
         }
 
         return true;
