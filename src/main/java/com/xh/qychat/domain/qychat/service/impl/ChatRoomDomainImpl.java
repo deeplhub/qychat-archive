@@ -31,7 +31,6 @@ public class ChatRoomDomainImpl extends ChatRoomServiceImpl implements ChatRoomD
             log.warn("批量保存/更新群信息时数据为空");
             return true;
         }
-
         return super.saveOrUpdateBatch(entityList, 1000);
     }
 }

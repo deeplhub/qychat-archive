@@ -80,7 +80,9 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         for (ChatRoomTreeNodeModel treeNode : treeNodeModel) {
             String chatId = treeNode.getChatId();
 
-            List<MemberEntity> memberList = super.listByCharId(chatId);
+            Set<String> userIds = treeNode.getChildren().parallelStream().map(o -> o.getUserid()).collect(Collectors.toSet());
+
+            List<MemberEntity> memberList = super.listByUserId(userIds);
             List<MemberEntity> memberEntityList = treeNode.getChildren().parallelStream().map(o -> this.getMemberEntity(o, memberList)).filter(Objects::nonNull).collect(Collectors.toList());
 
             memberSet.addAll(memberEntityList);
@@ -89,13 +91,9 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         }
 
         super.saveOrUpdateBatch(memberSet, 1000);
-        chatRoomMemberService.saveBatch(chatRoomMemberSet, 1000);
-
-
-//        Map<String, Set<String>> collect = chatRoomMemberSet.parallelStream().collect(Collectors.groupingBy(ChatRoomMemberEntity::getChatId, Collectors.mapping(ChatRoomMemberEntity::getUserId, Collectors.toSet())));
-//        collect.entrySet().parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getKey(), item.getValue()));
-
         treeNodeModel.parallelStream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNodeModel::getUserid).collect(Collectors.toSet())));
+
+        chatRoomMemberService.saveBatch(chatRoomMemberSet, 1000);
         return true;
     }
 
@@ -108,6 +106,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         if (treeNodeModel.getSign().equals(entity.getSign())) {
             return null;
         }
+
         entity.setUserId(treeNodeModel.getUserid());
         entity.setName(treeNodeModel.getName());
         entity.setType(treeNodeModel.getType());

@@ -18,26 +18,23 @@ public class ChatRoomFactory {
         Map<String, ChatRoomEntity> dictMap = chatRoomList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
 
         Set<ChatRoomModel> chatRoomModelList = chatRoom.getChatRoomModelList();
-        List<ChatRoomEntity> entityList = new LinkedList<>();
 
-        chatRoomModelList.parallelStream().filter(Objects::nonNull).forEach(item -> {
-            ChatRoomEntity chatRoomEntity = dictMap.get(item.getChatId());
-            chatRoomEntity = (chatRoomEntity == null) ? new ChatRoomEntity() : chatRoomEntity;
+        return chatRoomModelList.parallelStream().map(o -> getChatRoomEntity(dictMap, o)).filter(Objects::nonNull).collect(Collectors.toList());
+    }
 
-            String sign = item.getSign() + "";
-            System.out.println(sign + "  ===  " + chatRoomEntity.getSign());
-            if (sign.equals(chatRoomEntity.getSign())) return;
+    private static ChatRoomEntity getChatRoomEntity(Map<String, ChatRoomEntity> dictMap, ChatRoomModel chatRoomModel) {
+        ChatRoomEntity chatRoomEntity = dictMap.get(chatRoomModel.getChatId());
+        chatRoomEntity = (chatRoomEntity == null) ? new ChatRoomEntity() : chatRoomEntity;
 
-            chatRoomEntity.setChatId(item.getChatId());
-            chatRoomEntity.setName(item.getName());
-            chatRoomEntity.setNotice(item.getNotice());
-            chatRoomEntity.setOwner(item.getOwner());
-            chatRoomEntity.setCreateTime(DateUtil.date(item.getCreateTime()));
+        if ((chatRoomModel.getSign() + "").equals(chatRoomEntity.getSign())) return null;
 
-            entityList.add(chatRoomEntity);
-        });
+        chatRoomEntity.setChatId(chatRoomModel.getChatId());
+        chatRoomEntity.setName(chatRoomModel.getName());
+        chatRoomEntity.setNotice(chatRoomModel.getNotice());
+        chatRoomEntity.setOwner(chatRoomModel.getOwner());
+        chatRoomEntity.setCreateTime(DateUtil.date(chatRoomModel.getCreateTime()));
 
-        return entityList;
+        return chatRoomEntity;
     }
 
     public static Set<String> listChatId(ChatRoom chatRoom) {

@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.repository.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.mapper.MemberMapper;
@@ -7,6 +8,7 @@ import com.xh.qychat.domain.qychat.repository.service.MemberService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -23,5 +25,14 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> i
     public List<MemberEntity> listByCharId(String chatId) {
 
         return super.baseMapper.listByCharId(chatId);
+    }
+
+    @Override
+    public List<MemberEntity> listByUserId(Set<String> userIds) {
+        QueryWrapper<MemberEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().in(MemberEntity::getUserId, userIds);
+
+        return super.list(queryWrapper);
     }
 }

@@ -5,7 +5,6 @@ import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNodeModel;
-import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
@@ -67,8 +66,9 @@ public class TaskApplicationImpl implements TaskApplication {
             if (!isSuccess) throw new RuntimeException("save chat room fail");
 
             // TODO 后期需要改成异步调用
-            memberDomain.saveOrUpdateBatch(new Member(list));
+//            memberDomain.saveOrUpdateBatch(new Member(list));
 
+            this.saveOrUpdateMember(list);
 
             this.recursionRoomId(pageNum + 1, limit);
         }
@@ -78,7 +78,7 @@ public class TaskApplicationImpl implements TaskApplication {
 
     private void saveOrUpdateMember(Set<ChatRoomModel> list) {
         ChatRoomTreeNodeModel chatRoomTreeNodeModel = new ChatRoomTreeNodeModel();
-
-        memberDomain.saveOrUpdateBatch2(chatRoomTreeNodeModel.createTreeNode(list));
+        List<ChatRoomTreeNodeModel> treeNode = chatRoomTreeNodeModel.createTreeNode(list);
+        memberDomain.saveOrUpdateBatch2(treeNode);
     }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -16,4 +17,6 @@ import java.util.List;
 public interface MemberService extends IService<MemberEntity> {
 
     List<MemberEntity> listByCharId(String chatId);
+
+    List<MemberEntity> listByUserId(Set<String> userIds);
 }

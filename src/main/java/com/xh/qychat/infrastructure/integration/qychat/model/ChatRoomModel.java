@@ -113,6 +113,11 @@ public class ChatRoomModel extends ResponseModel {
         private String userid;
     }
 
+    public Long getCreateTime() {
+        // 默认返回单位是秒，需要把秒转毫秒
+        return createTime * 1000;
+    }
+
     public String getSign() {
         String verify = this.getVerify();
         return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
