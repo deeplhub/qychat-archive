@@ -32,7 +32,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<ChatDataModel> dataModels) {
 
-        return dataModels.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return dataModels.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
@@ -46,11 +46,12 @@ public class MessageContentFactory {
         entity.setMsgtime(chatData.getMsgtime() != null ? new Date(chatData.getMsgtime()) : new Date());
         entity.setCreateTime(new Date());
 
-        this.getActionMessage(chatData, entity);
+        this.getAction(chatData, entity);
+
         return entity;
     }
 
-    private void getActionMessage(ChatDataModel chatData, MessageContentEntity entity) {
+    private void getAction(ChatDataModel chatData, MessageContentEntity entity) {
         switch (chatData.getAction()) {
             case "send": // 发送消息
                 this.getSendMessage(chatData, entity);
@@ -73,7 +74,7 @@ public class MessageContentFactory {
         entity.setContent(dataModel.getContent());
 
         // 根据不同的类型选择不的策略
-        MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "StrategyImpl");
+        MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "MessageStrategyImpl");
         if (strategy != null) {
             strategy.process(dataModel, entity);
         }

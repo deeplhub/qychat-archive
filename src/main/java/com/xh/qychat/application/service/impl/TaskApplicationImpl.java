@@ -49,7 +49,7 @@ public class TaskApplicationImpl implements TaskApplication {
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(dataModels);
-        isSuccess = this.pullChatRoom(isSuccess, dataModels);
+//        isSuccess = this.pullChatRoom(isSuccess, dataModels);
 
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
     }

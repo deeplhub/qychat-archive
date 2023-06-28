@@ -23,4 +23,10 @@ public interface CommonConstants {
     String CHARSET_UTF8 = "UTF-8";
 
     int BATCH_SIZE = 1000;
+    String GIF_SUFFIX = ".gif";
+
+    /**
+     * 最大文件
+     */
+    int MAX_FILE_SIZE = 20 * 1024 * 1024;
 }

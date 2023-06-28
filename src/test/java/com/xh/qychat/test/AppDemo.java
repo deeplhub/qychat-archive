@@ -1,10 +1,11 @@
 package com.xh.qychat.test;
 
-import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
+import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author H.Yang
@@ -13,44 +14,34 @@ import java.util.Set;
 @Slf4j
 public class AppDemo {
 
+    private Map<String, Function<JSONObject, JSONObject>> actionMappings = new HashMap<>();
+
+    {
+        actionMappings.put("text", o -> this.getText(o));
+        actionMappings.put("image", o -> this.getImage(o));
+    }
 
     public static void main(String[] args) throws Exception {
-        Set<MemberEntity> memberSet = new HashSet<>();
+        AppDemo appDemo = new AppDemo();
 
+        appDemo.demo("text2");
+    }
 
-        MemberEntity entity = new MemberEntity();
-        entity.setUserId("111111111111111");
-        entity.setName("22222");
+    public void demo(String type) {
+        Function<JSONObject, JSONObject> function = actionMappings.get(type);
+        JSONObject apply = function.apply(new JSONObject());
 
-        memberSet.add(entity);
-
-        entity = new MemberEntity();
-        entity.setUserId("111111111111111");
-        entity.setName("22222");
-
-        memberSet.add(entity);
-
-        entity = new MemberEntity();
-        entity.setUserId("111111111111111");
-        entity.setName("22222");
-
-        memberSet.add(entity);
-
-        entity = new MemberEntity();
-        entity.setUserId("111111111111111");
-        entity.setName("22222");
-
-        memberSet.add(entity);
-
-        entity = new MemberEntity();
-        entity.setUserId("1111111111111112");
-        entity.setName("22222");
-
-        memberSet.add(entity);
-
-
-        System.out.println();
+        System.out.println(apply);
     }
 
 
+    private JSONObject getImage(JSONObject o) {
+        o.putOpt("text", "这是一张图片");
+        return o;
+    }
+
+    private JSONObject getText(JSONObject o) {
+        o.putOpt("text", "这一个文本");
+        return o;
+    }
 }
