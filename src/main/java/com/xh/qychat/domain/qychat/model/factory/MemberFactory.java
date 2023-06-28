@@ -44,9 +44,7 @@ public class MemberFactory {
         MemberEntity entity = entityMap.get(treeNodeModel.getUserid());
         entity = (entity == null) ? new MemberEntity() : entity;
 
-        if (treeNodeModel.getSign().equals(entity.getSign())) {
-            return null;
-        }
+        if (treeNodeModel.getSign().equals(entity.getSign())) return null;
 
         entity.setUserId(treeNodeModel.getUserid());
         entity.setName(treeNodeModel.getName());

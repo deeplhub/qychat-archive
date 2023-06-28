@@ -49,19 +49,21 @@ public class TaskApplicationImpl implements TaskApplication {
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(dataModels);
-        isSuccess = this.pullChatRoom(dataModels);
+        isSuccess = this.pullChatRoom(isSuccess, dataModels);
 
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
     }
 
-    private boolean pullChatRoom(List<ChatDataModel> dataModelList) {
-        Set<String> roomIds = dataModelList.parallelStream().filter(Objects::nonNull).map(o -> o.getRoomid()).collect(Collectors.toSet());
+    private boolean pullChatRoom(boolean isSuccess, List<ChatDataModel> dataModels) {
+        if (!isSuccess) return false;
+
+        Set<String> roomIds = dataModels.parallelStream().filter(Objects::nonNull).map(o -> o.getRoomid()).collect(Collectors.toSet());
         Set<ChatRoomModel> chatRooms = taskDomainService.listChatRoomDetail(roomIds);
 
-        boolean isSuccess = this.saveOrUpdateChatRoom(chatRooms);
+        isSuccess = this.saveOrUpdateChatRoom(chatRooms);
 
         // TODO 后期建议使用MQ异步调用
-        this.saveOrUpdateMember(chatRooms);
+        if (isSuccess) this.saveOrUpdateMember(chatRooms);
 
         return isSuccess;
     }
@@ -109,7 +111,7 @@ public class TaskApplicationImpl implements TaskApplication {
         boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
 
         // TODO 后期建议使用MQ异步调用
-        memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
+        if (isSuccess) memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
         return ResponseEvent.reply(isSuccess);
     }
 

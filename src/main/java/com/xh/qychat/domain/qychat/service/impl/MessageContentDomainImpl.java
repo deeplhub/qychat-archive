@@ -32,7 +32,6 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
     @Transactional
     public boolean saveBath(List<ChatDataModel> dataModels) {
         if (dataModels.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
-
         return super.saveBatch(MessageContentFactory.getSingleton().createEntity(dataModels), CommonConstants.BATCH_SIZE);
     }
 

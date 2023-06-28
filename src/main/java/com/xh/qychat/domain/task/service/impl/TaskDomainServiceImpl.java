@@ -2,7 +2,6 @@ package com.xh.qychat.domain.task.service.impl;
 
 import com.xh.qychat.domain.task.event.ChatRoomEvent;
 import com.xh.qychat.domain.task.service.TaskDomainService;
-import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
@@ -37,17 +36,13 @@ public class TaskDomainServiceImpl implements TaskDomainService {
 
     @Override
     public ChatRoomModel getChatRoomDetail(String roomid) {
-        ChatRoomModel chatRoomDetail = qychatAdapter.getChatRoomDetail(roomid);
-        if (chatRoomDetail == null) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
 
-        return chatRoomDetail;
+        return qychatAdapter.getChatRoomDetail(roomid);
     }
 
     @Override
     public PersonnelModel getPersonnel(String userId) {
-        PersonnelModel personnel = qychatAdapter.getPersonnelDetail(userId);
-        if (personnel == null) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
 
-        return personnel;
+        return qychatAdapter.getPersonnelDetail(userId);
     }
 }

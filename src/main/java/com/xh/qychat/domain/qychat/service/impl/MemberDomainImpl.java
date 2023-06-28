@@ -77,8 +77,9 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         String chatId = treeNode.getChatId();
 
         List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
-
         List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
+        if (memberEntityList.isEmpty()) return false;
+
         super.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
@@ -117,7 +118,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     @Transactional
     public boolean saveOrUpdate(Member member) {
         MemberEntity entity = super.getByUserId(member.getUserId());
-
+        if (entity == null) return false;
         return super.saveOrUpdate(MemberFactory.getSingleton().create(entity, member));
     }
 

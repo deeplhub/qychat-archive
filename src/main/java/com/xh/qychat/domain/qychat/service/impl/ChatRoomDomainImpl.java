@@ -40,6 +40,7 @@ public class ChatRoomDomainImpl extends ChatRoomServiceImpl implements ChatRoomD
 
         List<ChatRoomEntity> chatRoomList = super.listByChatId(chatIds);
         List<ChatRoomEntity> entityList = ChatRoomFactory.getSingleton().createOrModifyEntity(chatRooms, chatRoomList);
+        if (entityList.isEmpty()) return false;
 
         return super.saveOrUpdateBatch(entityList, CommonConstants.BATCH_SIZE);
     }

@@ -3,6 +3,7 @@ package com.xh.qychat.domain.qychat.model;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,8 @@ public class ChatRoomTreeNode {
 
 
     public static List<ChatRoomTreeNode> createTreeNode(Set<ChatRoomModel> list) {
+        if (list.isEmpty()) return new ArrayList<>(1);
+
         List<ChatRoomTreeNode> treeNode = new LinkedList<>();
         ChatRoomTreeNode node = null;
         for (ChatRoomModel chatRoom : list) {

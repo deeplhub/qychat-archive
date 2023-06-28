@@ -4,10 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +44,7 @@ public class ChatRoom {
     private String sign;
 
     public static List<ChatRoom> create(Set<ChatRoomModel> chatRooms) {
-
+        if (chatRooms.isEmpty()) return new ArrayList<>(1);
         return chatRooms.parallelStream().map(o -> getChatRoom(o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
