@@ -3,6 +3,7 @@ package com.xh.qychat.domain.qychat.model.factory;
 import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.NormalMessageStrategy;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 
@@ -73,12 +74,14 @@ public class MessageContentFactory {
         entity.setRoomid(StrUtil.isNotBlank(dataModel.getRoomid()) ? dataModel.getRoomid() : null);
         entity.setMsgtype(dataModel.getMsgtype());
         entity.setContent(dataModel.getContent());
+        entity.setMediaStatus(1);
 
-        // 根据不同的类型选择不的策略
+        // 普通类消息
         MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "MessageStrategyImpl");
-        if (strategy != null) {
+        if (strategy != null && strategy instanceof NormalMessageStrategy) {
             strategy.process(dataModel, entity);
         }
+
     }
 
 }

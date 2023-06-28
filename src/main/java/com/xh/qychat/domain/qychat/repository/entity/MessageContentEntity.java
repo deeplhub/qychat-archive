@@ -69,6 +69,7 @@ public class MessageContentEntity {
 
     /**
      * 媒体状态：1.未加载媒体，2.正在加载媒体，3.媒体加载完成，4.媒体加载失败
+     * 媒体状态：1未加载，2加载成功，3.加载失败
      */
     private Integer mediaStatus;
 

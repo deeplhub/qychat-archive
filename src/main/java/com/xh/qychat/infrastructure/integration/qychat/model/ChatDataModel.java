@@ -163,10 +163,6 @@ public class ChatDataModel extends ResponseModel {
      */
     private JSONObject doc;
     /**
-     * MarkDown格式消息
-     */
-    private JSONObject markdown;
-    /**
      * 图文消息
      */
     private JSONObject news;
@@ -179,6 +175,7 @@ public class ChatDataModel extends ResponseModel {
      */
     private JSONObject mixed;
     /**
+     * MarkDown格式消息
      * 微盘文件
      */
     private JSONObject info;
@@ -217,7 +214,6 @@ public class ChatDataModel extends ResponseModel {
         if (this.redpacket != null) return this.redpacket.toString();
         if (this.meeting != null) return this.meeting.toString();
         if (this.doc != null) return this.doc.toString();
-        if (this.markdown != null) return this.markdown.toString();
         if (this.news != null) return this.news.toString();
         if (this.calendar != null) return this.calendar.toString();
         if (this.mixed != null) return this.mixed.toString();

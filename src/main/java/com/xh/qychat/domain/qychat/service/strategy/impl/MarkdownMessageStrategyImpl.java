@@ -7,17 +7,17 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import org.springframework.stereotype.Component;
 
 /**
- * 文本消息
+ * MarkDown格式消息
  *
  * @author H.Yang
  * @date 2023/6/19
  */
 @Component
-public class TextMessageStrategyImpl implements NormalMessageStrategy {
+public class MarkdownMessageStrategyImpl implements NormalMessageStrategy {
 
     @Override
     public void process(ChatDataModel model, MessageContentEntity entity) {
-        JSONObject jsonObject = model.getText();
+        JSONObject jsonObject = model.getInfo();
 
         entity.setContent(jsonObject.getStr("content"));
     }

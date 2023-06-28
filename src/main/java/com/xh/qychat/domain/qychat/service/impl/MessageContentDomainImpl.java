@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
 import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
+import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
@@ -32,7 +33,9 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
     @Transactional
     public boolean saveBath(List<ChatDataModel> dataModels) {
         if (dataModels.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
-        return super.saveBatch(MessageContentFactory.getSingleton().createEntity(dataModels), CommonConstants.BATCH_SIZE);
+        List<MessageContentEntity> entity = MessageContentFactory.getSingleton().createEntity(dataModels);
+        boolean isSuccess = super.saveBatch(entity, CommonConstants.BATCH_SIZE);
+        return isSuccess;
     }
 
 }
