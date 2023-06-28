@@ -1,7 +1,10 @@
 package com.xh.qychat.domain.qychat.event;
 
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
+import com.xh.qychat.domain.qychat.repository.service.MessageContentService;
+import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
+import com.xh.qychat.infrastructure.config.CustomizedTaskExecutor;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -15,6 +18,9 @@ import java.util.List;
 @Slf4j
 public class ChatDataTransactionCommitEvent extends TransactionSynchronizationAdapter {
 
+    private final CustomizedTaskExecutor customizedTaskExecutor = SpringBeanUtils.getBean(CustomizedTaskExecutor.class);
+    private final MessageContentService messageContentService = SpringBeanUtils.getBean(MessageContentServiceImpl.class);
+
     private List<MessageContentEntity> messageContentList;
 
     public ChatDataTransactionCommitEvent(List<MessageContentEntity> messageContentList) {
@@ -24,14 +30,18 @@ public class ChatDataTransactionCommitEvent extends TransactionSynchronizationAd
 
     @Override
     public void afterCommit() {
-        for (MessageContentEntity entity : messageContentList) {
-            MessageStrategy strategy = SpringBeanUtils.getBean(entity.getMsgtype() + "MessageStrategyImpl");
-            if (strategy != null) {
-                strategy.process(entity);
+        customizedTaskExecutor.execute(() -> {
+            log.info("在事务提交后执行的逻辑");
+            for (MessageContentEntity entity : messageContentList) {
+                MessageStrategy strategy = SpringBeanUtils.getBean(entity.getMsgtype() + "MessageStrategyImpl");
+                if (strategy != null) {
+                    strategy.process(entity);
 
-//                messageContentService.updateById(entity.getContent(), entity.getId());
+                    messageContentService.updateById(entity.getContent(), entity.getId());
+                }
             }
-        }
+        });
+
     }
 
 }

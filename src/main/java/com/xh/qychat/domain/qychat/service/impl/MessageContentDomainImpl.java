@@ -41,4 +41,5 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
         return isSuccess;
     }
 
+
 }

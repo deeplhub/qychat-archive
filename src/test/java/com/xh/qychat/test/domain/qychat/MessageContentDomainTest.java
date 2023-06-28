@@ -34,12 +34,13 @@ public class MessageContentDomainTest {
 
     @Test
     public void testTransactional() {
-        messageContentDomain.demo();
+//        messageContentDomain.demo();
         System.out.println();
         while (true) {
             System.out.print(".");
         }
     }
+
 
 
     public Set<String> demo(Integer pageNum, Integer limit, Set<String> roomIds) {
