@@ -2,14 +2,14 @@ package com.xh.qychat.domain.qychat.model.factory;
 
 import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.domain.qychat.model.MessageContent;
-import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
+import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 消息内容工厂类
@@ -34,31 +34,28 @@ public class MessageContentFactory {
     public List<MessageContentEntity> createEntity(MessageContent messageContent) {
         List<ChatDataModel> dataModelList = messageContent.getDataModelList();
 
-        List<MessageContentEntity> entityList = new ArrayList<>(dataModelList.size());
-
-        dataModelList.parallelStream().forEach(item -> {
-            MessageContentEntity entity = new MessageContentEntity();
-
-            entity.setSeq(item.getSeq());
-            entity.setMsgid(item.getMsgid());
-            entity.setAction(item.getAction());
-            entity.setFromid(item.getFrom());
-            entity.setPublickeyVer(item.getPublickeyVer());
-            entity.setMsgtime(item.getMsgtime() != null ? new Date(item.getMsgtime()) : new Date());
-            entity.setCreateTime(new Date());
-
-            this.getActionMessage(item, entity);
-
-            entityList.add(entity);
-        });
-
-        return entityList;
+        return dataModelList.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
-    private void getActionMessage(ChatDataModel item, MessageContentEntity entity) {
-        switch (item.getAction()) {
+    private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
+        MessageContentEntity entity = new MessageContentEntity();
+
+        entity.setSeq(chatData.getSeq());
+        entity.setMsgid(chatData.getMsgid());
+        entity.setAction(chatData.getAction());
+        entity.setFromid(chatData.getFrom());
+        entity.setPublickeyVer(chatData.getPublickeyVer());
+        entity.setMsgtime(chatData.getMsgtime() != null ? new Date(chatData.getMsgtime()) : new Date());
+        entity.setCreateTime(new Date());
+
+        this.getActionMessage(chatData, entity);
+        return entity;
+    }
+
+    private void getActionMessage(ChatDataModel chatData, MessageContentEntity entity) {
+        switch (chatData.getAction()) {
             case "send": // 发送消息
-                this.getSendMessage(item, entity);
+                this.getSendMessage(chatData, entity);
                 break;
             case "revoke": // 撤回消息
                 entity.setMsgtype("revoke");

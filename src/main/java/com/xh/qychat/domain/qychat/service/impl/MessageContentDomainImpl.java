@@ -23,6 +23,7 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
 
     @Override
     public Long getMaxSeq() {
+        // TODO 最大序列未来可以选择从缓存中读取
         Long maxseq = super.getMaxSeq();
         return maxseq == null ? 0 : maxseq;
     }

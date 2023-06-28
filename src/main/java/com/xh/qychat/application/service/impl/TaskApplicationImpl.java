@@ -46,7 +46,6 @@ public class TaskApplicationImpl implements TaskApplication {
     @Override
     @Transactional
     public Result pullChatData() {
-        // TODO 最大序列未来可以选择从缓存中读取
         Long maxSeq = messageContentDomain.getMaxSeq();
         List<ChatDataModel> dataModelList = taskDomainService.pullChatData(maxSeq);
 
