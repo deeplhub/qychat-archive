@@ -32,10 +32,11 @@ public class MessageContentServiceImpl extends ServiceImpl<MessageContentMapper,
 
     @Override
     @Transactional
-    public boolean updateById(String content, Long id) {
+    public boolean updateById(String content,Integer mediaStatus, Long id) {
         UpdateWrapper<MessageContentEntity> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(MessageContentEntity::getId, id);
         updateWrapper.lambda().set(MessageContentEntity::getContent, content);
+        updateWrapper.lambda().set(MessageContentEntity::getMediaStatus, mediaStatus);
 
         return super.update(updateWrapper);
     }

@@ -1,5 +1,7 @@
 package com.xh.qychat.domain.qychat.event;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.qychat.model.MediaMessage;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.MessageContentService;
@@ -13,6 +15,10 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import java.util.List;
 
 /**
+ * 事务同步适配器
+ * <p>
+ * 事务提交后执行逻辑
+ *
  * @author H.Yang
  * @date 2023/6/28
  */
@@ -31,22 +37,25 @@ public class ChatDataTransactionCommitEvent extends TransactionSynchronizationAd
 
     @Override
     public void afterCommit() {
+        // TODO 验证一下这里是一个异步线程还是多个异步线程
         customizedTaskExecutor.execute(() -> {
-            log.info("在事务提交后执行的逻辑");
             for (MessageContentEntity entity : messageContentList) {
                 MessageStrategy strategy = SpringBeanUtils.getBean(entity.getMsgtype() + "MessageStrategyImpl");
-                if (strategy != null) {
-                    MediaMessage mediaMessage = new MediaMessage();
-                    mediaMessage.setContent(entity.getContent());
-                    mediaMessage.setType(entity.getMsgtype());
+                if (strategy == null && StrUtil.isBlank(entity.getContent())) continue;
 
-                    String content = strategy.process(mediaMessage.create());
+                MediaMessage mediaMessage = new MediaMessage();
+                mediaMessage.setContent(entity.getContent());
+                mediaMessage.setType(entity.getMsgtype());
 
-                    messageContentService.updateById(content, entity.getId());
-                }
+                mediaMessage = mediaMessage.create();
+
+                log.debug("消息ID：[{}], 消息请求：{}", entity.getId(), JSONUtil.toJsonStr(mediaMessage));
+                String content = strategy.process(mediaMessage);
+                log.debug("消息ID：[{}], 媒体状态：[{}], 消息策略返回结果：{}", entity.getId(), mediaMessage.getMediaStatus(), content);
+
+                messageContentService.updateById(content, mediaMessage.getMediaStatus(), entity.getId());
             }
         });
-
     }
 
 }

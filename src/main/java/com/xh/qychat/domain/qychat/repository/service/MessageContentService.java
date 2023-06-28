@@ -13,6 +13,6 @@ public interface MessageContentService extends IService<MessageContentEntity> {
 
     Page<String> pageListRoomIdGoupByRoomId(Integer pageNum, Integer limit);
 
-    boolean updateById(String content, Long id);
+    boolean updateById(String content, Integer mediaStatus, Long id);
 
 }

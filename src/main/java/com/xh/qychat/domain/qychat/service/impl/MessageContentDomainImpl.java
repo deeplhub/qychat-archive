@@ -36,7 +36,7 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
         if (dataModels.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
         List<MessageContentEntity> entitys = MessageContentFactory.getSingleton().createEntity(dataModels);
         boolean isSuccess = super.saveBatch(entitys, CommonConstants.BATCH_SIZE);
-        // 获取事务提交后的数据并执行扩展逻辑
+        // 事务提交后执行扩展逻辑
         if (isSuccess) TransactionSynchronizationManager.registerSynchronization(new ChatDataTransactionCommitEvent(entitys));
         return isSuccess;
     }

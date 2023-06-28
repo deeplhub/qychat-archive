@@ -36,6 +36,7 @@ public class VideoMessageStrategyImpl implements MessageStrategy {
     public MediaMessage getImageObject(MediaMessage mediaMessage) {
         if (mediaMessage.getFileSize() > CommonConstants.MAX_FILE_SIZE) {
             mediaMessage.setNote("视频文件大小超出系统限制.");
+            mediaMessage.setMediaStatus(3);
             return mediaMessage;
         }
 
@@ -44,6 +45,7 @@ public class VideoMessageStrategyImpl implements MessageStrategy {
 
         mediaMessage.setFileName(fileName);
         mediaMessage.setStatus(true);
+        mediaMessage.setMediaStatus(2);
         return mediaMessage;
     }
 

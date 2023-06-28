@@ -38,6 +38,7 @@ public class VoiceMessageStrategyImpl implements MessageStrategy {
         int voiceSize = mediaMessage.getVoiceSize();
         if (voiceSize > CommonConstants.MAX_FILE_SIZE) {
             mediaMessage.setNote("音频文件大小超出系统限制.");
+            mediaMessage.setMediaStatus(3);
             return mediaMessage;
         }
 
@@ -47,6 +48,7 @@ public class VoiceMessageStrategyImpl implements MessageStrategy {
         mediaMessage.setFileSize(voiceSize);
         mediaMessage.setFileName(fileName);
         mediaMessage.setStatus(true);
+        mediaMessage.setMediaStatus(2);
         return mediaMessage;
     }
 

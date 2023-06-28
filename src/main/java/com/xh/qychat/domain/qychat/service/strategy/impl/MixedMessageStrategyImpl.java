@@ -32,6 +32,7 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
         actionMappings.put("voice", o -> this.getMedia(o));
         actionMappings.put("video", o -> this.getMedia(o));
         actionMappings.put("file", o -> this.getMedia(o));
+        actionMappings.put("emotion", o -> this.getMedia(o));
     }
 
     /**
