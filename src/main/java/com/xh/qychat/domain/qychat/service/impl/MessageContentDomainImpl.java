@@ -1,11 +1,11 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
-import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
-import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
+import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
+import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +30,10 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
 
     @Override
     @Transactional
-    public boolean saveBath(MessageContent messageContent) {
-        List<MessageContentEntity> entityList = MessageContentFactory.getSingleton().createEntity(messageContent);
-        if (entityList.isEmpty()) {
-            log.warn("保存消息内容出现错误，数据为空");
-            return true;
-        }
-        return super.saveBatch(entityList, CommonConstants.BATCH_SIZE);
+    public boolean saveBath(List<ChatDataModel> dataModels) {
+        if (dataModels.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
+
+        return super.saveBatch(MessageContentFactory.getSingleton().createEntity(dataModels), CommonConstants.BATCH_SIZE);
     }
 
 }

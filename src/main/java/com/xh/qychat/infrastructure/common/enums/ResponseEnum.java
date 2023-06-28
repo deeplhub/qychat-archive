@@ -22,7 +22,7 @@ public enum ResponseEnum implements BaseEnum<Integer, String, ResponseEnum> {
     BODY_NOT_MATCH(400, "参数解析失败"),
     //    SIGNATURE_NOT_MATCH(401, "数字签名不匹配"),
 //    NOT_LOGIN(401, "用户未登录"),
-    REQUEST_PARAMETERS(402, "参数不存在或参数有误"),
+    REQUEST_PARAMETERS(402, "参数有误或数据不存在"),
     PERMISSION_DENIED(403, "无权访问"),
     PERMISSION_TOKEN_DENIED(403, "无权访问：token不存在"),
     RESOURCES_NOT_EXIST(404, "资源不存在"),

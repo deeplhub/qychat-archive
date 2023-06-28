@@ -25,22 +25,22 @@ public class ChatRoomDomainImpl extends ChatRoomServiceImpl implements ChatRoomD
     @Transactional
     public boolean saveOrUpdate(ChatRoom chatRoom) {
         ChatRoomEntity entity = super.getByChatId(chatRoom.getChatId());
-
         entity = ChatRoomFactory.getSingleton().createOrModifyEntity(chatRoom, entity);
+        if (entity == null) return false;
+
         return super.saveOrUpdate(entity);
     }
 
     @Override
     @Transactional
     public boolean saveOrUpdateBatch(List<ChatRoom> chatRooms) {
+        if (chatRooms.isEmpty()) return false;
+
         Set<String> chatIds = ChatRoomFactory.getSingleton().listChatId(chatRooms);
 
         List<ChatRoomEntity> chatRoomList = super.listByChatId(chatIds);
         List<ChatRoomEntity> entityList = ChatRoomFactory.getSingleton().createOrModifyEntity(chatRooms, chatRoomList);
-        if (entityList.isEmpty()) {
-            log.warn("批量保存/更新群信息时数据为空");
-            return true;
-        }
+
         return super.saveOrUpdateBatch(entityList, CommonConstants.BATCH_SIZE);
     }
 }

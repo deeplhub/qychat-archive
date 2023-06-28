@@ -91,6 +91,8 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     @Override
     @Transactional
     public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes) {
+        if (treeNodes.isEmpty()) return false;
+
         Set<MemberEntity> memberSet = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
 
@@ -115,11 +117,8 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     @Transactional
     public boolean saveOrUpdate(Member member) {
         MemberEntity entity = super.getByUserId(member.getUserId());
-        if (entity == null) throw new RuntimeException("数据不存在");
 
-        entity = MemberFactory.getSingleton().create(entity, member);
-
-        return super.saveOrUpdate(entity);
+        return super.saveOrUpdate(MemberFactory.getSingleton().create(entity, member));
     }
 
 

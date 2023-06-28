@@ -27,7 +27,7 @@ public class ChatRoomFactory {
     public List<ChatRoomEntity> createOrModifyEntity(List<ChatRoom> chatRooms, List<ChatRoomEntity> chatRoomList) {
         Map<String, ChatRoomEntity> dictMap = chatRoomList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getChatId(), v), HashMap::putAll);
 
-        return chatRooms.parallelStream().map(o -> getChatRoomEntity(dictMap, o)).filter(Objects::nonNull).collect(Collectors.toList());
+        return chatRooms.parallelStream().map(o -> this.getChatRoomEntity(dictMap, o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public ChatRoomEntity createOrModifyEntity(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity) {

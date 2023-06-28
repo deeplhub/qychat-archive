@@ -1,7 +1,9 @@
 package com.xh.qychat.domain.qychat.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xh.qychat.domain.qychat.model.MessageContent;
+import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
+
+import java.util.List;
 
 /**
  * @author H.Yang
@@ -14,7 +16,7 @@ public interface MessageContentDomain {
      */
     Long getMaxSeq();
 
-    boolean saveBath(MessageContent messageContent);
+    boolean saveBath(List<ChatDataModel> dataModels);
 
     /**
      * 获取所有群ID

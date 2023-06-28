@@ -1,7 +1,6 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
 import cn.hutool.core.util.StrUtil;
-import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
@@ -31,10 +30,9 @@ public class MessageContentFactory {
     }
 
 
-    public List<MessageContentEntity> createEntity(MessageContent messageContent) {
-        List<ChatDataModel> dataModelList = messageContent.getDataModelList();
+    public List<MessageContentEntity> createEntity(List<ChatDataModel> dataModels) {
 
-        return dataModelList.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return dataModels.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
