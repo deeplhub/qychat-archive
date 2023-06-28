@@ -32,7 +32,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<ChatDataModel> dataModels) {
 
-        return dataModels.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return dataModels.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
@@ -65,6 +65,7 @@ public class MessageContentFactory {
             default:
                 break;
         }
+
     }
 
     private void getSendMessage(ChatDataModel dataModel, MessageContentEntity entity) {
