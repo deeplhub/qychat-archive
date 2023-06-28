@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.event;
 
+import com.xh.qychat.domain.qychat.model.MediaMessage;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.MessageContentService;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
@@ -35,9 +36,13 @@ public class ChatDataTransactionCommitEvent extends TransactionSynchronizationAd
             for (MessageContentEntity entity : messageContentList) {
                 MessageStrategy strategy = SpringBeanUtils.getBean(entity.getMsgtype() + "MessageStrategyImpl");
                 if (strategy != null) {
-                    strategy.process(entity);
+                    MediaMessage mediaMessage = new MediaMessage();
+                    mediaMessage.setContent(entity.getContent());
+                    mediaMessage.setType(entity.getMsgtype());
 
-                    messageContentService.updateById(entity.getContent(), entity.getId());
+                    String content = strategy.process(mediaMessage.create());
+
+                    messageContentService.updateById(content, entity.getId());
                 }
             }
         });

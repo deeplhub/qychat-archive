@@ -23,7 +23,8 @@ public interface CommonConstants {
     String CHARSET_UTF8 = "UTF-8";
 
     int BATCH_SIZE = 1000;
-    String GIF_SUFFIX = ".gif";
+
+    String RESOURCES_PATH = "/data/qychat_archive/";
 
     /**
      * 最大文件

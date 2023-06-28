@@ -1,6 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy;
 
-import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
+import com.xh.qychat.domain.qychat.model.MediaMessage;
 
 /**
  * 消息格式策略
@@ -12,5 +12,5 @@ import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
  */
 public interface MessageStrategy {
 
-    void process(MessageContentEntity entity);
+    String process(MediaMessage mediaMessage);
 }
