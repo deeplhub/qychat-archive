@@ -1,7 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy;
 
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 
 /**
  * 消息格式策略
@@ -13,5 +12,5 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
  */
 public interface MessageStrategy {
 
-    void process(ChatDataModel model, MessageContentEntity entity);
+    void process(MessageContentEntity entity);
 }

@@ -1,6 +1,5 @@
 package com.xh.qychat.test.domain.qychat;
 
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +30,15 @@ public class MessageContentDomainTest {
 
         Set<String> set = this.demo(1, 20, new HashSet<>());
         System.out.println();
+    }
+
+    @Test
+    public void testTransactional() {
+        messageContentDomain.demo();
+        System.out.println();
+        while (true) {
+            System.out.print(".");
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
+import com.xh.qychat.domain.qychat.event.ChatDataTransactionCommitEvent;
 import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
@@ -10,6 +11,7 @@ import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 
@@ -20,7 +22,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class MessageContentDomainImpl extends MessageContentServiceImpl implements MessageContentDomain {
-
 
     @Override
     public Long getMaxSeq() {
@@ -33,8 +34,10 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
     @Transactional
     public boolean saveBath(List<ChatDataModel> dataModels) {
         if (dataModels.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
-        List<MessageContentEntity> entity = MessageContentFactory.getSingleton().createEntity(dataModels);
-        boolean isSuccess = super.saveBatch(entity, CommonConstants.BATCH_SIZE);
+        List<MessageContentEntity> entitys = MessageContentFactory.getSingleton().createEntity(dataModels);
+        boolean isSuccess = super.saveBatch(entitys, CommonConstants.BATCH_SIZE);
+        // 获取事务提交后的数据并执行扩展逻辑
+        if (isSuccess) TransactionSynchronizationManager.registerSynchronization(new ChatDataTransactionCommitEvent(entitys));
         return isSuccess;
     }
 

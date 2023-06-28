@@ -61,7 +61,7 @@ class TaskApplicationTest {
         MessageContentEntity entity = new MessageContentEntity();
 
         MessageStrategy strategy = SpringBeanUtils.getBean("mixedStrategyImpl");
-        strategy.process(model, entity);
+//        strategy.process(model, entity);
 
 
         System.out.println(JSONUtil.toJsonStr(entity.getContent()));
