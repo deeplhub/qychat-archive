@@ -1,6 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy;
 
-import com.xh.qychat.domain.qychat.model.MediaMessage;
+import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 
 /**
  * 消息格式策略
@@ -12,5 +12,5 @@ import com.xh.qychat.domain.qychat.model.MediaMessage;
  */
 public interface MessageStrategy {
 
-    String process(MediaMessage mediaMessage);
+    String process(ChatDataMessage chatDataMessage);
 }

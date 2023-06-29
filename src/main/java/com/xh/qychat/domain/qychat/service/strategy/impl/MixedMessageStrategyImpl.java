@@ -1,12 +1,10 @@
 package com.xh.qychat.domain.qychat.service.strategy.impl;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.model.MediaMessage;
+import com.xh.qychat.domain.qychat.model.ChatDataMessage;
+import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.infrastructure.util.SpringBeanUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +19,9 @@ import java.util.stream.Collectors;
  * @author H.Yang
  * @date 2023/6/19
  */
-@Component
 public class MixedMessageStrategyImpl implements MessageStrategy {
 
-    private final Map<String, Function<MediaMessage, MediaMessage>> actionMappings = new HashMap<>();
+    private final Map<String, Function<ChatDataMessage, Object>> actionMappings = new HashMap<>();
 
     {
         actionMappings.put("text", o -> this.getText(o));
@@ -41,44 +38,53 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
      * {"item":[{"type":"image","content":"{\"md5sum\":\"01772d12d5ad19e31eb8f43f78167e0b\",\"filesize\":20353,\"sdkfileid\":\"CtQBMzA2ODAyMDEwMjA0NjEzMDVmMDIwMTAwMDIwNGQxNDgzYTkwMDIwMzBmNDI0MTAyMDRkNGQzNjZiNDAyMDQ2NDk1NjgyNDA0MjQzNzMwMzQzMDYzMzY2NDM5MmQ2NTY0Mzk2NTJkMzQzODM1MzMyZDYxNjM2MjM3MmQzODYxMzQzMDY0MzkzODM4NjY2NjM4MzMwMjAxMDAwMjAyNGY5MDA0MTAwMTc3MmQxMmQ1YWQxOWUzMWViOGY0M2Y3ODE2N2UwYjAyMDEwMTAyMDEwMDA0MDASOE5EZGZNVFk0T0RnMU56WTJOalF3TWprMk1GOHhNakl4T0RJd09ESTFYekUyT0RjMU1UTXhNamc9GiA3N2M5YTVlYmRmMDU5MTUwYzRmYzc2OGE4NGIzNWVmNQ==\"}"},{"type":"text","content":"{\"content\":\"@雷才德  德哥还在机房嘛\"}"}]}
      * </pre>
      *
-     * @param mediaMessage
+     * @param chatDataMessage
      * @return
      */
     @Override
-    public String process(MediaMessage mediaMessage) {
-        if (StrUtil.isBlank(mediaMessage.getContent())) return null;
+    public String process(ChatDataMessage chatDataMessage) {
+        JSONObject jsonObject = chatDataMessage.getContentObject();
 
-        JSONObject jsonObject = JSONUtil.parseObj(mediaMessage.getContent());
+        List<JSONObject> item = jsonObject.getBeanList("item", JSONObject.class);
 
-        List<MediaMessage> mixedList = jsonObject.getBeanList("item", MediaMessage.class);
-        List<MediaMessage> mediaMessageList = mixedList.parallelStream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<ChatDataMessage> mixedList = item.parallelStream().map(o -> getChatDataMessage(o)).collect(Collectors.toList());
+        List<Object> chatDataMessageList = mixedList.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 
-        return JSONUtil.toJsonStr(mediaMessageList);
+        return JSONUtil.toJsonStr(chatDataMessageList);
     }
 
-    private MediaMessage getAction(MediaMessage mixed) {
+    private ChatDataMessage getChatDataMessage(JSONObject jsonObject) {
+        ChatDataMessage chatData = new ChatDataMessage();
+
+        chatData.setType(jsonObject.getStr("type"));
+        chatData.setContent(jsonObject.getStr("content"));
+
+        return chatData.create();
+    }
+
+    private Object getAction(ChatDataMessage mixed) {
         String type = mixed.getType();
 
-        Function<MediaMessage, MediaMessage> function = actionMappings.get(type);
+        Function<ChatDataMessage, Object> function = actionMappings.get(type);
         if (function == null) return null;
 
         return function.apply(mixed);
     }
 
 
-    private MediaMessage getText(MediaMessage mixedText) {
-        mixedText.setContent(JSONUtil.parseObj(mixedText.getContent()).getStr("content"));
-        return mixedText;
+    private JSONObject getText(ChatDataMessage mixedText) {
+        JSONObject jsonObject = mixedText.getContentObject();
+        jsonObject.putOpt("type", "text");
+        return jsonObject;
     }
 
-    private MediaMessage getMedia(MediaMessage mixedImage) {
-        MediaMessage mediaMessage = JSONUtil.toBean(mixedImage.getContent(), MediaMessage.class);
+    private ChatDataMessage getMedia(ChatDataMessage mixed) {
+        String type = mixed.getType();
 
-        MessageStrategy strategy = SpringBeanUtils.getBean(mixedImage + "MessageStrategyImpl");
-        if (strategy == null) return null;
+        MessageAdapter messageAdapter = new MessageAdapter(type);
 
-        String process = strategy.process(mediaMessage);
-        return JSONUtil.toBean(process, MediaMessage.class);
+        String process = messageAdapter.getChatDataMessage(mixed);
+        return JSONUtil.toBean(process, ChatDataMessage.class);
     }
 
 

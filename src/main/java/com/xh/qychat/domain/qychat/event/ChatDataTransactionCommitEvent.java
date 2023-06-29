@@ -2,7 +2,7 @@ package com.xh.qychat.domain.qychat.event;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.model.MediaMessage;
+import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.MessageContentService;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
@@ -43,17 +43,17 @@ public class ChatDataTransactionCommitEvent extends TransactionSynchronizationAd
                 MessageStrategy strategy = SpringBeanUtils.getBean(entity.getMsgtype() + "MessageStrategyImpl");
                 if (strategy == null && StrUtil.isBlank(entity.getContent())) continue;
 
-                MediaMessage mediaMessage = new MediaMessage();
-                mediaMessage.setContent(entity.getContent());
-                mediaMessage.setType(entity.getMsgtype());
+                ChatDataMessage chatDataMessage = new ChatDataMessage();
+                chatDataMessage.setContent(entity.getContent());
+                chatDataMessage.setType(entity.getMsgtype());
 
-                mediaMessage = mediaMessage.create();
+                chatDataMessage = chatDataMessage.create();
 
-                log.debug("消息ID：[{}], 消息请求：{}", entity.getId(), JSONUtil.toJsonStr(mediaMessage));
-                String content = strategy.process(mediaMessage);
-                log.debug("消息ID：[{}], 媒体状态：[{}], 消息策略返回结果：{}", entity.getId(), mediaMessage.getMediaStatus(), content);
+                log.debug("消息ID：[{}], 消息请求：{}", entity.getId(), JSONUtil.toJsonStr(chatDataMessage));
+                String content = strategy.process(chatDataMessage);
+                log.debug("消息ID：[{}], 媒体状态：[{}], 消息策略返回结果：{}", entity.getId(), chatDataMessage.getMediaStatus(), content);
 
-                messageContentService.updateById(content, mediaMessage.getMediaStatus(), entity.getId());
+                messageContentService.updateById(content, chatDataMessage.getMediaStatus(), entity.getId());
             }
         });
     }

@@ -1,0 +1,52 @@
+package com.xh.qychat.domain.qychat.service.adapter;
+
+import com.xh.qychat.domain.qychat.model.ChatDataMessage;
+import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.impl.*;
+
+/**
+ * @author H.Yang
+ * @date 2023/6/29
+ */
+public class MessageAdapter {
+
+    private MessageStrategy messageStrategy;
+
+    public MessageAdapter(String messageType) {
+        switch (messageType) {
+            case "text":
+            case "markdown":
+            case "ChatRecordText":
+                messageStrategy = new TextMessageStrategyImpl();
+                break;
+            case "image":
+            case "voice":
+            case "video":
+            case "file":
+            case "ChatRecordImage":
+            case "ChatRecordVoice":
+            case "ChatRecordVideo":
+            case "ChatRecordFile":
+                messageStrategy = new MediaMessageStrategyImpl();
+                break;
+            case "emotion":
+            case "ChatRecordEmotion":
+                messageStrategy = new EmotionMessageStrategyImpl();
+                break;
+            case "mixed":
+            case "ChatRecordMixed":
+                messageStrategy = new MixedMessageStrategyImpl();
+                break;
+            case "chatrecord":
+                messageStrategy = new ChatrecordMessageStrategyImpl();
+                break;
+        }
+    }
+
+
+    public String getChatDataMessage(ChatDataMessage chatDataMessage) {
+
+        return (messageStrategy != null) ? messageStrategy.process(chatDataMessage) : null;
+    }
+
+}
