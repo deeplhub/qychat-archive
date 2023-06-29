@@ -30,9 +30,6 @@ class TaskApplicationTest {
     @Test
     public void pullChatData() {
         taskApplication.pullChatData();
-        while (true) {
-
-        }
     }
 
     @Test

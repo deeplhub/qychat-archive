@@ -88,11 +88,6 @@ public class ChatDataModel extends ResponseModel {
     private JSONObject revoke;
 
     /**
-     * 同意会话聊天内容
-     */
-//    private JSONObject agree;
-
-    /**
      * 语音
      */
     private JSONObject voice;
@@ -101,16 +96,6 @@ public class ChatDataModel extends ResponseModel {
      * 视频
      */
     private JSONObject video;
-
-    /**
-     * 名片
-     */
-//    private JSONObject card;
-
-    /**
-     * 位置
-     */
-//    private JSONObject location;
 
     /**
      * 表情
@@ -123,53 +108,10 @@ public class ChatDataModel extends ResponseModel {
     private JSONObject file;
 
     /**
-     * 链接
-     */
-//    private JSONObject link;
-
-    /**
-     * 小程序消息
-     */
-//    private JSONObject weapp;
-
-    /**
      * 会话记录消息
      */
     private JSONObject chatrecord;
 
-    /**
-     * 待办消息
-     */
-//    private JSONObject todo;
-    /**
-     * 投票消息
-     */
-//    private JSONObject vote;
-    /**
-     * 填表消息
-     */
-//    private JSONObject collect;
-
-    /**
-     * 红包消息
-     */
-//    private JSONObject redpacket;
-    /**
-     * 会议邀请消息
-     */
-//    private JSONObject meeting;
-    /**
-     * 在线文档消息
-     */
-//    private JSONObject doc;
-    /**
-     * 图文消息
-     */
-//    private JSONObject news;
-    /**
-     * 日程消息
-     */
-//    private JSONObject calendar;
     /**
      * 混合消息
      */
@@ -177,9 +119,9 @@ public class ChatDataModel extends ResponseModel {
     /**
      * MarkDown格式消息
      * 微盘文件
+     * 音视频通话
      */
     private JSONObject info;
-
 
     /**
      * 获取文本
@@ -198,26 +140,15 @@ public class ChatDataModel extends ResponseModel {
         if (this.text != null) return this.text.toString();
         if (this.image != null) return this.image.toString();
         if (this.revoke != null) return this.revoke.toString();
-//        if (this.agree != null) return this.agree.toString();
         if (this.voice != null) return this.voice.toString();
         if (this.video != null) return this.video.toString();
-//        if (this.card != null) return this.card.toString();
-//        if (this.location != null) return this.location.toString();
         if (this.emotion != null) return this.emotion.toString();
         if (this.file != null) return this.file.toString();
-//        if (this.link != null) return this.link.toString();
-//        if (this.weapp != null) return this.weapp.toString();
         if (this.chatrecord != null) return this.chatrecord.toString();
-//        if (this.todo != null) return this.todo.toString();
-//        if (this.vote != null) return this.vote.toString();
-//        if (this.collect != null) return this.collect.toString();
-//        if (this.redpacket != null) return this.redpacket.toString();
-//        if (this.meeting != null) return this.meeting.toString();
-//        if (this.doc != null) return this.doc.toString();
-//        if (this.news != null) return this.news.toString();
-//        if (this.calendar != null) return this.calendar.toString();
         if (this.mixed != null) return this.mixed.toString();
-        if (this.info != null) return this.info.toString();
+
+        // info有多种格式的消息，目前只接收MarkDown格式消息
+        if (this.info != null && "markdown".equals(this.msgtype)) return this.info.toString();
 
         return content;
     }

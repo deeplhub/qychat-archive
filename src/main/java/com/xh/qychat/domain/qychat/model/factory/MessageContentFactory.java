@@ -1,11 +1,10 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.qychat.model.ChatDataMessage;
+import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
-import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -33,50 +32,52 @@ public class MessageContentFactory {
     }
 
 
-    public List<MessageContentEntity> createEntity(List<ChatDataModel> dataModels) {
+    public List<MessageContentEntity> createEntity(List<MessageContent> messageContents) {
 
-        return dataModels.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
-    private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
+    private MessageContentEntity getMessageContentEntity(MessageContent messageContents) {
         MessageContentEntity entity = new MessageContentEntity();
 
-        entity.setSeq(chatData.getSeq());
-        entity.setMsgid(chatData.getMsgid());
-        entity.setAction(chatData.getAction());
-        entity.setFromid(chatData.getFrom());
-        entity.setPublickeyVer(chatData.getPublickeyVer());
-        entity.setMsgtime(chatData.getMsgtime() != null ? new Date(chatData.getMsgtime()) : new Date());
+        entity.setSeq(messageContents.getSeq());
+        entity.setMsgid(messageContents.getMsgid());
+        entity.setAction(messageContents.getAction());
+        entity.setFromid(messageContents.getFromid());
+        entity.setPublickeyVer(messageContents.getPublickeyVer());
+        entity.setMsgtime(messageContents.getMsgtime());
         entity.setCreateTime(new Date());
 
-        this.getAction(chatData, entity);
+        this.getAction(messageContents, entity);
 
         return entity;
     }
 
-    private void getAction(ChatDataModel chatData, MessageContentEntity entity) {
-        switch (chatData.getAction()) {
+    private void getAction(MessageContent messageContents, MessageContentEntity entity) {
+        switch (messageContents.getAction()) {
             case "send": // 发送消息
-                this.getSendMessage(chatData, entity);
+                this.getSendMessage(messageContents, entity);
                 break;
             case "revoke": // 撤回消息
                 entity.setMsgtype("revoke");
                 break;
-            case "switch": // 切换企业日志
-                entity.setMsgtype("switch");
-                break;
+//            case "switch": // 切换企业日志
+//                entity.setMsgtype("switch");
+//                break;
             default:
                 break;
         }
 
     }
 
-    private void getSendMessage(ChatDataModel dataModel, MessageContentEntity entity) {
-        entity.setTolist(dataModel.getTolist());
-        entity.setRoomid(StrUtil.isNotBlank(dataModel.getRoomid()) ? dataModel.getRoomid() : null);
-        entity.setMsgtype(dataModel.getMsgtype());
-        entity.setContent(dataModel.getContent());
+    private void getSendMessage(MessageContent messageContents, MessageContentEntity entity) {
+        entity.setTolist(messageContents.getTolist());
+        entity.setRoomid(messageContents.getRoomid());
+        entity.setMsgtype(messageContents.getMsgtype());
+        entity.setContent(messageContents.getContent());
         entity.setMediaStatus(1);
+
+        if (true) return;
 
 //        if (StrUtil.isBlank(dataModel.getMsgtype()) || StrUtil.isBlank(dataModel.getContent())) return;
 
@@ -127,7 +128,7 @@ public class MessageContentFactory {
 
 
         ChatDataMessage chatDataMessage = new ChatDataMessage();
-        chatDataMessage.setContent(dataModel.getContent());
+        chatDataMessage.setContent(messageContents.getContent());
         chatDataMessage.setType(entity.getMsgtype());
 
         chatDataMessage = chatDataMessage.create();
