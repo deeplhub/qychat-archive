@@ -5,6 +5,8 @@ import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.impl.*;
 
 /**
+ * 消息格式适配器
+ *
  * @author H.Yang
  * @date 2023/6/29
  */
@@ -39,6 +41,8 @@ public class MessageAdapter {
                 break;
             case "chatrecord":
                 messageStrategy = new ChatrecordMessageStrategyImpl();
+                break;
+            default:
                 break;
         }
     }

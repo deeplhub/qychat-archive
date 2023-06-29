@@ -34,6 +34,9 @@ public class MessageContent {
     }
 
     private static MessageContent getChatData(ChatDataModel chatData) {
+        // 微盘文件不做处理
+        if ("qydiskfile".equals(chatData.getMsgtype())) return null;
+
         MessageContent messageContent = new MessageContent();
 
         messageContent.setSeq(chatData.getSeq());

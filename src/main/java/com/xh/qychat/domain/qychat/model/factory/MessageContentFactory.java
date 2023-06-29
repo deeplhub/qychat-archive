@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 import com.xh.qychat.domain.qychat.model.MessageContent;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +36,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<MessageContent> messageContents) {
 
-        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(MessageContent messageContents) {
@@ -61,9 +63,9 @@ public class MessageContentFactory {
             case "revoke": // 撤回消息
                 entity.setMsgtype("revoke");
                 break;
-//            case "switch": // 切换企业日志
-//                entity.setMsgtype("switch");
-//                break;
+            case "switch": // 切换企业日志
+                entity.setMsgtype("switch");
+                break;
             default:
                 break;
         }
@@ -74,58 +76,10 @@ public class MessageContentFactory {
         entity.setTolist(messageContents.getTolist());
         entity.setRoomid(messageContents.getRoomid());
         entity.setMsgtype(messageContents.getMsgtype());
-        entity.setContent(messageContents.getContent());
+        entity.setOriginalContent(messageContents.getContent());
         entity.setMediaStatus(1);
 
-        if (true) return;
-
-//        if (StrUtil.isBlank(dataModel.getMsgtype()) || StrUtil.isBlank(dataModel.getContent())) return;
-
-//        MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "MessageStrategyImpl");
-//        if (strategy != null) {
-//            ChatDataMessage chatDataMessage = new ChatDataMessage();
-//            chatDataMessage.setContent(dataModel.getContent());
-//            chatDataMessage.setType(entity.getMsgtype());
-//
-//            chatDataMessage = chatDataMessage.create();
-//
-//            log.debug("消息ID：[{}], 消息请求：{}", entity.getMsgid(), JSONUtil.toJsonStr(chatDataMessage));
-//            String content = strategy.process(chatDataMessage);
-//            log.debug("消息ID：[{}], 消息策略返回结果：{}", entity.getMsgid(), content);
-//
-//            entity.setContent(content);
-//            entity.setMediaStatus(chatDataMessage.getMediaStatus());
-//        }
-
-//        if ("image".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("text".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("markdown".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("emotion".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("mixed".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("file".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//
-//        if ("voice".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("video".equals(entity.getMsgtype())) {
-//            return;
-//        }
-//        if ("chatrecord".equals(entity.getMsgtype())) {
-//            System.out.println();
-//        }
-
+        if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
 
         ChatDataMessage chatDataMessage = new ChatDataMessage();
         chatDataMessage.setContent(messageContents.getContent());

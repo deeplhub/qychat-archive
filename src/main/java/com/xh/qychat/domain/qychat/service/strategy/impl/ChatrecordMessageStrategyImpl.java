@@ -37,7 +37,6 @@ public class ChatrecordMessageStrategyImpl implements MessageStrategy {
     @Override
     public String process(ChatDataMessage chatDataMessage) {
         JSONObject jsonObject = chatDataMessage.getContentObject();
-        String title = jsonObject.getStr("title");
 
         List<JSONObject> item = jsonObject.getBeanList("item", JSONObject.class);
 
