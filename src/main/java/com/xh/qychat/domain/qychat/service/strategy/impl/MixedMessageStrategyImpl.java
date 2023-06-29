@@ -48,7 +48,7 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
         List<JSONObject> item = jsonObject.getBeanList("item", JSONObject.class);
 
         List<ChatDataMessage> mixedList = item.parallelStream().map(o -> getChatDataMessage(o)).collect(Collectors.toList());
-        List<Object> chatDataMessageList = mixedList.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<Object> chatDataMessageList = mixedList.parallelStream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 
         return JSONUtil.toJsonStr(chatDataMessageList);
     }

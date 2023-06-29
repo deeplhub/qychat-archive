@@ -35,7 +35,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<ChatDataModel> dataModels) {
 
-        return dataModels.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return dataModels.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(ChatDataModel chatData) {
@@ -78,7 +78,7 @@ public class MessageContentFactory {
         entity.setContent(dataModel.getContent());
         entity.setMediaStatus(1);
 
-        if (StrUtil.isBlank(dataModel.getMsgtype()) || StrUtil.isBlank(dataModel.getContent())) return;
+//        if (StrUtil.isBlank(dataModel.getMsgtype()) || StrUtil.isBlank(dataModel.getContent())) return;
 
 //        MessageStrategy strategy = SpringBeanUtils.getBean(dataModel.getMsgtype() + "MessageStrategyImpl");
 //        if (strategy != null) {

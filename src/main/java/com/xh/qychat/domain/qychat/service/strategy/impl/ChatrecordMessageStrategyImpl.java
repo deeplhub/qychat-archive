@@ -41,7 +41,7 @@ public class ChatrecordMessageStrategyImpl implements MessageStrategy {
 
         List<JSONObject> item = jsonObject.getBeanList("item", JSONObject.class);
 
-        List<JSONObject> chatDataMessageList = item.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<JSONObject> chatDataMessageList = item.parallelStream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 
         jsonObject.set("item", chatDataMessageList);
         return jsonObject.toString();
