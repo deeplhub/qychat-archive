@@ -1,6 +1,5 @@
 package com.xh.qychat.domain.qychat.service.strategy.dto;
 
-import cn.hutool.core.date.DateUtil;
 import lombok.Data;
 
 /**
@@ -55,32 +54,4 @@ public class MediaMessageDTO {
         return this.msgtime * 1000;
     }
 
-    public String getVoipText() {
-        String text = "";
-        switch (this.invitetype) {
-            case 1:
-                text = "单人视频通话时长 ";
-                break;
-            case 2:
-                text = "单人语音通话时长 ";
-                break;
-            case 3:
-                text = "多人视频通话时长 ";
-                break;
-            case 4:
-                text = "多人语音通话时长 ";
-                break;
-            default:
-                break;
-        }
-
-        return text + this.getDuration();
-    }
-
-    private String getDuration() {
-        if (this.callduration == null) return "";
-
-        long millisecond = this.callduration * 1000;
-        return DateUtil.formatBetween(millisecond);
-    }
 }
