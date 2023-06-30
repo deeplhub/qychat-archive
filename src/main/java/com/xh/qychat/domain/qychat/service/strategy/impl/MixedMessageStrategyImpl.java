@@ -6,11 +6,8 @@ import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -20,17 +17,6 @@ import java.util.stream.Collectors;
  * @date 2023/6/19
  */
 public class MixedMessageStrategyImpl implements MessageStrategy {
-
-    private final Map<String, Function<ChatDataMessageDTO, JSONObject>> actionMappings = new HashMap<>();
-
-    {
-        actionMappings.put("text", o -> this.getText(o));
-        actionMappings.put("image", o -> this.getMedia(o));
-        actionMappings.put("voice", o -> this.getMedia(o));
-        actionMappings.put("video", o -> this.getMedia(o));
-        actionMappings.put("file", o -> this.getMedia(o));
-        actionMappings.put("emotion", o -> this.getMedia(o));
-    }
 
     /**
      * 请求报文：
@@ -44,32 +30,33 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {
         List<ChatDataMessageDTO> items = chatDataDto.getItem();
-
-        List<ChatDataMessageDTO> mixedList = items.stream().map(o -> this.getMixedMessage(o, chatDataDto.getMsgType())).collect(Collectors.toList());
-
-        List<JSONObject> chatDataMessageList = mixedList.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<JSONObject> chatDataMessageList = items.parallelStream().map(o -> this.getAction(o)).filter(Objects::nonNull).collect(Collectors.toList());
 
         return JSONUtil.toJsonStr(chatDataMessageList);
     }
 
-    private ChatDataMessageDTO getMixedMessage(ChatDataMessageDTO chatDataDto, String msgType) {
-        ChatDataMessageDTO mixed = chatDataDto.createMixed();
-        mixed.setMsgType(msgType);
-        mixed.setType(chatDataDto.getType());
-        return mixed;
-    }
-
     private JSONObject getAction(ChatDataMessageDTO chatDataDto) {
-        String type = chatDataDto.getType();
+        ChatDataMessageDTO mixedDto = chatDataDto.createMixed();
+        mixedDto.setType(chatDataDto.getType());
 
-        Function<ChatDataMessageDTO, JSONObject> function = actionMappings.get(type);
-        if (function == null) return null;
-
-        return function.apply(chatDataDto);
+        switch (mixedDto.getType()) {
+            case "text":
+            case "markdown":
+                return this.getMixedText(mixedDto);
+            case "image":
+            case "voice":
+            case "video":
+            case "file":
+            case "emotion":
+                return this.getMixedMedia(mixedDto);
+            default:
+                break;
+        }
+        return null;
     }
 
 
-    private JSONObject getText(ChatDataMessageDTO chatDataDto) {
+    private JSONObject getMixedText(ChatDataMessageDTO chatDataDto) {
         JSONObject data = new JSONObject();
 
         data.putOpt("type", "text");
@@ -78,12 +65,11 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
         return data;
     }
 
-    private JSONObject getMedia(ChatDataMessageDTO chatDataDto) {
+    private JSONObject getMixedMedia(ChatDataMessageDTO chatDataDto) {
         String type = chatDataDto.getType();
+        chatDataDto.setMsgType(type);
 
         MessageAdapter messageAdapter = new MessageAdapter(type);
-
-        chatDataDto.setMsgType(type);
         String process = messageAdapter.getChatDataMessage(chatDataDto);
 
         JSONObject data = JSONUtil.parseObj(process);

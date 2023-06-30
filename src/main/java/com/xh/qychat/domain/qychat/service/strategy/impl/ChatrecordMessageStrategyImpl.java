@@ -21,7 +21,7 @@ public class ChatrecordMessageStrategyImpl implements MessageStrategy {
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {
         List<ChatDataMessageDTO> items = chatDataDto.getItem();
-        List<JSONObject> chatDataList = items.stream().map(o -> this.getAction(o)).filter(Objects::nonNull).collect(Collectors.toList());
+        List<JSONObject> chatDataList = items.parallelStream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 
         JSONObject data = new JSONObject();
 

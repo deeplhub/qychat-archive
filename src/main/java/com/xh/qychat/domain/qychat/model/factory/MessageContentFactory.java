@@ -34,7 +34,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<MessageContent> messageContents) {
 
-        return messageContents.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(MessageContent messageContents) {
@@ -106,27 +106,22 @@ public class MessageContentFactory {
 
         if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
 
-        if ("voiptext".equals(messageContents.getMsgtype())) {
-            ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
-            chatDataDto.setBody(messageContents.getContent());
-            chatDataDto.setMsgType(messageContents.getMsgtype());
+//        if ("voiptext".equals(messageContents.getMsgtype())) {
+//        }
+        ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
+        chatDataDto.setBody(messageContents.getContent());
+        chatDataDto.setMsgType(messageContents.getMsgtype());
 
-            chatDataDto = chatDataDto.create();
+        chatDataDto = chatDataDto.create();
 
-            MessageAdapter messageAdapter = new MessageAdapter(messageContents.getMsgtype());
-            String content = null;
-            try {
-                log.debug("消息ID：[{}], 消息请求：{}", messageContents.getMsgid(), messageContents.getContent());
-                content = messageAdapter.getChatDataMessage(chatDataDto);
-                log.debug("消息ID：[{}], 消息策略返回结果：{}", messageContents.getMsgid(), content);
-            } catch (Exception e) {
-                System.out.println();
-                e.printStackTrace();
-            }
+        MessageAdapter messageAdapter = new MessageAdapter(messageContents.getMsgtype());
 
-            entity.setContent(content);
-            entity.setMediaStatus(chatDataDto.getMediaStatus());
-        }
+        log.debug("消息ID：[{}]，消息类型：{}，消息内容：{}", messageContents.getMsgid(), messageContents.getMsgtype(), messageContents.getContent());
+        String content = messageAdapter.getChatDataMessage(chatDataDto);
+        log.debug("消息ID：[{}]，消息策略返回结果：{}", messageContents.getMsgid(), content);
+
+        entity.setContent(content);
+        entity.setMediaStatus(chatDataDto.getMediaStatus());
     }
 
 }
