@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy.impl;
 
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
@@ -26,8 +27,9 @@ public class MediaMessageStrategyImpl implements MessageStrategy {
 
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {
+        JSONObject response = new JSONObject();
         if (chatDataDto.getFilesize() > CommonConstants.MAX_FILE_SIZE) {
-            chatDataDto.setNote("文件大小超出系统限制.");
+            response.putOpt("note", "文件大小超出系统限制.");
             chatDataDto.setMediaStatus(3);
             return JSONUtil.toJsonStr(chatDataDto);
         }
@@ -35,14 +37,16 @@ public class MediaMessageStrategyImpl implements MessageStrategy {
         String fileName = this.getFileName(chatDataDto);
         qychatAdapter.download(chatDataDto.getSdkfileid(), fileName);
 
-        chatDataDto.setFilename(fileName);
+        response.putOpt("filename", fileName);
+        response.putOpt("filesize", chatDataDto.getFilesize());
+
         chatDataDto.setMediaStatus(2);
 
-        return JSONUtil.toJsonStr(chatDataDto);
+        return response.toString();
     }
 
     private String getFileName(ChatDataMessageDTO chatDataDto) {
-        String filePath = CommonConstants.RESOURCES_PATH + chatDataDto.getType() + "/";
+        String filePath = CommonConstants.RESOURCES_PATH + chatDataDto.getMsgType() + "/";
 
         // 判断文件夹是否存在，不存在则创建
         File folder = new File(filePath);

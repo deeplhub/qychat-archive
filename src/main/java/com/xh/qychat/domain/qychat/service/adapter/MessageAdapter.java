@@ -4,7 +4,6 @@ import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
 import com.xh.qychat.domain.qychat.service.strategy.impl.MediaMessageStrategyImpl;
 import com.xh.qychat.domain.qychat.service.strategy.impl.MixedMessageStrategyImpl;
-import com.xh.qychat.domain.qychat.service.strategy.impl.TextMessageStrategyImpl;
 
 /**
  * 消息格式适配器
@@ -16,13 +15,13 @@ public class MessageAdapter {
 
     private MessageStrategy messageStrategy;
 
-    public MessageAdapter(String messageType) {
-        switch (messageType) {
-            case "text":
-            case "markdown":
-            case "ChatRecordText":
-                messageStrategy = new TextMessageStrategyImpl();
-                break;
+    public MessageAdapter(String msgType) {
+        switch (msgType) {
+//            case "text":
+//            case "markdown":
+//            case "ChatRecordText":
+//                messageStrategy = new TextMessageStrategyImpl();
+//                break;
             case "image":
             case "voice":
             case "video":

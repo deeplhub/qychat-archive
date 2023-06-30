@@ -15,6 +15,6 @@ public class TextMessageStrategyImpl implements MessageStrategy {
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {
 
-        return chatDataDto.getContentObj().getContent();
+        return chatDataDto.getContent();
     }
 }

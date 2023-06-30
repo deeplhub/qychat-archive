@@ -2,11 +2,9 @@ package com.xh.qychat.domain.qychat.service.strategy.impl;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
-import com.xh.qychat.domain.qychat.service.strategy.dto.MediaMessageDTO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class MixedMessageStrategyImpl implements MessageStrategy {
 
-    private final Map<String, Function<ChatDataMessage, Object>> actionMappings = new HashMap<>();
+    private final Map<String, Function<ChatDataMessageDTO, JSONObject>> actionMappings = new HashMap<>();
 
     {
         actionMappings.put("text", o -> this.getText(o));
@@ -45,47 +43,53 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
      */
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {
-        MediaMessageDTO mediaDto = chatDataDto.getMediaMessage();
+        List<ChatDataMessageDTO> items = chatDataDto.getItem();
 
-        List<ChatDataMessageDTO> mixedList = mediaDto.getItem().parallelStream().map(o -> this.getChatDataMessage(o)).collect(Collectors.toList());
-        List<Object> chatDataMessageList = mixedList.parallelStream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
+        List<ChatDataMessageDTO> mixedList = items.stream().map(o -> this.getMixedMessage(o, chatDataDto.getMsgType())).collect(Collectors.toList());
+        System.out.println();
+
+        List<JSONObject> chatDataMessageList = mixedList.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 
         return JSONUtil.toJsonStr(chatDataMessageList);
     }
 
-    private ChatDataMessageDTO getChatDataMessage(MediaMessageDTO mediaDto) {
-        ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
-
-        chatDataDto.setType(mediaDto.getType());
-        chatDataDto.setContent(mediaDto.getContent());
-
-        return chatDataDto.create(mediaDto);
+    private ChatDataMessageDTO getMixedMessage(ChatDataMessageDTO chatDataDto, String msgType) {
+        ChatDataMessageDTO mixed = chatDataDto.createMixed();
+        mixed.setMsgType(msgType);
+        mixed.setType(chatDataDto.getType());
+        return mixed;
     }
 
-    private Object getAction(ChatDataMessage mixed) {
-        String type = mixed.getType();
+    private JSONObject getAction(ChatDataMessageDTO chatDataDto) {
+        String type = chatDataDto.getType();
 
-        Function<ChatDataMessage, Object> function = actionMappings.get(type);
+        Function<ChatDataMessageDTO, JSONObject> function = actionMappings.get(type);
         if (function == null) return null;
 
-        return function.apply(mixed);
+        return function.apply(chatDataDto);
     }
 
 
     private JSONObject getText(ChatDataMessageDTO chatDataDto) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.putOpt("type", "text");
-        jsonObject.putOpt("type", chatDataDto.getContentObj().getContent());
-        return jsonObject;
+        JSONObject data = new JSONObject();
+
+        data.putOpt("type", "text");
+        data.putOpt("content", chatDataDto.getContent());
+
+        return data;
     }
 
-    private ChatDataMessage getMedia(ChatDataMessageDTO chatDataDto) {
+    private JSONObject getMedia(ChatDataMessageDTO chatDataDto) {
         String type = chatDataDto.getType();
 
         MessageAdapter messageAdapter = new MessageAdapter(type);
 
+        chatDataDto.setMsgType(type);
         String process = messageAdapter.getChatDataMessage(chatDataDto);
-        return JSONUtil.toBean(process, ChatDataMessage.class);
+
+        JSONObject data = JSONUtil.parseObj(process);
+        data.putOpt("type", type);
+        return data;
     }
 
 

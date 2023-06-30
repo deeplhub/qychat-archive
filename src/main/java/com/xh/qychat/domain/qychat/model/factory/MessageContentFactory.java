@@ -34,7 +34,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<MessageContent> messageContents) {
 
-        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return messageContents.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(MessageContent messageContents) {
@@ -107,7 +107,7 @@ public class MessageContentFactory {
         if ("mixed".equals(messageContents.getMsgtype())) {
             ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
             chatDataDto.setBody(messageContents.getContent());
-            chatDataDto.setType(messageContents.getMsgtype());
+            chatDataDto.setMsgType(messageContents.getMsgtype());
 
             chatDataDto = chatDataDto.create();
 
