@@ -15,12 +15,14 @@ public class MediaMessageDTO {
     private String sdkfileid;
     private Integer filesize;
     private Integer voiceSize;
+    private Integer imagesize;
     private String filename;
     private String md5sum;
 
     public Integer getFilesize() {
-
-        return (this.filesize == null && this.voiceSize != null) ? this.voiceSize : this.filesize;
+        this.filesize = (this.voiceSize != null) ? this.voiceSize : this.filesize;
+        this.filesize = (this.imagesize != null) ? this.imagesize : this.filesize;
+        return this.filesize;
     }
 
 }

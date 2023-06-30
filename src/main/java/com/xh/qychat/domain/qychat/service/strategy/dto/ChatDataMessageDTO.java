@@ -53,6 +53,9 @@ public class ChatDataMessageDTO extends MediaMessageDTO {
             case "file":
             case "ChatRecordFile":
                 return this.getFilename();
+            case "emotion":
+                String fileNameSuffix = "1".equals(this.getType()) ? ".gif" : ".png";
+                return this.getMd5sum() + fileNameSuffix;
             default:
                 return "";
         }

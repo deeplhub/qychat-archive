@@ -104,7 +104,7 @@ public class MessageContentFactory {
 
         if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
 
-        if ("mixed".equals(messageContents.getMsgtype())) {
+        if ("emotion".equals(messageContents.getMsgtype())) {
             ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
             chatDataDto.setBody(messageContents.getContent());
             chatDataDto.setMsgType(messageContents.getMsgtype());

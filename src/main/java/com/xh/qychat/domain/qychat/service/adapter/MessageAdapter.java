@@ -4,6 +4,7 @@ import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
 import com.xh.qychat.domain.qychat.service.strategy.impl.MediaMessageStrategyImpl;
 import com.xh.qychat.domain.qychat.service.strategy.impl.MixedMessageStrategyImpl;
+import com.xh.qychat.domain.qychat.service.strategy.impl.TextMessageStrategyImpl;
 
 /**
  * 消息格式适配器
@@ -17,11 +18,11 @@ public class MessageAdapter {
 
     public MessageAdapter(String msgType) {
         switch (msgType) {
-//            case "text":
-//            case "markdown":
-//            case "ChatRecordText":
-//                messageStrategy = new TextMessageStrategyImpl();
-//                break;
+            case "text":
+            case "markdown":
+            case "ChatRecordText":
+                messageStrategy = new TextMessageStrategyImpl();
+                break;
             case "image":
             case "voice":
             case "video":
@@ -30,12 +31,10 @@ public class MessageAdapter {
             case "ChatRecordVoice":
             case "ChatRecordVideo":
             case "ChatRecordFile":
+            case "emotion":
+            case "ChatRecordEmotion":
                 messageStrategy = new MediaMessageStrategyImpl();
                 break;
-//            case "emotion":
-//            case "ChatRecordEmotion":
-//                messageStrategy = new EmotionMessageStrategyImpl();
-//                break;
             case "mixed":
             case "ChatRecordMixed":
                 messageStrategy = new MixedMessageStrategyImpl();
