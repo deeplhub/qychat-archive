@@ -3,8 +3,8 @@ package com.xh.qychat.domain.qychat.model.factory;
 import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
-import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.event.adapter.MessageAdapter;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -69,31 +69,6 @@ public class MessageContentFactory {
         }
 
     }
-
-    //    private void getSendMessage(MessageContent messageContents, MessageContentEntity entity) {
-//        entity.setTolist(messageContents.getTolist());
-//        entity.setRoomid(messageContents.getRoomid());
-//        entity.setMsgtype(messageContents.getMsgtype());
-//        entity.setOriginalContent(messageContents.getContent());
-//        entity.setMediaStatus(1);
-//
-//        if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
-//
-//        ChatDataMessage chatDataMessage = new ChatDataMessage();
-//        chatDataMessage.setContent(messageContents.getContent());
-//        chatDataMessage.setType(entity.getMsgtype());
-//
-//        chatDataMessage = chatDataMessage.create();
-//
-//        MessageAdapter messageAdapter = new MessageAdapter(entity.getMsgtype());
-//
-//        log.debug("消息ID：[{}], 消息请求：{}", entity.getMsgid(), JSONUtil.toJsonStr(chatDataMessage));
-//        String content = messageAdapter.getChatDataMessage(chatDataMessage);
-//        log.debug("消息ID：[{}], 消息策略返回结果：{}", entity.getMsgid(), content);
-//
-//        entity.setContent(content);
-//        entity.setMediaStatus(chatDataMessage.getMediaStatus());
-//    }
 
     private void getSendMessage(MessageContent messageContents, MessageContentEntity entity) {
         entity.setTolist(messageContents.getTolist());

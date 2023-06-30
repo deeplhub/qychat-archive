@@ -1,10 +1,9 @@
-package com.xh.qychat.domain.qychat.service.strategy.impl;
+package com.xh.qychat.domain.qychat.event.strategy;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.service.adapter.MessageAdapter;
-import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.event.adapter.MessageAdapter;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  * @author H.Yang
  * @date 2023/6/19
  */
-public class MixedMessageStrategyImpl implements MessageStrategy {
+public class MixedMessageStrategy implements MessageStrategy {
 
     /**
      * 请求报文：

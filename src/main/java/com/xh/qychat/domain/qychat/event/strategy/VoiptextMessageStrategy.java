@@ -1,8 +1,7 @@
-package com.xh.qychat.domain.qychat.service.strategy.impl;
+package com.xh.qychat.domain.qychat.event.strategy;
 
 import cn.hutool.core.date.DateUtil;
-import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 
 /**
  * 音视频通话
@@ -10,7 +9,7 @@ import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
  * @author H.Yang
  * @date 2023/6/19
  */
-public class VoiptextMessageStrategyImpl implements MessageStrategy {
+public class VoiptextMessageStrategy implements MessageStrategy {
 
     @Override
     public String process(ChatDataMessageDTO chatDataDto) {

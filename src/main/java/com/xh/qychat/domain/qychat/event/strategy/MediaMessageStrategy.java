@@ -1,9 +1,8 @@
-package com.xh.qychat.domain.qychat.service.strategy.impl;
+package com.xh.qychat.domain.qychat.event.strategy;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.impl.QyChatAdapterImpl;
@@ -21,7 +20,7 @@ import java.io.File;
  * @author H.Yang
  * @date 2023/6/19
  */
-public class MediaMessageStrategyImpl implements MessageStrategy {
+public class MediaMessageStrategy implements MessageStrategy {
 
     private final QyChatAdapter qychatAdapter = SpringBeanUtils.getBean(QyChatAdapterImpl.class);
 

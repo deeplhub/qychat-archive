@@ -1,4 +1,4 @@
-package com.xh.qychat.domain.qychat.service.strategy.dto;
+package com.xh.qychat.domain.qychat.event.strategy.dto;
 
 import cn.hutool.json.JSONUtil;
 import lombok.Data;

@@ -1,6 +1,6 @@
-package com.xh.qychat.domain.qychat.service.strategy;
+package com.xh.qychat.domain.qychat.event.strategy;
 
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 
 /**
  * 消息格式策略

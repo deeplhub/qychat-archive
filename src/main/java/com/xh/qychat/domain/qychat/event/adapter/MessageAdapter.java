@@ -1,8 +1,7 @@
-package com.xh.qychat.domain.qychat.service.adapter;
+package com.xh.qychat.domain.qychat.event.adapter;
 
-import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
-import com.xh.qychat.domain.qychat.service.strategy.impl.*;
+import com.xh.qychat.domain.qychat.event.strategy.*;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 
 /**
  * 消息格式适配器
@@ -18,23 +17,23 @@ public class MessageAdapter {
         switch (msgType) {
             case "text":
             case "markdown":
-                messageStrategy = new TextMessageStrategyImpl();
+                messageStrategy = new TextMessageStrategy();
                 break;
             case "image":
             case "voice":
             case "video":
             case "file":
             case "emotion":
-                messageStrategy = new MediaMessageStrategyImpl();
+                messageStrategy = new MediaMessageStrategy();
                 break;
             case "mixed":
-                messageStrategy = new MixedMessageStrategyImpl();
+                messageStrategy = new MixedMessageStrategy();
                 break;
             case "chatrecord":
-                messageStrategy = new ChatrecordMessageStrategyImpl();
+                messageStrategy = new ChatrecordMessageStrategy();
                 break;
             case "voiptext":
-                messageStrategy = new VoiptextMessageStrategyImpl();
+                messageStrategy = new VoiptextMessageStrategy();
                 break;
             default:
                 break;
