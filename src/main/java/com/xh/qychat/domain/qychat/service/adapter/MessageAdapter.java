@@ -1,8 +1,10 @@
 package com.xh.qychat.domain.qychat.service.adapter;
 
-import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
-import com.xh.qychat.domain.qychat.service.strategy.impl.*;
+import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.domain.qychat.service.strategy.impl.MediaMessageStrategyImpl;
+import com.xh.qychat.domain.qychat.service.strategy.impl.MixedMessageStrategyImpl;
+import com.xh.qychat.domain.qychat.service.strategy.impl.TextMessageStrategyImpl;
 
 /**
  * 消息格式适配器
@@ -31,26 +33,26 @@ public class MessageAdapter {
             case "ChatRecordFile":
                 messageStrategy = new MediaMessageStrategyImpl();
                 break;
-            case "emotion":
-            case "ChatRecordEmotion":
-                messageStrategy = new EmotionMessageStrategyImpl();
-                break;
+//            case "emotion":
+//            case "ChatRecordEmotion":
+//                messageStrategy = new EmotionMessageStrategyImpl();
+//                break;
             case "mixed":
             case "ChatRecordMixed":
                 messageStrategy = new MixedMessageStrategyImpl();
                 break;
-            case "chatrecord":
-                messageStrategy = new ChatrecordMessageStrategyImpl();
-                break;
+//            case "chatrecord":
+//                messageStrategy = new ChatrecordMessageStrategyImpl();
+//                break;
             default:
                 break;
         }
     }
 
 
-    public String getChatDataMessage(ChatDataMessage chatDataMessage) {
+    public String getChatDataMessage(ChatDataMessageDTO chatDataDto) {
 
-        return (messageStrategy != null) ? messageStrategy.process(chatDataMessage) : null;
+        return (messageStrategy != null) ? messageStrategy.process(chatDataDto) : null;
     }
 
 }

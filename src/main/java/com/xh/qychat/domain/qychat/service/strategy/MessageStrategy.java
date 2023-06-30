@@ -1,6 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy;
 
-import com.xh.qychat.domain.qychat.model.ChatDataMessage;
+import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
 
 /**
  * 消息格式策略
@@ -12,5 +12,5 @@ import com.xh.qychat.domain.qychat.model.ChatDataMessage;
  */
 public interface MessageStrategy {
 
-    String process(ChatDataMessage chatDataMessage);
+    String process(ChatDataMessageDTO chatDataDto);
 }

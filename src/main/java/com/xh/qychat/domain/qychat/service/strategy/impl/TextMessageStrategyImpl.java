@@ -1,8 +1,7 @@
 package com.xh.qychat.domain.qychat.service.strategy.impl;
 
-import cn.hutool.json.JSONObject;
-import com.xh.qychat.domain.qychat.model.ChatDataMessage;
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
+import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
 
 /**
  * 文本消息
@@ -14,9 +13,8 @@ import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 public class TextMessageStrategyImpl implements MessageStrategy {
 
     @Override
-    public String process(ChatDataMessage chatDataMessage) {
-        JSONObject contentObject = chatDataMessage.getContentObject();
+    public String process(ChatDataMessageDTO chatDataDto) {
 
-        return contentObject.getStr("content");
+        return chatDataDto.getContentObj().getContent();
     }
 }
