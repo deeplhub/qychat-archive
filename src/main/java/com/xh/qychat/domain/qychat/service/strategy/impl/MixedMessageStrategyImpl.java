@@ -46,7 +46,6 @@ public class MixedMessageStrategyImpl implements MessageStrategy {
         List<ChatDataMessageDTO> items = chatDataDto.getItem();
 
         List<ChatDataMessageDTO> mixedList = items.stream().map(o -> this.getMixedMessage(o, chatDataDto.getMsgType())).collect(Collectors.toList());
-        System.out.println();
 
         List<JSONObject> chatDataMessageList = mixedList.stream().map(this::getAction).filter(Objects::nonNull).collect(Collectors.toList());
 

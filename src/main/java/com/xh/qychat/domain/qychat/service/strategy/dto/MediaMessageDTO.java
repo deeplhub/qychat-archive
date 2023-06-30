@@ -18,6 +18,8 @@ public class MediaMessageDTO {
     private Integer imagesize;
     private String filename;
     private String md5sum;
+    private Long msgtime;
+    private Boolean fromChatroom;
 
     public Integer getFilesize() {
         this.filesize = (this.voiceSize != null) ? this.voiceSize : this.filesize;
@@ -25,4 +27,17 @@ public class MediaMessageDTO {
         return this.filesize;
     }
 
+    public String getType() {
+        // 会话消息
+        if (this.type != null && this.type.contains("ChatRecord")) {
+            this.type = this.type.replace("ChatRecord", "").toLowerCase();
+        }
+
+        return type;
+    }
+
+    public Long getMsgtime() {
+        // 默认返回单位是秒，需要把秒转毫秒
+        return this.msgtime * 1000;
+    }
 }

@@ -104,7 +104,7 @@ public class MessageContentFactory {
 
         if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
 
-        if ("emotion".equals(messageContents.getMsgtype())) {
+        if ("voiptext".equals(messageContents.getMsgtype())) {
             ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
             chatDataDto.setBody(messageContents.getContent());
             chatDataDto.setMsgType(messageContents.getMsgtype());
@@ -119,6 +119,7 @@ public class MessageContentFactory {
                 log.debug("消息ID：[{}], 消息策略返回结果：{}", messageContents.getMsgid(), content);
             } catch (Exception e) {
                 System.out.println();
+                e.printStackTrace();
             }
 
             entity.setContent(content);

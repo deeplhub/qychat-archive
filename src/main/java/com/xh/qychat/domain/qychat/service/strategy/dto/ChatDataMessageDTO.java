@@ -18,6 +18,11 @@ public class ChatDataMessageDTO extends MediaMessageDTO {
      */
     private transient Integer mediaStatus = 1;
 
+    /**
+     * 会话记录消息标题
+     */
+    private String title;
+
     private String msgType;
     private String content;
 
@@ -42,16 +47,12 @@ public class ChatDataMessageDTO extends MediaMessageDTO {
     public String getFileNameSuffix() {
         switch (this.getMsgType()) {
             case "image":
-            case "ChatRecordImage":
                 return this.getMd5sum() + ".png";
             case "voice":
-            case "ChatRecordVoice":
                 return this.getMd5sum() + ".mp3";
             case "video":
-            case "ChatRecordVideo":
                 return this.getMd5sum() + ".mp4";
             case "file":
-            case "ChatRecordFile":
                 return this.getFilename();
             case "emotion":
                 String fileNameSuffix = "1".equals(this.getType()) ? ".gif" : ".png";
