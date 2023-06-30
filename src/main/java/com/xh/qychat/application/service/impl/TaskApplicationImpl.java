@@ -6,6 +6,7 @@ import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
 import com.xh.qychat.domain.qychat.model.Member;
+import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
@@ -43,13 +44,12 @@ public class TaskApplicationImpl implements TaskApplication {
 
 
     @Override
-    @Transactional
     public Result pullChatData() {
         Long maxSeq = messageContentDomain.getMaxSeq();
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);
 
-        boolean isSuccess = messageContentDomain.saveBath(dataModels);
-        isSuccess = this.pullChatRoom(isSuccess, dataModels);
+        boolean isSuccess = messageContentDomain.saveBath(MessageContent.create(dataModels));
+//        isSuccess = this.pullChatRoom(isSuccess, dataModels);
 
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
     }
