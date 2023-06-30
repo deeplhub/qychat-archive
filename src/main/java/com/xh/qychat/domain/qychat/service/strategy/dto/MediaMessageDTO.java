@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.service.strategy.dto;
 
+import cn.hutool.core.date.DateUtil;
 import lombok.Data;
 
 /**
@@ -21,6 +22,19 @@ public class MediaMessageDTO {
     private Long msgtime;
     private Boolean fromChatroom;
 
+    /**
+     * 音视频通话 - 通话时长，单位秒
+     */
+    private Integer callduration;
+    /**
+     * 音视频通话 - 通话类型
+     * 1; //单人视频通话
+     * 2; //单人语音通话
+     * 3; //多人视频通话
+     * 4; //多人语音通话
+     */
+    private Integer invitetype;
+
     public Integer getFilesize() {
         this.filesize = (this.voiceSize != null) ? this.voiceSize : this.filesize;
         this.filesize = (this.imagesize != null) ? this.imagesize : this.filesize;
@@ -39,5 +53,34 @@ public class MediaMessageDTO {
     public Long getMsgtime() {
         // 默认返回单位是秒，需要把秒转毫秒
         return this.msgtime * 1000;
+    }
+
+    public String getVoipText() {
+        String text = "";
+        switch (this.invitetype) {
+            case 1:
+                text = "单人视频通话时长 ";
+                break;
+            case 2:
+                text = "单人语音通话时长 ";
+                break;
+            case 3:
+                text = "多人视频通话时长 ";
+                break;
+            case 4:
+                text = "多人语音通话时长 ";
+                break;
+            default:
+                break;
+        }
+
+        return text + this.getDuration();
+    }
+
+    private String getDuration() {
+        if (this.callduration == null) return "";
+
+        long millisecond = this.callduration * 1000;
+        return DateUtil.formatBetween(millisecond);
     }
 }

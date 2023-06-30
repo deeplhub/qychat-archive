@@ -2,10 +2,7 @@ package com.xh.qychat.domain.qychat.service.adapter;
 
 import com.xh.qychat.domain.qychat.service.strategy.MessageStrategy;
 import com.xh.qychat.domain.qychat.service.strategy.dto.ChatDataMessageDTO;
-import com.xh.qychat.domain.qychat.service.strategy.impl.ChatrecordMessageStrategyImpl;
-import com.xh.qychat.domain.qychat.service.strategy.impl.MediaMessageStrategyImpl;
-import com.xh.qychat.domain.qychat.service.strategy.impl.MixedMessageStrategyImpl;
-import com.xh.qychat.domain.qychat.service.strategy.impl.TextMessageStrategyImpl;
+import com.xh.qychat.domain.qychat.service.strategy.impl.*;
 
 /**
  * 消息格式适配器
@@ -35,6 +32,9 @@ public class MessageAdapter {
                 break;
             case "chatrecord":
                 messageStrategy = new ChatrecordMessageStrategyImpl();
+                break;
+            case "voiptext":
+                messageStrategy = new VoiptextMessageStrategyImpl();
                 break;
             default:
                 break;

@@ -146,9 +146,7 @@ public class ChatDataModel extends ResponseModel {
         if (this.file != null) return this.file.toString();
         if (this.chatrecord != null) return this.chatrecord.toString();
         if (this.mixed != null) return this.mixed.toString();
-
-        // info有多种格式的消息，目前只接收MarkDown格式消息
-        if (this.info != null && !"voiptext".equals(this.msgtype)) return this.info.toString();
+        if (this.info != null) return this.info.toString();
 
         return content;
     }

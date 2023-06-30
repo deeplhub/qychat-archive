@@ -102,6 +102,8 @@ public class MessageContentFactory {
         entity.setOriginalContent(messageContents.getContent());
         entity.setMediaStatus(1);
 
+//        if (true) return;
+
         if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
 
         if ("voiptext".equals(messageContents.getMsgtype())) {
