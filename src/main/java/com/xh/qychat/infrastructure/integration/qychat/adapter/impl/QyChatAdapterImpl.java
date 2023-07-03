@@ -13,6 +13,7 @@ import com.xh.qychat.infrastructure.integration.qychat.constants.QychatConstants
 import com.xh.qychat.infrastructure.integration.qychat.model.*;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import com.xh.qychat.infrastructure.integration.qychat.properties.CustomerProperties;
+import com.xh.qychat.infrastructure.redis.JedisRepository;
 import com.xh.qychat.infrastructure.redis.impl.JedisPoolRepository;
 import com.xh.qychat.infrastructure.util.RsaUtils;
 import com.xh.qychat.infrastructure.util.SpringBeanUtils;
@@ -55,7 +56,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
      * @return
      */
     private String getAccessToken(String corpid, String secret, String key) {
-        JedisPoolRepository jedisPoolRepository = SpringBeanUtils.getBean(JedisPoolRepository.class);
+        JedisRepository jedisPoolRepository = SpringBeanUtils.getBean(JedisPoolRepository.class);
 
         String accessToken = jedisPoolRepository.get(key);
         long keyExpire = jedisPoolRepository.getKeyExpire(key);

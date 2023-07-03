@@ -30,47 +30,6 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     @Resource
     private ChatRoomMemberService chatRoomMemberService;
 
-//    @Override
-//    public boolean saveOrUpdateBatch(Member member) {
-//        for (ChatRoomModel chatRoomModel : member.getChatRoomModelList()) {
-//            String chatId = chatRoomModel.getChatId();
-//            Set<ChatRoomMemberEntity> set = new HashSet<>();
-//            Set<MemberEntity> memberEntitySet = new HashSet<>();
-//            for (ChatRoomModel.RoomMemberModel roomMemberModel : chatRoomModel.getMemberList()) {
-//                String userid = roomMemberModel.getUserid();
-//
-//                QueryWrapper<MemberEntity> queryWrapper = new QueryWrapper<>();
-//                queryWrapper.lambda().eq(MemberEntity::getUserId, userid);
-//
-//                MemberEntity entity = super.getOne(queryWrapper);
-//                entity = (entity == null) ? new MemberEntity() : entity;
-//
-//                if (roomMemberModel.getSign().equals(entity.getSign())) {
-//                    continue;
-//                }
-//
-//                entity.setUserId(roomMemberModel.getUserid());
-//                entity.setName(roomMemberModel.getName());
-//                entity.setType(roomMemberModel.getType());
-//                entity.setSign(roomMemberModel.getSign());
-//
-//                memberEntitySet.add(entity);
-//
-//                ChatRoomMemberEntity chatRoomMemberEntity = new ChatRoomMemberEntity();
-//                chatRoomMemberEntity.setChatId(chatId);
-//                chatRoomMemberEntity.setUserId(userid);
-//
-//                set.add(chatRoomMemberEntity);
-//            }
-//
-//            super.saveOrUpdateBatch(memberEntitySet, CommonConstants.BATCH_SIZE);
-//            chatRoomMemberService.dissolution(chatId, set.parallelStream().map(o -> o.getUserId()).collect(Collectors.toSet()));
-//            chatRoomMemberService.saveBatch(set, CommonConstants.BATCH_SIZE);
-//        }
-//
-//        return true;
-//    }
-
     @Override
     @Transactional
     public boolean saveOrUpdateBatch(ChatRoomTreeNode treeNode) {
