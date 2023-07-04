@@ -49,6 +49,7 @@ public class TaskApplicationImpl implements TaskApplication {
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(MessageContent.create(dataModels));
+        // TODO 后期建议使用MQ异步调用
         isSuccess = this.pullChatRoom(isSuccess, dataModels);
 
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
@@ -61,8 +62,6 @@ public class TaskApplicationImpl implements TaskApplication {
         Set<ChatRoomModel> chatRooms = taskDomainService.listChatRoomDetail(roomIds);
 
         isSuccess = this.saveOrUpdateChatRoom(chatRooms);
-
-        // TODO 后期建议使用MQ异步调用
         if (isSuccess) this.saveOrUpdateMember(chatRooms);
 
         return isSuccess;

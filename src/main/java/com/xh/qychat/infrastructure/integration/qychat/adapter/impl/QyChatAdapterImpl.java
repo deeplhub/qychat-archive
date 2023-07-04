@@ -165,7 +165,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             }
 
             log.debug("获取会话总记录：{}", chatDataList.size());
-            // 递归
             return chatDataList;
         } catch (Exception e) {
             log.error("获取原始会话记录数据异常", e);
