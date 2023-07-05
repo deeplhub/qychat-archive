@@ -95,17 +95,14 @@ public class ChatRoomModel extends ResponseModel {
             return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
         }
 
-        public String getVerify() {
-            String sb = this.isEmpty(this.userid) +
-                    this.isEmpty(this.type) +
-                    this.isEmpty(this.name);
+        private String getVerify() {
+            String sb = isEmpty(this.userid) +
+                    isEmpty(this.type) +
+                    isEmpty(this.name);
 
             return sb.replace(" ", "");
         }
 
-        private String isEmpty(Object obj) {
-            return (obj != null) ? obj + "" : "";
-        }
     }
 
     @Data
@@ -115,7 +112,8 @@ public class ChatRoomModel extends ResponseModel {
 
     public Long getCreateTime() {
         // 默认返回单位是秒，需要把秒转毫秒
-        return createTime * 1000;
+        if (createTime != null) return createTime * 1000;
+        return createTime;
     }
 
     public String getSign() {
@@ -123,7 +121,7 @@ public class ChatRoomModel extends ResponseModel {
         return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
     }
 
-    public String getVerify() {
+    private String getVerify() {
         String sb = this.isEmpty(this.chatId) +
                 this.isEmpty(this.name) +
                 this.isEmpty(this.notice) +
