@@ -45,7 +45,7 @@ public class ChatRoomTreeNode {
      * <p>
      * 用户信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=成员ID+入群时间+入群方式+邀请者+昵称+名字
      */
-    private String sign;
+    private String sign = "";
 
     private List<ChatRoomTreeNode> children;
 

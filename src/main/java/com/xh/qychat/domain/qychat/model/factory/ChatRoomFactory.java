@@ -49,7 +49,6 @@ public class ChatRoomFactory {
         chatRoomEntity.setName(chatRoom.getName());
         chatRoomEntity.setNotice(chatRoom.getNotice());
         chatRoomEntity.setOwner(chatRoom.getOwner());
-        chatRoomEntity.setSign(chatRoom.getSign());
         chatRoomEntity.setCreateTime(chatRoom.getCreateTime());
 
         return chatRoomEntity;

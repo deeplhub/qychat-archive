@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.repository.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.xh.qychat.infrastructure.util.SignUtils;
 import lombok.Data;
 
 import java.util.Date;
@@ -41,11 +42,6 @@ public class ChatRoomEntity {
     private String owner;
 
     /**
-     * 群信息md5签名，用于判断数据是否一致，保存或更新需要更新签名信息。sign=群ID+群名称+群公告+群主ID
-     */
-    private String sign;
-
-    /**
      * 群创建时间
      */
     private Date createTime;
@@ -55,4 +51,18 @@ public class ChatRoomEntity {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
+
+
+    /**
+     * 群信息md5签名，用于判断数据是否一致
+     */
+    @TableField(exist = false)
+    private String sign;
+
+
+    public String getSign() {
+
+        return SignUtils.getSign(this.chatId, this.name, this.notice, this.owner);
+    }
+
 }

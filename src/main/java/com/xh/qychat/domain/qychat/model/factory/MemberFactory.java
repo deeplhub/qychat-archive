@@ -49,7 +49,6 @@ public class MemberFactory {
         entity.setUserId(treeNodeModel.getUserid());
         entity.setName(treeNodeModel.getName());
         entity.setType(treeNodeModel.getType());
-        entity.setSign(treeNodeModel.getSign());
 
         return entity;
     }

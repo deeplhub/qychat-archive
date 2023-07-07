@@ -3,7 +3,7 @@
 <mapper namespace="com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMapper">
 
     <select id="listByChatId" resultType="com.xh.qychat.domain.qychat.repository.entity.ChatRoomEntity">
-        SELECT a.id, a.chat_id, a.sign FROM qychat_chat_room a
+        SELECT a.id, a.chat_id, a.name, a.notice, a.owner FROM qychat_chat_room a
         INNER JOIN
         <foreach collection="chatIds" item="chatId" separator=" union all " open="(" close=") b">
             SELECT #{chatId} AS room_id FROM dual

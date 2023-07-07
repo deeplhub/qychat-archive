@@ -44,6 +44,7 @@ public class TaskApplicationImpl implements TaskApplication {
 
 
     @Override
+    @Transactional
     public Result pullChatData() {
         Long maxSeq = messageContentDomain.getMaxSeq();
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);

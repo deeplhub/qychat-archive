@@ -3,7 +3,7 @@
 <mapper namespace="com.xh.qychat.domain.qychat.repository.mapper.MemberMapper">
 
     <select id="listByCharId" resultType="com.xh.qychat.domain.qychat.repository.entity.MemberEntity">
-        SELECT a.id, a.user_id, a.sign
+        SELECT a.id, a.user_id, a.name, a.type
         FROM qychat_member a
         INNER JOIN qychat_chat_room_member b ON b.user_id = a.user_id
         WHERE b.chat_id = #{charId}

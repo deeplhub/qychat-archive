@@ -1,7 +1,6 @@
 package com.xh.qychat.infrastructure.integration.qychat.model;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
+import com.xh.qychat.infrastructure.util.SignUtils;
 import lombok.Data;
 
 import java.util.List;
@@ -91,18 +90,8 @@ public class ChatRoomModel extends ResponseModel {
         private String sign;
 
         public String getSign() {
-            String verify = this.getVerify();
-            return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
+            return SignUtils.getSign(this.userid, this.type, this.name);
         }
-
-        private String getVerify() {
-            String sb = isEmpty(this.userid) +
-                    isEmpty(this.type) +
-                    isEmpty(this.name);
-
-            return sb.replace(" ", "");
-        }
-
     }
 
     @Data
@@ -117,21 +106,7 @@ public class ChatRoomModel extends ResponseModel {
     }
 
     public String getSign() {
-        String verify = this.getVerify();
-        return (StrUtil.isNotBlank(verify)) ? SecureUtil.md5(verify) : "";
-    }
-
-    private String getVerify() {
-        String sb = this.isEmpty(this.chatId) +
-                this.isEmpty(this.name) +
-                this.isEmpty(this.notice) +
-                this.isEmpty(this.owner);
-
-        return sb.replace(" ", "");
-    }
-
-    private String isEmpty(Object obj) {
-        return (obj != null) ? obj + "" : "";
+        return SignUtils.getSign(this.chatId, this.name, this.notice, this.owner);
     }
 
 }

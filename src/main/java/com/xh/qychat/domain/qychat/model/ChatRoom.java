@@ -41,7 +41,7 @@ public class ChatRoom {
     /**
      * 此属性字段是应用扩展字段，非返回值
      */
-    private String sign;
+    private String sign = "";
 
     public static List<ChatRoom> create(Set<ChatRoomModel> chatRooms) {
         if (chatRooms.isEmpty()) return new ArrayList<>(1);
