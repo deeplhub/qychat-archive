@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 
 /**
+ * 签名
+ *
  * @author H.Yang
  * @date 2023/7/7
  */
