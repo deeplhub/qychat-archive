@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,30 +54,41 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes) {
         if (treeNodes.isEmpty()) return false;
 
-        Set<MemberEntity> memberSet = new HashSet<>();
-        Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
-        Set<String> chatIds = new HashSet<>();
+        Set<MemberEntity> members = new HashSet<>();
+        Set<ChatRoomMemberEntity> chatRoomMembers = new HashSet<>();
 
-        treeNodes.parallelStream().forEach(treeNode -> {
-            chatIds.add(treeNode.getChatId());
-
-            List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
-            memberList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
-
-            memberSet.addAll(memberList);
-
-            Set<ChatRoomMemberEntity> chatRoomMembers = treeNode.getChildren().parallelStream().map(o -> new ChatRoomMemberEntity(o.getChatId(), o.getUserid())).collect(Collectors.toSet());
-            chatRoomMemberSet.addAll(chatRoomMembers);
+        treeNodes.stream().forEach(treeNode -> {
+            members.addAll(this.getListMemberEntity(treeNode));
+            chatRoomMembers.addAll(this.listChatRoomMember(treeNode));
         });
 
-        if (!memberSet.isEmpty()) {
-            super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
+        if (!members.isEmpty()) {
+            super.saveOrUpdateBatch(members, CommonConstants.BATCH_SIZE);
         }
 
-        // 解除用户和群关系
-        chatRoomMemberService.removeBatchByChatId(chatIds);
+        if (chatRoomMembers.isEmpty()) return false;
 
-        return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
+        // 解除用户和群关系
+        chatRoomMemberService.removeBatchByChatId(chatRoomMembers.parallelStream().map(o -> o.getChatId()).collect(Collectors.toSet()));
+        return chatRoomMemberService.saveBatch(chatRoomMembers, CommonConstants.BATCH_SIZE);
+    }
+
+
+    private Set<ChatRoomMemberEntity> listChatRoomMember(ChatRoomTreeNode treeNode) {
+        Set<ChatRoomMemberEntity> chatRoomMembers = treeNode.getChildren().parallelStream().map(o -> new ChatRoomMemberEntity(o.getChatId(), o.getUserid())).collect(Collectors.toSet());
+        List<ChatRoomMemberEntity> chatRoomMemberList = chatRoomMemberService.listByChatId(treeNode.getChatId());
+
+        if (chatRoomMembers.size() == chatRoomMemberList.size()) {
+            long count = chatRoomMembers.parallelStream().map(o -> chatRoomMemberList.contains(o) ? null : o).filter(Objects::nonNull).count();
+            if (count <= 0) return new HashSet<>();
+        }
+
+        return chatRoomMembers;
+    }
+
+    private List<MemberEntity> getListMemberEntity(ChatRoomTreeNode treeNode) {
+        List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
+        return MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
     }
 
 

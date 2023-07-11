@@ -7,6 +7,7 @@ import com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMemberMapper;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,6 +47,15 @@ public class ChatRoomMemberServiceImpl extends ServiceImpl<ChatRoomMemberMapper,
         queryWrapper.lambda().in(ChatRoomMemberEntity::getChatId, chatIds);
 
         return super.remove(queryWrapper);
+    }
+
+    @Override
+    public List<ChatRoomMemberEntity> listByChatId(String chatId) {
+        QueryWrapper<ChatRoomMemberEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().eq(ChatRoomMemberEntity::getChatId, chatId);
+
+        return super.list(queryWrapper);
     }
 
 }

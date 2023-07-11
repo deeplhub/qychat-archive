@@ -5,7 +5,6 @@ import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.repository.service.impl.MessageContentServiceImpl;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
-import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class MessageContentDomainImpl extends MessageContentServiceImpl implemen
     @Override
     @Transactional
     public boolean saveBath(List<MessageContent> messageContents) {
-        if (messageContents.isEmpty()) throw new RuntimeException(ResponseEnum.REQUEST_PARAMETERS.getNote());
+        if (messageContents.isEmpty()) return false;
         List<MessageContentEntity> entitys = MessageContentFactory.getSingleton().createEntity(messageContents);
         return super.saveBatch(entitys, CommonConstants.BATCH_SIZE);
     }

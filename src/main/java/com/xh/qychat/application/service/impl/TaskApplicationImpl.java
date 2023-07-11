@@ -50,22 +50,21 @@ public class TaskApplicationImpl implements TaskApplication {
         List<ChatDataModel> dataModels = taskDomainService.pullChatData(maxSeq);
 
         boolean isSuccess = messageContentDomain.saveBath(MessageContent.create(dataModels));
+        if (!isSuccess) return ResponseEvent.failed(ResponseEnum.REQUEST_PARAMETERS);
+
         // TODO 后期建议使用MQ异步调用
-        isSuccess = this.pullChatRoom(isSuccess, dataModels);
+        isSuccess = this.pullChatRoom(dataModels);
 
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
     }
 
-    private boolean pullChatRoom(boolean isSuccess, List<ChatDataModel> dataModels) {
-        if (!isSuccess) return false;
-
+    private boolean pullChatRoom(List<ChatDataModel> dataModels) {
         Set<String> roomIds = dataModels.parallelStream().filter(Objects::nonNull).map(o -> o.getRoomid()).collect(Collectors.toSet());
         Set<ChatRoomModel> chatRooms = taskDomainService.listChatRoomDetail(roomIds);
 
-        isSuccess = this.saveOrUpdateChatRoom(chatRooms);
-        if (isSuccess) this.saveOrUpdateMember(chatRooms);
-
-        return isSuccess;
+        this.saveOrUpdateChatRoom(chatRooms);
+        this.saveOrUpdateMember(chatRooms);
+        return true;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class AppDemo {
 
 
     public static void main(String[] args) throws Exception {
-//        demo1();
+        demo1();
         demo2();
         demo3();
     }
@@ -35,12 +35,10 @@ public class AppDemo {
         dbList.add("DDD");
 
         // TODO 不做任何操作
-        // list1 只保留在 lists2 中的元素
-        list.retainAll(dbList);
-        System.out.println(list);
-
-        list.removeAll(dbList);
-        System.out.println(list);
+        if (list.size() == dbList.size()) {
+            for (String str:list){
+            }
+        }
     }
 
     public static void demo2() {
@@ -58,10 +56,18 @@ public class AppDemo {
         dbList.add("DDD");
 
         // TODO 删除DDD
-        list.removeAll(dbList);
+        boolean isSuccess = list.retainAll(dbList);
+        System.out.println(isSuccess);
         System.out.println(list);
 
+        isSuccess = dbList.retainAll(list);
+        System.out.println(isSuccess);
+        System.out.println(dbList);
 
+        isSuccess = list.removeAll(dbList);
+        System.out.println(isSuccess);
+        System.out.println(list);
+        System.out.println("==================");
     }
 
     public static void demo3() {
@@ -79,6 +85,50 @@ public class AppDemo {
         dbList.add("CCC");
 
         // TODO 添加DDD
+
+        boolean isSuccess = list.retainAll(dbList);
+        System.out.println(isSuccess);
+        System.out.println(list);
+
+        isSuccess = dbList.retainAll(list);
+        System.out.println(isSuccess);
+        System.out.println(dbList);
+
+        isSuccess = list.removeAll(dbList);
+        System.out.println(isSuccess);
+        System.out.println(list);
+        System.out.println("==================");
+    }
+
+    public static void demo4() {
+        List<String> list = new ArrayList<>();
+
+        list.add("AAA");
+        list.add("BBB");
+        list.add("CCC");
+        list.add("DDD");
+
+        List<String> dbList = new ArrayList<>();
+
+        dbList.add("AAA");
+        dbList.add("BBB");
+        dbList.add("CCC");
+        dbList.add("FFF");
+
+        // TODO 添加DDD
+
+        boolean isSuccess = list.retainAll(dbList);
+        System.out.println(isSuccess);
+        System.out.println(list);
+
+        isSuccess = dbList.retainAll(list);
+        System.out.println(isSuccess);
+        System.out.println(dbList);
+
+        isSuccess = list.removeAll(dbList);
+        System.out.println(isSuccess);
+        System.out.println(list);
+        System.out.println("==================");
     }
 
 }
