@@ -57,6 +57,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         Set<MemberEntity> members = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMembers = new HashSet<>();
 
+        // 为保证线程安全问题，所以只能用单线程处理
         treeNodes.stream().forEach(treeNode -> {
             members.addAll(this.getListMemberEntity(treeNode));
             chatRoomMembers.addAll(this.listChatRoomMember(treeNode));
