@@ -1,11 +1,9 @@
 package com.xh.qychat.test;
 
-import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author H.Yang
@@ -14,34 +12,73 @@ import java.util.function.Function;
 @Slf4j
 public class AppDemo {
 
-    private Map<String, Function<JSONObject, JSONObject>> actionMappings = new HashMap<>();
-
-    {
-        actionMappings.put("text", o -> this.getText(o));
-        actionMappings.put("image", o -> this.getImage(o));
-    }
 
     public static void main(String[] args) throws Exception {
-        AppDemo appDemo = new AppDemo();
-
-        appDemo.demo("text2");
+//        demo1();
+        demo2();
+        demo3();
     }
 
-    public void demo(String type) {
-        Function<JSONObject, JSONObject> function = actionMappings.get(type);
-        JSONObject apply = function.apply(new JSONObject());
+    public static void demo1() {
+        List<String> list = new ArrayList<>();
 
-        System.out.println(apply);
+        list.add("AAA");
+        list.add("BBB");
+        list.add("CCC");
+        list.add("DDD");
+
+        List<String> dbList = new ArrayList<>();
+
+        dbList.add("AAA");
+        dbList.add("BBB");
+        dbList.add("CCC");
+        dbList.add("DDD");
+
+        // TODO 不做任何操作
+        // list1 只保留在 lists2 中的元素
+        list.retainAll(dbList);
+        System.out.println(list);
+
+        list.removeAll(dbList);
+        System.out.println(list);
     }
 
+    public static void demo2() {
+        List<String> list = new ArrayList<>();
 
-    private JSONObject getImage(JSONObject o) {
-        o.putOpt("text", "这是一张图片");
-        return o;
+        list.add("AAA");
+        list.add("BBB");
+        list.add("CCC");
+
+        List<String> dbList = new ArrayList<>();
+
+        dbList.add("AAA");
+        dbList.add("BBB");
+        dbList.add("CCC");
+        dbList.add("DDD");
+
+        // TODO 删除DDD
+        list.removeAll(dbList);
+        System.out.println(list);
+
+
     }
 
-    private JSONObject getText(JSONObject o) {
-        o.putOpt("text", "这一个文本");
-        return o;
+    public static void demo3() {
+        List<String> list = new ArrayList<>();
+
+        list.add("AAA");
+        list.add("BBB");
+        list.add("CCC");
+        list.add("DDD");
+
+        List<String> dbList = new ArrayList<>();
+
+        dbList.add("AAA");
+        dbList.add("BBB");
+        dbList.add("CCC");
+
+        // TODO 添加DDD
     }
+
 }

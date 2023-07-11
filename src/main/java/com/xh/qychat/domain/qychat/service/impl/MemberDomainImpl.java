@@ -42,7 +42,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         super.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
-        chatRoomMemberService.dissolution(chatId, treeNode.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet()));
+        chatRoomMemberService.removeByChatId(chatId);
 
         Set<ChatRoomMemberEntity> chatRoomMemberSet = memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(chatId, o.getUserId())).collect(Collectors.toSet());
         return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
@@ -55,23 +55,30 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
 
         Set<MemberEntity> memberSet = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMemberSet = new HashSet<>();
+        Set<String> chatIds = new HashSet<>();
 
-        for (ChatRoomTreeNode treeNode : treeNodes) {
+        treeNodes.parallelStream().forEach(treeNode -> {
+            chatIds.add(treeNode.getChatId());
+
             List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
+            memberList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
 
-            List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
+            memberSet.addAll(memberList);
 
-            memberSet.addAll(memberEntityList);
-            chatRoomMemberSet.addAll(memberEntityList.parallelStream().map(o -> new ChatRoomMemberEntity(treeNode.getChatId(), o.getUserId())).collect(Collectors.toSet()));
+            Set<ChatRoomMemberEntity> chatRoomMembers = treeNode.getChildren().parallelStream().map(o -> new ChatRoomMemberEntity(o.getChatId(), o.getUserid())).collect(Collectors.toSet());
+            chatRoomMemberSet.addAll(chatRoomMembers);
+        });
+
+        if (!memberSet.isEmpty()) {
+            super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
         }
 
-        super.saveOrUpdateBatch(memberSet, CommonConstants.BATCH_SIZE);
-
         // 解除用户和群关系
-        treeNodes.stream().forEach(item -> chatRoomMemberService.dissolution(item.getChatId(), item.getChildren().parallelStream().map(ChatRoomTreeNode::getUserid).collect(Collectors.toSet())));
+        chatRoomMemberService.removeBatchByChatId(chatIds);
 
         return chatRoomMemberService.saveBatch(chatRoomMemberSet, CommonConstants.BATCH_SIZE);
     }
+
 
     @Override
     @Transactional

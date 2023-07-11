@@ -59,7 +59,7 @@ public class ChatRoomTreeNode {
             node = new ChatRoomTreeNode();
 
             node.setChatId(chatRoom.getChatId());
-            node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(member)).collect(Collectors.toList()));
+            node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(chatRoom.getChatId(), member)).collect(Collectors.toList()));
 
             treeNode.add(node);
         }
@@ -71,14 +71,15 @@ public class ChatRoomTreeNode {
         ChatRoomTreeNode node = new ChatRoomTreeNode();
 
         node.setChatId(chatRoomModel.getChatId());
-        node.setChildren(chatRoomModel.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(member)).collect(Collectors.toList()));
+        node.setChildren(chatRoomModel.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(chatRoomModel.getChatId(), member)).collect(Collectors.toList()));
 
         return node;
     }
 
-    private static ChatRoomTreeNode getChatRoomTreeNode(ChatRoomModel.RoomMemberModel member) {
+    private static ChatRoomTreeNode getChatRoomTreeNode(String chatId, ChatRoomModel.RoomMemberModel member) {
         ChatRoomTreeNode node = new ChatRoomTreeNode();
 
+        node.setChatId(chatId);
         node.setUserid(member.getUserid());
         node.setType(member.getType());
         node.setName(member.getName());
