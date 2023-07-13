@@ -17,5 +17,11 @@ import java.util.List;
 @Mapper
 public interface MemberMapper extends BaseMapper<MemberEntity> {
 
+    /**
+     * 根据群ID查询成员列表
+     *
+     * @param charId
+     * @return
+     */
     List<MemberEntity> listByCharId(String charId);
 }

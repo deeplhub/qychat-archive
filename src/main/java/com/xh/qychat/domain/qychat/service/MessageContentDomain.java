@@ -12,14 +12,14 @@ import java.util.List;
 public interface MessageContentDomain {
 
     /**
-     * 获取最大索引
+     * 获取会话消息最大索引
      */
     Long getMaxSeq();
 
     boolean saveBath(List<MessageContent> messageContents);
 
     /**
-     * 获取所有群ID
+     * 分页查询群ID
      *
      * @param pageNum
      * @param limit
@@ -27,4 +27,12 @@ public interface MessageContentDomain {
      */
     Page<String> pageListRoomIdGoupByRoomId(Integer pageNum, Integer limit);
 
+
+    /**
+     * 根据群ID查询消息
+     *
+     * @param chatId
+     * @return
+     */
+    List<MessageContent> pageListByChatId(String chatId, Integer pageNum, Integer limit);
 }

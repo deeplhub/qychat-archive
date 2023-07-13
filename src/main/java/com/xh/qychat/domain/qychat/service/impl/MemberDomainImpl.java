@@ -6,7 +6,7 @@ import com.xh.qychat.domain.qychat.model.factory.MemberFactory;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomMemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
-import com.xh.qychat.domain.qychat.repository.service.impl.MemberServiceImpl;
+import com.xh.qychat.domain.qychat.repository.service.MemberService;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -26,21 +26,23 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain {
+public class MemberDomainImpl implements MemberDomain {
 
     @Resource
     private ChatRoomMemberService chatRoomMemberService;
+    @Resource
+    private MemberService memberService;
 
     @Override
     @Transactional
     public boolean saveOrUpdateBatch(ChatRoomTreeNode treeNode) {
         String chatId = treeNode.getChatId();
 
-        List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
+        List<MemberEntity> memberList = memberService.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
         List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
         if (memberEntityList.isEmpty()) return false;
 
-        super.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
+        memberService.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
 
         // 解除用户和群关系
         chatRoomMemberService.removeByChatId(chatId);
@@ -64,7 +66,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
         });
 
         if (!members.isEmpty()) {
-            super.saveOrUpdateBatch(members, CommonConstants.BATCH_SIZE);
+            memberService.saveOrUpdateBatch(members, CommonConstants.BATCH_SIZE);
         }
 
         if (chatRoomMembers.isEmpty()) return false;
@@ -88,7 +90,7 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     }
 
     private List<MemberEntity> getListMemberEntity(ChatRoomTreeNode treeNode) {
-        List<MemberEntity> memberList = super.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
+        List<MemberEntity> memberList = memberService.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
         return MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
     }
 
@@ -96,9 +98,15 @@ public class MemberDomainImpl extends MemberServiceImpl implements MemberDomain 
     @Override
     @Transactional
     public boolean saveOrUpdate(Member member) {
-        MemberEntity entity = super.getByUserId(member.getUserId());
+        MemberEntity entity = memberService.getByUserId(member.getUserId());
         if (entity == null) return false;
-        return super.saveOrUpdate(MemberFactory.getSingleton().create(entity, member));
+        return memberService.saveOrUpdate(MemberFactory.getSingleton().create(entity, member));
+    }
+
+    @Override
+    public List<Member> listByCharId(String chatId) {
+        List<MemberEntity> list = memberService.listByCharId(chatId);
+        return list.parallelStream().map(o -> MemberFactory.getSingleton().toMember(o)).collect(Collectors.toList());
     }
 
 

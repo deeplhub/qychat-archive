@@ -11,23 +11,41 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
+ * 定时任务
+ *
  * @author H.Yang
  * @date 2023/6/16
  */
 @Slf4j
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class TaskController {
 
     @Resource
     private TaskApplication taskApplication;
     @Resource
     private ChatDataProperties chatDataProperties;
 
+    /**
+     * 拉取聊天数据
+     *
+     * @return
+     */
     @GetMapping("/pullChatData")
     Result pullChatData() {
 
         return taskApplication.pullChatData();
+    }
+
+    /**
+     * 拉取群详情
+     *
+     * @return
+     */
+    @GetMapping("/pullChatRoom")
+    Result pullChatRoom() {
+
+        return taskApplication.pullChatRoom();
     }
 
 

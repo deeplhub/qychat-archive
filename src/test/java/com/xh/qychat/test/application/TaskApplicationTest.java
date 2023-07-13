@@ -37,15 +37,15 @@ class TaskApplicationTest {
         taskApplication.pullChatRoom();
     }
 
-    @Test
-    public void pullChatRoom2() {
-        taskApplication.pullChatRoom("wrgQjpQAAAMBX_ZlzFH0Vv9ePj7FnNQA");
-    }
+//    @Test
+//    public void pullChatRoom2() {
+//        taskApplication.pullChatRoom("wrgQjpQAAAMBX_ZlzFH0Vv9ePj7FnNQA");
+//    }
 
-    @Test
-    public void pullPersonnel() {
-        taskApplication.pullPersonnel("AnChangZhiBan1");
-    }
+//    @Test
+//    public void pullPersonnel() {
+//        taskApplication.pullPersonnel("AnChangZhiBan1");
+//    }
 
     @Test
     public void test() {

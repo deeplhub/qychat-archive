@@ -20,4 +20,10 @@ public interface ChatRoomService extends IService<ChatRoomEntity> {
 
     List<ChatRoomEntity> listByChatId(Set<String> chatIds);
 
+    /**
+     * 查询所有群列表
+     *
+     * @return
+     */
+    List<ChatRoomEntity> listAll();
 }

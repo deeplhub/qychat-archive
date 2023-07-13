@@ -65,4 +65,17 @@ public class MemberFactory {
 
     }
 
+
+    public Member toMember(MemberEntity entity) {
+        Member member = new Member();
+
+        member.setId(entity.getId() + "");
+        member.setUserId(entity.getUserId());
+        member.setName(entity.getName());
+        member.setAvatar(entity.getAvatar());
+        member.setType(entity.getType());
+        member.setGender(entity.getGender());
+
+        return member;
+    }
 }

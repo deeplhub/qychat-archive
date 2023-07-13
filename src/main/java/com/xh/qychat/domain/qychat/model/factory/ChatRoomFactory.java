@@ -45,6 +45,11 @@ public class ChatRoomFactory {
 
         if ((chatRoom.getSign() + "").equals(chatRoomEntity.getSign())) return null;
 
+
+        return this.toChatRoomEntity(chatRoom, chatRoomEntity);
+    }
+
+    private ChatRoomEntity toChatRoomEntity(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity) {
         chatRoomEntity.setChatId(chatRoom.getChatId());
         chatRoomEntity.setName(chatRoom.getName());
         chatRoomEntity.setNotice(chatRoom.getNotice());
@@ -54,7 +59,15 @@ public class ChatRoomFactory {
         return chatRoomEntity;
     }
 
-    public Set<String> listChatId(List<ChatRoom> chatRooms) {
-        return chatRooms.parallelStream().filter(Objects::nonNull).map(o -> o.getChatId()).collect(Collectors.toSet());
+    public ChatRoom toChatRoom(ChatRoomEntity chatRoomEntity) {
+        ChatRoom chatRoom = new ChatRoom();
+
+        chatRoom.setChatId(chatRoomEntity.getChatId());
+        chatRoom.setName(chatRoomEntity.getName());
+        chatRoom.setNotice(chatRoomEntity.getNotice());
+        chatRoom.setOwner(chatRoomEntity.getOwner());
+        chatRoom.setCreateTime(chatRoomEntity.getCreateTime());
+
+        return chatRoom;
     }
 }

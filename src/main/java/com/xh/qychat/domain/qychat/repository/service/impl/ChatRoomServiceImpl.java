@@ -36,4 +36,13 @@ public class ChatRoomServiceImpl extends ServiceImpl<ChatRoomMapper, ChatRoomEnt
         // 处理in条件超过1000个字符的办法处理in条件超过1000个字符的办法
         return super.baseMapper.listByChatId(chatIds);
     }
+
+    @Override
+    public List<ChatRoomEntity> listAll() {
+        QueryWrapper<ChatRoomEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().orderByDesc(ChatRoomEntity::getUpdateTime);
+
+        return super.list(queryWrapper);
+    }
 }

@@ -5,7 +5,6 @@ import com.xh.qychat.application.event.ResponseEvent;
 import com.xh.qychat.application.service.TaskApplication;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
-import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.ChatRoomDomain;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
@@ -15,7 +14,6 @@ import com.xh.qychat.infrastructure.common.enums.ResponseEnum;
 import com.xh.qychat.infrastructure.common.model.Result;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
-import com.xh.qychat.infrastructure.integration.qychat.model.PersonnelModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +56,12 @@ public class TaskApplicationImpl implements TaskApplication {
         return ResponseEvent.reply(isSuccess, ResponseEnum.REQUEST_PARAMETERS);
     }
 
+    /**
+     * 拉取群详情和群用户列表
+     *
+     * @param dataModels
+     * @return
+     */
     private boolean pullChatRoom(List<ChatDataModel> dataModels) {
         Set<String> roomIds = dataModels.parallelStream().filter(Objects::nonNull).map(o -> o.getRoomid()).collect(Collectors.toSet());
         Set<ChatRoomModel> chatRooms = taskDomainService.listChatRoomDetail(roomIds);
@@ -93,6 +97,12 @@ public class TaskApplicationImpl implements TaskApplication {
         return true;
     }
 
+    /**
+     * 保存或更新群详情
+     *
+     * @param list
+     * @return
+     */
     private boolean saveOrUpdateChatRoom(Set<ChatRoomModel> list) {
 
         return chatRoomDomain.saveOrUpdateBatch(ChatRoom.create(list));
@@ -101,25 +111,6 @@ public class TaskApplicationImpl implements TaskApplication {
     private void saveOrUpdateMember(Set<ChatRoomModel> list) {
 
         memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(list));
-    }
-
-    @Override
-    public Result pullChatRoom(String roomId) {
-        ChatRoomModel chatRoom = taskDomainService.getChatRoomDetail(roomId);
-
-        boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
-
-        // TODO 后期建议使用MQ异步调用
-        if (isSuccess) memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
-        return ResponseEvent.reply(isSuccess);
-    }
-
-    @Override
-    public Result pullPersonnel(String userId) {
-        PersonnelModel personnel = taskDomainService.getPersonnel(userId);
-
-        boolean isSuccess = memberDomain.saveOrUpdate(Member.create(personnel));
-        return ResponseEvent.reply(isSuccess);
     }
 
 }

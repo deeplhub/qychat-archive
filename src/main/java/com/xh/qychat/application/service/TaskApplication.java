@@ -24,21 +24,4 @@ public interface TaskApplication {
      */
     Result pullChatRoom();
 
-    /**
-     * 拉取群详情
-     * <p>
-     * 包含群下的所有成员的基本信息
-     *
-     * @param roomId 群ID
-     * @return
-     */
-    Result pullChatRoom(String roomId);
-
-    /**
-     * 拉取人员详情
-     *
-     * @param userId 人员ID
-     * @return
-     */
-    Result pullPersonnel(String userId);
 }

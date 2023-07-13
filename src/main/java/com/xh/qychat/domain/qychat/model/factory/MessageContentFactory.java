@@ -99,4 +99,17 @@ public class MessageContentFactory {
         entity.setMediaStatus(chatDataDto.getMediaStatus());
     }
 
+
+    public MessageContent toMessageContent(MessageContentEntity entity) {
+        MessageContent messageContent = new MessageContent();
+
+        messageContent.setId(entity.getId());
+        messageContent.setAction(entity.getAction());
+        messageContent.setFromid(entity.getFromid());
+        messageContent.setMsgtime(entity.getMsgtime());
+        messageContent.setMsgtype(entity.getMsgtype());
+        messageContent.setContent(entity.getContent());
+
+        return messageContent;
+    }
 }

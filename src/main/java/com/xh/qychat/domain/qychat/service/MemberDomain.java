@@ -16,4 +16,12 @@ public interface MemberDomain {
     boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes);
 
     boolean saveOrUpdate(Member member);
+
+    /**
+     * 根据群ID查询成员列表
+     *
+     * @param chatId
+     * @return
+     */
+    List<Member> listByCharId(String chatId);
 }

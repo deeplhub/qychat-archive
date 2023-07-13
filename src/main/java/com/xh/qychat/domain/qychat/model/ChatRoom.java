@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.model;
 
 import cn.hutool.core.date.DateUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
  * @date 2023/6/25
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ChatRoom {
     /**
      * 客户群ID

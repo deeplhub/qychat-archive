@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.model;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * @date 2023/6/29
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageContent {
     private Long id;
     private Long seq;

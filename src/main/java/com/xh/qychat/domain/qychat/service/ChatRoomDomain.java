@@ -13,4 +13,11 @@ public interface ChatRoomDomain {
     boolean saveOrUpdate(ChatRoom chatRoom);
 
     boolean saveOrUpdateBatch(List<ChatRoom> chatRooms);
+
+    /**
+     * 查询所有群列表
+     *
+     * @return
+     */
+    List<ChatRoom> listChatRoom();
 }

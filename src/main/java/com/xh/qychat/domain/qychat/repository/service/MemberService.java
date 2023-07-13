@@ -16,6 +16,12 @@ import java.util.Set;
  */
 public interface MemberService extends IService<MemberEntity> {
 
+    /**
+     * 根据群ID查询成员列表
+     *
+     * @param chatId
+     * @return
+     */
     List<MemberEntity> listByCharId(String chatId);
 
     List<MemberEntity> listByUserId(Set<String> userIds);

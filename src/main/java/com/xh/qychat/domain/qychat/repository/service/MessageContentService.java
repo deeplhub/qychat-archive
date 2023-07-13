@@ -11,8 +11,22 @@ public interface MessageContentService extends IService<MessageContentEntity> {
      */
     Long getMaxSeq();
 
+    /**
+     * 分页查询群ID
+     *
+     * @param pageNum
+     * @param limit
+     * @return
+     */
     Page<String> pageListRoomIdGoupByRoomId(Integer pageNum, Integer limit);
 
-    boolean updateById(String content, Integer mediaStatus, Long id);
-
+    /**
+     * 根据群ID分页查询会话消息
+     *
+     * @param chatId
+     * @param pageNum
+     * @param limit
+     * @return
+     */
+    Page<MessageContentEntity> pageListByChatId(String chatId, Integer pageNum, Integer limit);
 }
