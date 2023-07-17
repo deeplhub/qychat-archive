@@ -62,7 +62,6 @@ public class ChatRoomEvent {
             throw new RuntimeException("多线程处理数据时发生异常");
         }
 
-        taskExecutor.shutdown();
         log.info("多线程执行耗时：{}", System.currentTimeMillis() - beginTime);
 
         return listData;

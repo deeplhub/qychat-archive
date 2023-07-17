@@ -14,9 +14,13 @@ public class AppDemo {
 
 
     public static void main(String[] args) throws Exception {
-        demo1();
-        demo2();
-        demo3();
+//        demo1();
+//        demo2();
+//        demo3();
+
+        while (true) {
+
+        }
     }
 
     public static void demo1() {
@@ -36,7 +40,7 @@ public class AppDemo {
 
         // TODO 不做任何操作
         if (list.size() == dbList.size()) {
-            for (String str:list){
+            for (String str : list) {
             }
         }
     }

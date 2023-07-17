@@ -219,10 +219,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             List<ChatDataModel> batchData = chatDataList.subList(start, end);
             log.debug("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
-            Future<List<ChatDataModel>> future = taskExecutor.submit(() -> {
-                log.debug("线程 [{}] 执行获取群详情...", Thread.currentThread().getName());
-                return batchData.parallelStream().map(o -> this.decrypt(sdk, o)).filter(Objects::nonNull).collect(Collectors.toList());
-            });
+            Future<List<ChatDataModel>> future = taskExecutor.submit(() -> batchData.parallelStream().map(o -> this.decrypt(sdk, o)).filter(Objects::nonNull).collect(Collectors.toList()));
 
             futureList.add(future);
         }
