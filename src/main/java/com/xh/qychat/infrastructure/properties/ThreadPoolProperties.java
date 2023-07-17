@@ -32,7 +32,7 @@ public class ThreadPoolProperties {
     /**
      * 线程池前缀
      */
-    private String threadNamePrefix = "CustomizedTaskExecutor-";
+    private String threadNamePrefix = "AsyncTask-";
 
     /**
      * 线程的空闲时间，单位：秒
