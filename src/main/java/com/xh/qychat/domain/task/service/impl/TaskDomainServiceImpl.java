@@ -35,9 +35,9 @@ public class TaskDomainServiceImpl implements TaskDomainService {
     }
 
     @Override
-    public ChatRoomModel getChatRoomDetail(String roomid) {
+    public ChatRoomModel getChatRoomDetail(String chatId) {
 
-        return qychatAdapter.getChatRoomDetail(roomid);
+        return qychatAdapter.getChatRoomDetail(chatId);
     }
 
     @Override

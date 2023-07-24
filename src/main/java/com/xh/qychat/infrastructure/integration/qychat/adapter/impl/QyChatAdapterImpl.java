@@ -352,9 +352,9 @@ public class QyChatAdapterImpl implements QyChatAdapter {
     }
 
     @Override
-    public ChatRoomModel getChatRoomDetail(String roomid) {
+    public ChatRoomModel getChatRoomDetail(String chatId) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.putOpt("chat_id", roomid);
+        jsonObject.putOpt("chat_id", chatId);
         jsonObject.putOpt("need_name", 1);// 是否需要返回群成员的名字group_chat.member_list.name。0-不返回；1-返回。默认不返回
 
         String result = null;
@@ -362,11 +362,11 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
             String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
 
-            log.info("获取 [{}] 客户群详情，请求地址：{}，请求参数：{}", roomid, uri, jsonObject);
+            log.info("获取 [{}] 客户群详情，请求地址：{}，请求参数：{}", chatId, uri, jsonObject);
             result = HttpUtil.post(uri, jsonObject.toString());
-            log.info("获取 [{}] 客户群详情，响应结果：{}", roomid, result);
+            log.info("获取 [{}] 客户群详情，响应结果：{}", chatId, result);
         } catch (Exception e) {
-            String format = StrUtil.format("获取 [{}] 客户群详情异常", roomid);
+            String format = StrUtil.format("获取 [{}] 客户群详情异常", chatId);
             log.error(format, e);
             throw new RuntimeException(format);
         }

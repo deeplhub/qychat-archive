@@ -32,10 +32,10 @@ public interface TaskDomainService {
     /**
      * 获取群详情
      *
-     * @param roomid 群ID
+     * @param chatId 群ID
      * @return
      */
-    ChatRoomModel getChatRoomDetail(String roomid);
+    ChatRoomModel getChatRoomDetail(String chatId);
 
     PersonnelModel getPersonnel(String userId);
 }

@@ -49,10 +49,10 @@ public interface QyChatAdapter {
      * <p>
      * https://developer.work.weixin.qq.com/document/path/92122
      *
-     * @param roomid 群ID
+     * @param chatId 群ID
      * @return
      */
-    ChatRoomModel getChatRoomDetail(String roomid);
+    ChatRoomModel getChatRoomDetail(String chatId);
 
     /**
      * 获取成员详情（内部联系人）

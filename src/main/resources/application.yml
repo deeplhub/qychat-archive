@@ -3,31 +3,11 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: local
   application:
     name: qychat-archive
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource # 指定druid数据源
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/qychat_db?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: admini
-
-mybatis-plus:
-  #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.xh.**.model.**.*
-  mapper-locations:  classpath:mappers/*Mapper.xml
-
-redis:
-  model: standalone
-  host: 127.0.0.1
-  port: 6379
-  password: admini
-  database: 0
 
 qychat:
-  sdk:
-    path: D:/Workspace/JavaWorkspace/practice/qychat-archive
   chatdata:
     corpid: wwb55a50126edc83d2
     secret: 1jCvYfSyNF2gYeRT6gxNz9_1RK7GNY8mv6-26JrOjK0
@@ -36,3 +16,19 @@ qychat:
   customer:
     corpid: ${qychat.chatdata.corpid}
     secret: pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4
+
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+    enableSwaggerModels: false
+    swaggerModelName: 实体类列表
+    enableVersion: true
+    enableReloadCacheParameter: true
+    enableFilterMultipartApis: false
+    enableRequestCache: false
+    enableFooter: false
+    enableFooterCustom: true
+    enableOpenApi: false
+    enableGroup: true

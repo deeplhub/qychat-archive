@@ -33,6 +33,8 @@
         <jackson.version>2.12.3</jackson.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <transmittable.version>2.14.2</transmittable.version>
+
+        <knife4j-spring-boot-starter.version>3.0.2</knife4j-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -156,6 +158,12 @@
             <version>${transmittable.version}</version>
         </dependency>
 
+        <!-- knife4j增强swagger2的UI -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j-spring-boot-starter.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

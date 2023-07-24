@@ -29,8 +29,8 @@ public class ChatRoomApplicationImpl implements ChatRoomApplication {
     private TaskDomainService taskDomainService;
 
     @Override
-    public Result pullChatRoom(String roomId) {
-        ChatRoomModel chatRoom = taskDomainService.getChatRoomDetail(roomId);
+    public Result pullChatRoom(String chatId) {
+        ChatRoomModel chatRoom = taskDomainService.getChatRoomDetail(chatId);
 
         boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
 

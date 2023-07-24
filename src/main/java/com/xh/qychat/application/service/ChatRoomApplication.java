@@ -13,10 +13,10 @@ public interface ChatRoomApplication {
      * <p>
      * 包含群下的所有成员的基本信息
      *
-     * @param roomId 群ID
+     * @param chatId 群ID
      * @return
      */
-    Result pullChatRoom(String roomId);
+    Result pullChatRoom(String chatId);
 
     /**
      * 查询所有群列表
