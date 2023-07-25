@@ -3,6 +3,8 @@ package com.xh.qychat.domain.qychat.model;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,18 +18,25 @@ import java.util.stream.Collectors;
  * @date 2023/6/29
  */
 @Data
+@ApiModel(value = "会话消息")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageContent {
     private Long id;
     private Long seq;
     private String msgid;
     private String publickeyVer;
+    @ApiModelProperty("消息动作，send-发送消息,recall-撤回消息,switch-切换企业日志")
     private String action;
+    @ApiModelProperty("消息发送方id")
     private String fromid;
     private String tolist;
+    @ApiModelProperty("群id")
     private String roomid;
+    @ApiModelProperty("消息发送时间")
     private Date msgtime;
+    @ApiModelProperty("消息类型")
     private String msgtype;
+    @ApiModelProperty("消息内容")
     private String content;
 
     public static List<MessageContent> create(List<ChatDataModel> dataModels) {

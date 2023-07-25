@@ -1,6 +1,7 @@
 package com.xh.qychat.controller.facade;
 
 import com.xh.qychat.application.service.ChatRoomApplication;
+import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.infrastructure.common.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,12 @@ public class ChatRoomController {
     @Resource
     private ChatRoomApplication chatRoomApplication;
 
-    @ApiOperation(value = "根据群ID查询群详情")
+    /**
+     * 根据群ID查询群详情
+     *
+     * @param chatId
+     * @return
+     */
     @GetMapping("/pullChatRoom/{chatId}")
     Result pullChatRoom(@PathVariable("chatId") String chatId) {
 
@@ -32,7 +38,7 @@ public class ChatRoomController {
 
     @ApiOperation(value = "查询所有群列表")
     @GetMapping("/listChatRoom")
-    Result listChatRoom() {
+    Result<ChatRoom> listChatRoom() {
 
         return chatRoomApplication.listChatRoom();
     }

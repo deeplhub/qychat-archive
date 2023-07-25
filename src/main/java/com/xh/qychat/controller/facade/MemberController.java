@@ -23,17 +23,17 @@ public class MemberController {
     @Resource
     private MemberApplication memberApplication;
 
-//    /**
-//     * 拉取指定人员详情
-//     *
-//     * @param userId
-//     * @return
-//     */
-//    @GetMapping("/pullPersonnel")
-//    Result pullPersonnel(String userId) {
-//
-//        return memberApplication.pullPersonnel(userId);
-//    }
+    /**
+     * 拉取指定人员详情
+     *
+     * @param userId
+     * @return
+     */
+    @GetMapping("/pullPersonnel")
+    Result pullPersonnel(String userId) {
+
+        return memberApplication.pullPersonnel(userId);
+    }
 
     @ApiOperation(value = "根据群ID查询成员列表")
     @GetMapping("/listByChatId/{chatId}")

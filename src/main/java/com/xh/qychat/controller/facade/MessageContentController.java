@@ -1,6 +1,7 @@
 package com.xh.qychat.controller.facade;
 
 import com.xh.qychat.application.service.MessageContentApplication;
+import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.infrastructure.common.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +33,7 @@ public class MessageContentController {
      */
     @ApiOperation(value = "根据群ID分页查询会话消息")
     @GetMapping("/listChatRoom")
-    Result listChatRoom(String chatId, Integer pageNum, Integer limit) {
+    Result<MessageContent> listChatRoom(String chatId, Integer pageNum, Integer limit) {
 
         return messageContentApplication.listByChatId(chatId, pageNum, limit);
     }

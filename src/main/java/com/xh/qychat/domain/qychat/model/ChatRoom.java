@@ -3,6 +3,8 @@ package com.xh.qychat.domain.qychat.model;
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.*;
@@ -13,31 +15,37 @@ import java.util.stream.Collectors;
  * @date 2023/6/25
  */
 @Data
+@ApiModel(value = "群信息出参")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ChatRoom {
     /**
      * 客户群ID
      */
+    @ApiModelProperty("群ID")
     private String chatId;
 
     /**
      * 群名
      */
+    @ApiModelProperty("群名称")
     private String name;
 
     /**
      * 群公告
      */
+    @ApiModelProperty("群公告")
     private String notice;
 
     /**
      * 群主ID
      */
+    @ApiModelProperty("群主ID")
     private String owner;
 
     /**
      * 群的创建时间
      */
+    @ApiModelProperty("群的创建时间")
     private Date createTime;
 
     /**

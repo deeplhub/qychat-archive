@@ -31,6 +31,16 @@ public class MessageContentServiceImpl extends ServiceImpl<MessageContentMapper,
     public Page<MessageContentEntity> pageListByChatId(String chatId, Integer pageNum, Integer limit) {
         QueryWrapper<MessageContentEntity> queryWrapper = new QueryWrapper<>();
 
+        queryWrapper.lambda().select(MessageContentEntity::getId,
+                MessageContentEntity::getAction,
+                MessageContentEntity::getFromid,
+                MessageContentEntity::getRoomid,
+                MessageContentEntity::getMsgtime,
+                MessageContentEntity::getMsgtype,
+                MessageContentEntity::getContent,
+                MessageContentEntity::getMediaStatus
+
+        );
         queryWrapper.lambda().eq(MessageContentEntity::getRoomid, chatId);
         queryWrapper.lambda().orderByDesc(MessageContentEntity::getSeq);
 
