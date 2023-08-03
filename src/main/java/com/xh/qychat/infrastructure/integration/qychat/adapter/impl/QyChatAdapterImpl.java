@@ -5,7 +5,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tencent.wework.Finance;
-import com.xh.qychat.infrastructure.config.CustomizedTaskExecutor;
+import com.xh.qychat.infrastructure.config.CommonTaskExecutor;
 import com.xh.qychat.infrastructure.constants.CacheConstants;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
@@ -206,7 +206,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         // 批次处理数
         int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
 
-        CustomizedTaskExecutor taskExecutor = SpringBeanUtils.getBean(CustomizedTaskExecutor.class);
+        CommonTaskExecutor taskExecutor = SpringBeanUtils.getBean(CommonTaskExecutor.class);
 
         List<Future<List<ChatDataModel>>> futureList = new ArrayList<>();
 

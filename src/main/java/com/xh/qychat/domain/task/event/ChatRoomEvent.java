@@ -1,6 +1,6 @@
 package com.xh.qychat.domain.task.event;
 
-import com.xh.qychat.infrastructure.config.CustomizedTaskExecutor;
+import com.xh.qychat.infrastructure.config.ExpensiveTaskExecutor;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
 import com.xh.qychat.infrastructure.integration.qychat.adapter.QyChatAdapter;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ChatRoomEvent {
-    private CustomizedTaskExecutor taskExecutor;
+    private ExpensiveTaskExecutor taskExecutor;
     private QyChatAdapter qychatAdapter;
 
     private ChatRoomEvent() {
@@ -28,23 +28,13 @@ public class ChatRoomEvent {
         return Inner.instance;
     }
 
-    public static ChatRoomEvent getTaskExecutor() {
-        return getSingleton().createTaskExecutor();
-    }
-
     private static class Inner {
         private static final ChatRoomEvent instance = new ChatRoomEvent();
     }
 
     public ChatRoomEvent setChatAdapter(QyChatAdapter qychatAdapter) {
         this.qychatAdapter = qychatAdapter;
-        return this;
-    }
-
-    private ChatRoomEvent createTaskExecutor() {
-        this.taskExecutor = SpringBeanUtils.getBean(CustomizedTaskExecutor.class);
-        this.taskExecutor.setCorePoolSize(CommonConstants.IO_INTENSIVE_THREAD_SIZE);
-        this.taskExecutor.initialize();
+        this.taskExecutor = SpringBeanUtils.getBean(ExpensiveTaskExecutor.class);
         return this;
     }
 

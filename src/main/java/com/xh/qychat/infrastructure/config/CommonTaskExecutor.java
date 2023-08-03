@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
  * @date 2020/1/7
  */
 @Slf4j
-public class CustomizedTaskExecutor extends ThreadPoolTaskExecutor {
+public class CommonTaskExecutor extends ThreadPoolTaskExecutor {
 
     @Override
     public void execute(Runnable task) {
@@ -31,7 +31,7 @@ public class CustomizedTaskExecutor extends ThreadPoolTaskExecutor {
     @Override
     public void execute(Runnable task, long startTimeout) {
         Runnable ttlRunnable = TtlRunnable.get(task);
-        super.execute(task, startTimeout);
+        super.execute(ttlRunnable, startTimeout);
     }
 
     @Override
