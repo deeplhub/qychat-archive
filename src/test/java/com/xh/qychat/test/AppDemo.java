@@ -53,7 +53,6 @@ public class AppDemo {
         list.add("CCC");
 
         List<String> dbList = new ArrayList<>();
-
         dbList.add("AAA");
         dbList.add("BBB");
         dbList.add("CCC");

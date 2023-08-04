@@ -40,7 +40,7 @@ public class MemberDomainImpl implements MemberDomain {
 
         List<MemberEntity> memberList = memberService.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
         List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
-        if (memberEntityList.isEmpty()) return false;
+        if (memberEntityList.isEmpty()) return true;
 
         memberService.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
 

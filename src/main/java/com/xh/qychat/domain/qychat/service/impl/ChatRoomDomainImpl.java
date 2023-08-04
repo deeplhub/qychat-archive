@@ -32,7 +32,7 @@ public class ChatRoomDomainImpl implements ChatRoomDomain {
     public boolean saveOrUpdate(ChatRoom chatRoom) {
         ChatRoomEntity entity = chatRoomService.getByChatId(chatRoom.getChatId());
         entity = ChatRoomFactory.getSingleton().createOrModifyEntity(chatRoom, entity);
-        if (entity == null) return false;
+        if (entity == null) return true;
 
         return chatRoomService.saveOrUpdate(entity);
     }
