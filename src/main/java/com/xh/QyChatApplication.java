@@ -1,6 +1,7 @@
 package com.xh;
 
 import cn.hutool.core.util.StrUtil;
+import com.xh.qychat.infrastructure.config.EnvAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,8 @@ public class QyChatApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(QyChatApplication.class, args);
         ConfigurableEnvironment configurableEnvironment = ctx.getEnvironment();
+
+        EnvAutoConfiguration.deduceEnvironment(ctx);
 
         // 加载企业微信SDK
         loadChatSDK(configurableEnvironment.getProperty("qychat.sdk.path"));

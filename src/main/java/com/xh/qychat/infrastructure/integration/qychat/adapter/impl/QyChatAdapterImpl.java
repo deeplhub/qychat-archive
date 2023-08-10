@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -284,7 +283,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
                 log.debug("文件名称:{}, len:{}, data_len:{}, 状态(1完成、0未完成):{}", fileName, Finance.GetIndexLen(mediaData), Finance.GetDataLen(mediaData), Finance.IsMediaDataFinish(mediaData));
 
                 try {
-                    FileOutputStream outputStream = new FileOutputStream(new File(fileName), true);
+                    FileOutputStream outputStream = new FileOutputStream(fileName, true);
                     outputStream.write(Finance.GetData(mediaData));
                     outputStream.close();
                 } catch (Exception e) {
