@@ -1,6 +1,7 @@
 package com.xh.qychat.controller.facade;
 
 import com.xh.qychat.application.service.MemberApplication;
+import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.infrastructure.common.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +38,7 @@ public class MemberController {
 
     @ApiOperation(value = "根据群ID查询成员列表")
     @GetMapping("/listByChatId/{chatId}")
-    Result listByChatId(@PathVariable("chatId") String chatId) {
+    Result<Member> listByChatId(@PathVariable("chatId") String chatId) {
 
         return memberApplication.listByChatId(chatId);
     }
