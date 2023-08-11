@@ -3,7 +3,6 @@ package com.xh.qychat.domain.qychat.event.strategy;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xh.qychat.domain.qychat.event.MinioUploadEvent;
 import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 import com.xh.qychat.infrastructure.constants.CacheConstants;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
@@ -43,8 +42,6 @@ public class MediaMessageStrategy implements MessageStrategy {
         if (StrUtil.isBlank(fileName)) {
             fileName = this.getFileName(chatDataDto);
             qychatAdapter.download(chatDataDto.getSdkfileid(), fileName);
-            fileName = MinioUploadEvent.upload(fileName);
-
             jedisRepository.setex(chatDataDto.getMd5sum(), fileName, CacheConstants.EXPIRE_TIME_24H);
         }
 

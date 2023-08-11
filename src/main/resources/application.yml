@@ -6,6 +6,8 @@ spring:
     active: local
   application:
     name: qychat-archive
+#  resources:
+#    static-locations: file:d:/data/
 
 qychat:
   chatdata:
