@@ -1,23 +1,16 @@
 spring:
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource # 指定druid数据源
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/qychat_db?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: admini
-
-mybatis-plus:
-  #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.xh.**.model.**.*
-  mapper-locations: classpath:mappers/*Mapper.xml
+    url: jdbc:mysql://192.168.88.2/qychat_archive?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: usercenter
+    password: 1332@ANCH.com
 
 redis:
   model: standalone
-  host: 127.0.0.1
+  host: 192.168.88.32
   port: 6379
-  password: admini
+  password: Pp.51idc.com
   database: 0
 
 qychat:
   sdk:
-    path: D:/Workspace/JavaWorkspace/practice/qychat-archive
+    path: /home/qychat/sdk

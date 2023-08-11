@@ -1,15 +1,8 @@
 spring:
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource # 指定druid数据源
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/qychat_db?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/qychat_archive?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
     username: root
     password: admini
-
-mybatis-plus:
-  #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.xh.**.model.**.*
-  mapper-locations:  classpath:mappers/*Mapper.xml
 
 redis:
   model: standalone

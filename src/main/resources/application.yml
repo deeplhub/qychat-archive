@@ -6,8 +6,17 @@ spring:
     active: local
   application:
     name: qychat-archive
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
 #  resources:
 #    static-locations: file:d:/data/
+
+mybatis-plus:
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.xh.**.model.**.*
+  mapper-locations: classpath:mappers/*Mapper.xml
+
 
 qychat:
   chatdata:
