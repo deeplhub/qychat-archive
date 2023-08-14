@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author H.Yang
@@ -32,7 +33,8 @@ public interface MessageContentDomain {
      * 根据群ID查询消息
      *
      * @param chatId
+     * @param msgtime
      * @return
      */
-    List<MessageContent> pageListByChatId(String chatId, Integer pageNum, Integer limit);
+    Map<String, Object> listByChatId(String chatId, String msgtime);
 }

@@ -1,13 +1,12 @@
 package com.xh.qychat.application.service.impl;
 
 import com.xh.qychat.application.service.MessageContentApplication;
-import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.service.MessageContentDomain;
 import com.xh.qychat.infrastructure.common.model.Result;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author H.Yang
@@ -20,8 +19,8 @@ public class MessageContentApplicationImpl implements MessageContentApplication 
     private MessageContentDomain messageContentDomain;
 
     @Override
-    public Result listByChatId(String chatId, Integer pageNum, Integer limit) {
-        List<MessageContent> list = messageContentDomain.pageListByChatId(chatId, pageNum, limit);
-        return Result.succeed(list);
+    public Result listByChatId(String chatId, String msgtime) {
+        Map<String, Object> map = messageContentDomain.listByChatId(chatId, msgtime);
+        return Result.succeed(map);
     }
 }

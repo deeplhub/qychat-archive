@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.model;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatDataModel;
 import io.swagger.annotations.ApiModel;
@@ -33,11 +34,18 @@ public class MessageContent {
     @ApiModelProperty("群id")
     private String roomid;
     @ApiModelProperty("消息发送时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date msgtime;
     @ApiModelProperty("消息类型")
     private String msgtype;
     @ApiModelProperty("消息内容")
     private String content;
+    @ApiModelProperty("用户ID")
+    private String memberId;
+    @ApiModelProperty("用户名称")
+    private String memberName;
+    @ApiModelProperty("用户头像")
+    private String memberAvatar;
 
     public static List<MessageContent> create(List<ChatDataModel> dataModels) {
         if (dataModels.isEmpty()) return new ArrayList<>(1);

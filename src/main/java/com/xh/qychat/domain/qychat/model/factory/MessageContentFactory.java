@@ -2,6 +2,7 @@ package com.xh.qychat.domain.qychat.model.factory;
 
 import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.domain.qychat.model.MessageContent;
+import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import com.xh.qychat.domain.qychat.event.adapter.MessageAdapter;
 import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +111,18 @@ public class MessageContentFactory {
         messageContent.setMsgtime(entity.getMsgtime());
         messageContent.setMsgtype(entity.getMsgtype());
         messageContent.setContent(entity.getContent());
+
+        return messageContent;
+    }
+
+    public MessageContent toMessageContent(MessageContentEntity entity, Map<String, MemberEntity> memberMap) {
+        MessageContent messageContent = this.toMessageContent(entity);
+
+        MemberEntity memberEntity = memberMap.get(entity.getFromid());
+
+        messageContent.setMemberId(memberEntity.getId() + "");
+        messageContent.setMemberName(memberEntity.getName());
+        messageContent.setMemberAvatar(memberEntity.getAvatar());
 
         return messageContent;
     }
