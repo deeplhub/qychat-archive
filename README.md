@@ -5,3 +5,8 @@
 * 多线程处理聊天资源
 * 生产环境已稳定使用。
 
+<br>
+
+**社交：**
+* [CSDN](https://blog.csdn.net/xhaimail)
+
