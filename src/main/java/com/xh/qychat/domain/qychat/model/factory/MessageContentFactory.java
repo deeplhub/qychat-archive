@@ -1,12 +1,16 @@
 package com.xh.qychat.domain.qychat.model.factory;
 
 import cn.hutool.core.util.StrUtil;
+import com.xh.qychat.domain.qychat.event.adapter.MessageAdapter;
+import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.repository.entity.MemberEntity;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
-import com.xh.qychat.domain.qychat.event.adapter.MessageAdapter;
-import com.xh.qychat.domain.qychat.event.strategy.dto.ChatDataMessageDTO;
+import com.xh.qychat.infrastructure.util.SpringBeanUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.Date;
 import java.util.List;
@@ -36,7 +40,7 @@ public class MessageContentFactory {
 
     public List<MessageContentEntity> createEntity(List<MessageContent> messageContents) {
 
-        return messageContents.parallelStream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
+        return messageContents.stream().map(o -> this.getMessageContentEntity(o)).collect(Collectors.toList());
     }
 
     private MessageContentEntity getMessageContentEntity(MessageContent messageContents) {
@@ -72,30 +76,27 @@ public class MessageContentFactory {
 
     }
 
-    private void getSendMessage(MessageContent messageContents, MessageContentEntity entity) {
-        entity.setTolist(messageContents.getTolist());
-        entity.setRoomid(messageContents.getRoomid());
-        entity.setMsgtype(messageContents.getMsgtype());
-        entity.setOriginalContent(messageContents.getContent());
+    private void getSendMessage(MessageContent messageContent, MessageContentEntity entity) {
+        entity.setTolist(messageContent.getTolist());
+        entity.setRoomid(messageContent.getRoomid());
+        entity.setMsgtype(messageContent.getMsgtype());
+        //entity.setOriginalContent(messageContent.getContent());
         entity.setMediaStatus(1);
 
-//        if (true) return;
-
-        if (StrUtil.isBlank(messageContents.getMsgtype()) || StrUtil.isBlank(messageContents.getContent())) return;
-
-//        if ("voiptext".equals(messageContents.getMsgtype())) {
-//        }
+        if (StrUtil.isBlank(messageContent.getMsgtype()) || StrUtil.isBlank(messageContent.getContent())) {
+            return;
+        }
         ChatDataMessageDTO chatDataDto = new ChatDataMessageDTO();
-        chatDataDto.setBody(messageContents.getContent());
-        chatDataDto.setMsgType(messageContents.getMsgtype());
+        chatDataDto.setBody(messageContent.getContent());
+        chatDataDto.setMsgType(messageContent.getMsgtype());
 
         chatDataDto = chatDataDto.create();
 
-        MessageAdapter messageAdapter = new MessageAdapter(messageContents.getMsgtype());
+        MessageAdapter messageAdapter = new MessageAdapter(messageContent.getMsgtype());
 
-        log.debug("消息ID：[{}]，消息类型：{}，消息内容：{}", messageContents.getMsgid(), messageContents.getMsgtype(), messageContents.getContent());
+        log.debug("消息ID：[{}]，消息类型：{}，消息内容：{}", messageContent.getMsgid(), messageContent.getMsgtype(), messageContent.getContent());
         String content = messageAdapter.getChatDataMessage(chatDataDto);
-        log.debug("消息ID：[{}]，消息策略返回结果：{}", messageContents.getMsgid(), content);
+        log.debug("消息ID：[{}]，消息策略返回结果：{}", messageContent.getMsgid(), content);
 
         entity.setContent(content);
         entity.setMediaStatus(chatDataDto.getMediaStatus());
@@ -106,6 +107,7 @@ public class MessageContentFactory {
         MessageContent messageContent = new MessageContent();
 
         messageContent.setId(entity.getId());
+        messageContent.setSeq(entity.getSeq());
         messageContent.setAction(entity.getAction());
         messageContent.setFromid(entity.getFromid());
         messageContent.setMsgtime(entity.getMsgtime());
@@ -119,6 +121,9 @@ public class MessageContentFactory {
         MessageContent messageContent = this.toMessageContent(entity);
 
         MemberEntity memberEntity = memberMap.get(entity.getFromid());
+        if (memberEntity == null) {
+            return messageContent;
+        }
 
         messageContent.setMemberId(memberEntity.getId() + "");
         messageContent.setMemberName(memberEntity.getName());

@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.repository.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomEntity;
 import com.xh.qychat.domain.qychat.repository.mapper.ChatRoomMapper;
@@ -39,10 +40,8 @@ public class ChatRoomServiceImpl extends ServiceImpl<ChatRoomMapper, ChatRoomEnt
 
     @Override
     public List<ChatRoomEntity> listAll() {
-        QueryWrapper<ChatRoomEntity> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.lambda().orderByDesc(ChatRoomEntity::getUpdateTime);
-
-        return super.list(queryWrapper);
+        return super.baseMapper.listAll();
     }
+
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MessageContentService extends IService<MessageContentEntity> {
 
@@ -24,13 +25,6 @@ public interface MessageContentService extends IService<MessageContentEntity> {
 
     /**
      * 根据群ID查询会话消息
-     *
-     * @param chatId
-     * @param msgtime
-     * @return
      */
-    List<MessageContentEntity> listByChatId(String chatId, String msgtime);
-
-
-    MessageContentEntity getByChatId(String chatId, String msgtime);
+    List<MessageContentEntity> listByChatId(String chatId, Integer seq);
 }

@@ -101,7 +101,9 @@ public class ChatRoomModel extends ResponseModel {
 
     public Long getCreateTime() {
         // 默认返回单位是秒，需要把秒转毫秒
-        if (createTime != null) return createTime * 1000;
+        if (createTime != null) {
+            return createTime * 1000;
+        }
         return createTime;
     }
 

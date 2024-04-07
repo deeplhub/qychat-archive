@@ -1,6 +1,8 @@
 package com.xh.qychat.domain.qychat.repository.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -70,7 +72,7 @@ public class MessageContentEntity {
     /**
      * 原始消息内容
      */
-    private String originalContent;
+    //private String originalContent;
 
     /**
      * 媒体状态：1.未加载媒体，2.正在加载媒体，3.媒体加载完成，4.媒体加载失败

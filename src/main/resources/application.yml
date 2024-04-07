@@ -20,13 +20,13 @@ mybatis-plus:
 
 qychat:
   chatdata:
-    corpid: wwb55a50126edc83d2
-    secret: 1jCvYfSyNF2gYeRT6gxNz9_1RK7GNY8mv6-26JrOjK0
+    corpid: wwb5xxxxxxxxxxxxxxxxxxx
+    secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     limit: 1000
     timeout: 30
   customer:
     corpid: ${qychat.chatdata.corpid}
-    secret: pEie4lS2rB2KtWKcFfC389BHP7Z_ynWYn1UkjWMvlG4
+    secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 knife4j:

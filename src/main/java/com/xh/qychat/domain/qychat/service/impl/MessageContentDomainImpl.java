@@ -1,6 +1,5 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.domain.qychat.model.factory.MessageContentFactory;
@@ -15,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,9 +38,12 @@ public class MessageContentDomainImpl implements MessageContentDomain {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveBath(List<MessageContent> messageContents) {
-        if (messageContents.isEmpty()) return false;
+        if (messageContents.isEmpty()) {
+            return false;
+        }
+
         List<MessageContentEntity> entitys = MessageContentFactory.getSingleton().createEntity(messageContents);
         return messageContentService.saveBatch(entitys, CommonConstants.BATCH_SIZE);
     }
@@ -55,30 +54,16 @@ public class MessageContentDomainImpl implements MessageContentDomain {
     }
 
     @Override
-    public Map<String, Object> listByChatId(String chatId, String msgtime) {
-        List<MessageContentEntity> entityList = messageContentService.listByChatId(chatId, msgtime);
+    public List<MessageContent> listByChatId(String chatId, Integer seq) {
+        List<MessageContentEntity> entityList = messageContentService.listByChatId(chatId, seq);
         if (entityList.isEmpty()) {
-            MessageContentEntity entity = messageContentService.getByChatId(chatId, msgtime);
-            if (entity != null) {
-                msgtime = DateUtil.formatDate(entity.getMsgtime());
-                entityList = messageContentService.listByChatId(chatId, DateUtil.formatDate(entity.getMsgtime()));
-            }
-        }
-        Map<String, Object> responseMap = new HashMap<>();
-
-        if (entityList.isEmpty()) {
-            responseMap.put("msgtime", msgtime);
-            responseMap.put("messageList", new ArrayList<>());
-            return responseMap;
+            return Collections.emptyList();
         }
 
         List<MemberEntity> memberList = memberService.listByCharId(chatId);
         Map<String, MemberEntity> memberMap = memberList.parallelStream().collect(HashMap::new, (k, v) -> k.put(v.getUserId(), v), HashMap::putAll);
 
-        responseMap.put("msgtime", msgtime);
-        responseMap.put("messageList", entityList.parallelStream().map(o -> MessageContentFactory.getSingleton().toMessageContent(o, memberMap)).collect(Collectors.toList()));
-
-        return responseMap;
+        return entityList.parallelStream().map(o -> MessageContentFactory.getSingleton().toMessageContent(o, memberMap)).sorted(Comparator.comparing(MessageContent::getMsgtime)).collect(Collectors.toList());
     }
 
 }

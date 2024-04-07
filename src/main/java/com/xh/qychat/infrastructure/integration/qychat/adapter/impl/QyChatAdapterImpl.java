@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -62,11 +63,15 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         // 当 token 不为空，且过期时间小于 5s 时生成新的 token
         // 原因：保证 token 有效性
-        if (StrUtil.isNotBlank(accessToken) && keyExpire > 5) return accessToken;
+        if (StrUtil.isNotBlank(accessToken) && keyExpire > 5) {
+            return accessToken;
+        }
 
         synchronized (this) {
             accessToken = jedisPoolRepository.get(key);
-            if (StrUtil.isNotBlank(accessToken)) return accessToken;
+            if (StrUtil.isNotBlank(accessToken)) {
+                return accessToken;
+            }
 
             JSONObject jsonObject = new JSONObject();
 
@@ -78,12 +83,16 @@ public class QyChatAdapterImpl implements QyChatAdapter {
                 String data = HttpUtil.get(QychatConstants.TOKEN_URL, jsonObject);
                 log.debug("获取 TOKEN ，响应结果：{}", data);
 
-                if (StrUtil.isBlank(data)) throw new RuntimeException("获取 TOKEN 异常");
+                if (StrUtil.isBlank(data)) {
+                    throw new RuntimeException("获取 TOKEN 异常");
+                }
 
                 jsonObject = JSONUtil.parseObj(data);
 
                 accessToken = jsonObject.getStr("access_token");
-                if (StrUtil.isBlank(accessToken)) throw new RuntimeException("获取 TOKEN 异常");
+                if (StrUtil.isBlank(accessToken)) {
+                    throw new RuntimeException("获取 TOKEN 异常");
+                }
 
                 jedisPoolRepository.setex(key, accessToken, CacheConstants.DEFAULT_EXPIRE_TIME);
             } catch (RuntimeException e) {
@@ -218,7 +227,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             List<ChatDataModel> batchData = chatDataList.subList(start, end);
             log.debug("第{}批次：start={}, end={}, batchSize={}", i, start, end, batchData.size());
 
-            Future<List<ChatDataModel>> future = taskExecutor.submit(() -> batchData.parallelStream().map(o -> this.decrypt(sdk, o)).filter(Objects::nonNull).collect(Collectors.toList()));
+            Future<List<ChatDataModel>> future = taskExecutor.submit(() -> batchData.parallelStream().map(o -> this.decrypt(sdk, o)).filter(Objects::nonNull).filter(o -> StrUtil.isNotBlank(o.getRoomid())).collect(Collectors.toList()));
 
             futureList.add(future);
         }
@@ -241,7 +250,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             // 密钥长度：2048 bit，密钥格式：PKCS#8，输出格式：PEM/Base64
             // 密钥在线生成：http://web.chacuo.net/netrsakeypair
             byte[] decrypt = RsaUtils.decrypt(decoderData, RsaUtils.getPrivateKey(chatProperties.getPrivateKey()));
-            String encryptKey = new String(decrypt, CommonConstants.CHARSET_UTF8);
+            String encryptKey = new String(decrypt, StandardCharsets.UTF_8);
 
             if (StrUtil.isBlank(encryptKey)) {
                 log.debug("线程 [{}] 消息ID：{}，解密密钥为空", Thread.currentThread().getName(), data.getMsgid());
@@ -320,7 +329,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
         String uri = QychatConstants.CHAT_ROOM_ID_URL + accessToken;
 
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try {
             log.info("获取客户群ID列表，请求地址：{}，请求参数：{}", uri, bodyObject);
             String result = HttpUtil.post(uri, bodyObject.toString());
@@ -332,12 +341,16 @@ public class QyChatAdapterImpl implements QyChatAdapter {
             throw new RuntimeException("获取客户群列表异常", e);
         }
 
-        if (jsonObject.getInt("errcode") != 0) throw new RuntimeException("获取客户群详情失败，异常码：" + jsonObject.getStr("errmsg"));
+        if (jsonObject.getInt("errcode") != 0) {
+            throw new RuntimeException("获取客户群详情失败，异常码：" + jsonObject.getStr("errmsg"));
+        }
 
         List<JSONObject> groupChatList = jsonObject.getBeanList("group_chat_list", JSONObject.class);
         Set<String> chatIds = groupChatList.stream().map(o -> o.getStr("chat_id")).collect(Collectors.toSet());
 
-        if (chatIds != null && chatIds.size() > 0) roomIds.addAll(chatIds);
+        if (!chatIds.isEmpty()) {
+            roomIds.addAll(chatIds);
+        }
 
         // 分页游标，下次请求时填写以获取之后分页的记录。如果该字段返回空则表示已没有更多数据
         String nextCursor = jsonObject.getStr("next_cursor");
@@ -356,7 +369,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         jsonObject.putOpt("chat_id", chatId);
         jsonObject.putOpt("need_name", 1);// 是否需要返回群成员的名字group_chat.member_list.name。0-不返回；1-返回。默认不返回
 
-        String result = null;
+        String result;
         try {
             String accessToken = this.getAccessToken(customerProperties.getCorpid(), customerProperties.getSecret(), QychatConstants.QYCHAT_CUSTOMER_TOKEN_KEY);
             String uri = QychatConstants.CHAT_ROOM_DETAIL_URL + accessToken;
@@ -372,11 +385,15 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
         ChatRoomModel room = JSONUtil.toBean(result, ChatRoomModel.class);
 
-        if (room.getErrcode() != 0) return null;
+        if (room.getErrcode() != 0) {
+            return null;
+        }
 
         room = room.getGroupChat();
 
-        if (StrUtil.isBlank(room.getChatId())) return null;
+        if (StrUtil.isBlank(room.getChatId())) {
+            return null;
+        }
 
         return room;
     }
@@ -429,10 +446,6 @@ public class QyChatAdapterImpl implements QyChatAdapter {
 
             // 外部联系人详情
             model = model.getExternalContact();
-            model.setUserid(userId);
-            if (model != null) {
-                return model;
-            }
 
             // 当客户不是联系人时会获取不到客户详情，需要用群详情中的用户ID生成未知客户，类型为1
             model.setUserid(userId);
@@ -458,7 +471,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         jsonObject.putOpt("access_token", this.getAccessToken(chatProperties.getCorpid(), chatProperties.getSecret()));
         jsonObject.putOpt("userid", userId);
 
-        String result = null;
+        String result;
         try {
             log.info("获取 [{}] 成员（内部联系人）详情，请求地址：{}，请求参数：{}", userId, QychatConstants.MEMBER_DETAIL_URL, jsonObject);
             result = HttpUtil.get(QychatConstants.MEMBER_DETAIL_URL, jsonObject);
@@ -479,7 +492,7 @@ public class QyChatAdapterImpl implements QyChatAdapter {
         jsonObject.putOpt("access_token", accessToken);
         jsonObject.putOpt("external_userid", userId);// 外部联系人的userid，注意不是企业成员的帐号
 
-        String result = null;
+        String result;
         try {
             log.info("获取 [{}] 客户（外部联系人）详情，请求地址：{}，请求参数：{}", userId, QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);
             result = HttpUtil.get(QychatConstants.CUSTOMER_DETAIL_URL, jsonObject);

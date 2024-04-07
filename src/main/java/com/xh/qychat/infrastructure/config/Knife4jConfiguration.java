@@ -31,7 +31,7 @@ public class Knife4jConfiguration {
     /**
      * 引入Knife4j提供的扩展类
      */
-    private OpenApiExtensionResolver openApiExtensionResolver;
+    private final OpenApiExtensionResolver openApiExtensionResolver;
 
     @Autowired
     public Knife4jConfiguration(OpenApiExtensionResolver openApiExtensionResolver) {

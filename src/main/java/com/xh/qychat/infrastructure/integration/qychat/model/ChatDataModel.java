@@ -137,16 +137,36 @@ public class ChatDataModel extends ResponseModel {
      * @return
      */
     public String getContent() {
-        if (this.text != null) return this.text.toString();
-        if (this.image != null) return this.image.toString();
-        if (this.revoke != null) return this.revoke.toString();
-        if (this.voice != null) return this.voice.toString();
-        if (this.video != null) return this.video.toString();
-        if (this.emotion != null) return this.emotion.toString();
-        if (this.file != null) return this.file.toString();
-        if (this.chatrecord != null) return this.chatrecord.toString();
-        if (this.mixed != null) return this.mixed.toString();
-        if (this.info != null) return this.info.toString();
+        if (this.text != null) {
+            return this.text.toString();
+        }
+        if (this.image != null) {
+            return this.image.toString();
+        }
+        if (this.revoke != null) {
+            return this.revoke.toString();
+        }
+        if (this.voice != null) {
+            return this.voice.toString();
+        }
+        if (this.video != null) {
+            return this.video.toString();
+        }
+        if (this.emotion != null) {
+            return this.emotion.toString();
+        }
+        if (this.file != null) {
+            return this.file.toString();
+        }
+        if (this.chatrecord != null) {
+            return this.chatrecord.toString();
+        }
+        if (this.mixed != null) {
+            return this.mixed.toString();
+        }
+        if (this.info != null) {
+            return this.info.toString();
+        }
 
         return content;
     }

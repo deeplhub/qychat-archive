@@ -35,7 +35,9 @@ public class ChatRoomApplicationImpl implements ChatRoomApplication {
         boolean isSuccess = chatRoomDomain.saveOrUpdate(ChatRoom.create(chatRoom));
 
         // TODO 后期建议使用MQ异步调用
-        if (isSuccess) memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
+        if (isSuccess) {
+            memberDomain.saveOrUpdateBatch(ChatRoomTreeNode.createTreeNode(chatRoom));
+        }
         return ResponseEvent.reply(isSuccess);
     }
 

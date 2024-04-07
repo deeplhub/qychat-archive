@@ -42,4 +42,5 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> i
 
         return super.getOne(queryWrapper);
     }
+
 }

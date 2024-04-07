@@ -8,6 +8,10 @@ import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface MessageContentMapper extends BaseMapper<MessageContentEntity> {

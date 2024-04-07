@@ -51,7 +51,9 @@ public class MediaMessageDTO {
 
     public Long getMsgtime() {
         // 默认返回单位是秒，需要把秒转毫秒
-        if (this.msgtime != null) return this.msgtime * 1000;
+        if (this.msgtime != null) {
+            return this.msgtime * 1000;
+        }
         return this.msgtime;
     }
 

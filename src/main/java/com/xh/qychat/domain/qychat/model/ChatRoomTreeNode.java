@@ -1,6 +1,7 @@
 package com.xh.qychat.domain.qychat.model;
 
 import com.xh.qychat.infrastructure.integration.qychat.model.ChatRoomModel;
+import com.xh.qychat.infrastructure.util.SignUtils;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -58,8 +59,12 @@ public class ChatRoomTreeNode {
         for (ChatRoomModel chatRoom : list) {
             node = new ChatRoomTreeNode();
 
+            List<ChatRoomTreeNode> memberList = chatRoom.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(chatRoom.getChatId(), member)).collect(Collectors.toList());
+            String memberSign = memberList.parallelStream().map(o -> o.getSign()).collect(Collectors.joining(""));
+
             node.setChatId(chatRoom.getChatId());
-            node.setChildren(chatRoom.getMemberList().parallelStream().map(member -> getChatRoomTreeNode(chatRoom.getChatId(), member)).collect(Collectors.toList()));
+            node.setChildren(memberList);
+            node.setSign(SignUtils.getSign(chatRoom.getChatId(), memberSign));
 
             treeNode.add(node);
         }

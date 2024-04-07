@@ -24,4 +24,5 @@ public interface MemberMapper extends BaseMapper<MemberEntity> {
      * @return
      */
     List<MemberEntity> listByCharId(String charId);
+
 }

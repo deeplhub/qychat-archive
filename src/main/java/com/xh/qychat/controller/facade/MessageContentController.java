@@ -5,9 +5,7 @@ import com.xh.qychat.domain.qychat.model.MessageContent;
 import com.xh.qychat.infrastructure.common.model.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -23,17 +21,10 @@ public class MessageContentController {
     @Resource
     private MessageContentApplication messageContentApplication;
 
-    /**
-     * 根据群ID分页查询会话消息
-     *
-     * @param chatId
-     * @param msgtime
-     * @return
-     */
-    @ApiOperation(value = "根据群ID分页查询会话消息")
-    @GetMapping("/listChatRoom")
-    Result<MessageContent> listChatRoom(String chatId, String msgtime) {
+    @ApiOperation("根据群ID查询会话消息")
+    @GetMapping("/listChatRoom/{chatId}")
+    Result<MessageContent> listChatRoom(@PathVariable("chatId") String chatId, @RequestParam(required = false) Integer seq) {
 
-        return messageContentApplication.listByChatId(chatId, msgtime);
+        return messageContentApplication.listByChatId(chatId, seq);
     }
 }

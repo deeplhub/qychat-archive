@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.domain.qychat.model.ChatRoomTreeNode;
 import com.xh.qychat.domain.qychat.model.Member;
 import com.xh.qychat.domain.qychat.model.factory.MemberFactory;
@@ -9,6 +10,8 @@ import com.xh.qychat.domain.qychat.repository.service.ChatRoomMemberService;
 import com.xh.qychat.domain.qychat.repository.service.MemberService;
 import com.xh.qychat.domain.qychat.service.MemberDomain;
 import com.xh.qychat.infrastructure.constants.CommonConstants;
+import com.xh.qychat.infrastructure.redis.JedisRepository;
+import com.xh.qychat.infrastructure.util.KeyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +35,19 @@ public class MemberDomainImpl implements MemberDomain {
     private ChatRoomMemberService chatRoomMemberService;
     @Resource
     private MemberService memberService;
+    @Resource
+    private JedisRepository jedisRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateBatch(ChatRoomTreeNode treeNode) {
         String chatId = treeNode.getChatId();
 
         List<MemberEntity> memberList = memberService.listByUserId(MemberFactory.getSingleton().listUserId(treeNode));
         List<MemberEntity> memberEntityList = MemberFactory.getSingleton().listMemberEntity(treeNode, memberList);
-        if (memberEntityList.isEmpty()) return true;
+        if (memberEntityList.isEmpty()) {
+            return true;
+        }
 
         memberService.saveOrUpdateBatch(memberEntityList, CommonConstants.BATCH_SIZE);
 
@@ -52,15 +59,24 @@ public class MemberDomainImpl implements MemberDomain {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateBatch(List<ChatRoomTreeNode> treeNodes) {
-        if (treeNodes.isEmpty()) return false;
+        if (treeNodes.isEmpty()) {
+            return false;
+        }
 
         Set<MemberEntity> members = new HashSet<>();
         Set<ChatRoomMemberEntity> chatRoomMembers = new HashSet<>();
 
+        String cacheKey = KeyUtils.get(ChatRoomTreeNode.class, "ChatRoomMember");
+
         // 为保证线程安全问题，所以只能用单线程处理
         treeNodes.stream().forEach(treeNode -> {
+            String cacheSign = jedisRepository.hget(cacheKey, treeNode.getChatId());
+            if (StrUtil.isNotBlank(cacheSign) && treeNode.getSign().equals(cacheSign)) {
+                return;
+            }
+
             members.addAll(this.getListMemberEntity(treeNode));
             chatRoomMembers.addAll(this.listChatRoomMember(treeNode));
         });
@@ -69,11 +85,17 @@ public class MemberDomainImpl implements MemberDomain {
             memberService.saveOrUpdateBatch(members, CommonConstants.BATCH_SIZE);
         }
 
-        if (chatRoomMembers.isEmpty()) return false;
+        if (chatRoomMembers.isEmpty()) {
+            return false;
+        }
 
         // 解除用户和群关系
         chatRoomMemberService.removeBatchByChatId(chatRoomMembers.parallelStream().map(o -> o.getChatId()).collect(Collectors.toSet()));
-        return chatRoomMemberService.saveBatch(chatRoomMembers, CommonConstants.BATCH_SIZE);
+        boolean isSuccess = chatRoomMemberService.saveBatch(chatRoomMembers, CommonConstants.BATCH_SIZE);
+        if (isSuccess) {
+            treeNodes.parallelStream().forEach(item -> jedisRepository.hset(cacheKey, item.getChatId(), item.getSign()));
+        }
+        return isSuccess;
     }
 
 
@@ -83,7 +105,9 @@ public class MemberDomainImpl implements MemberDomain {
 
         if (chatRoomMembers.size() == chatRoomMemberList.size()) {
             long count = chatRoomMembers.parallelStream().map(o -> chatRoomMemberList.contains(o) ? null : o).filter(Objects::nonNull).count();
-            if (count <= 0) return new HashSet<>();
+            if (count <= 0) {
+                return new HashSet<>();
+            }
         }
 
         return chatRoomMembers;
@@ -96,10 +120,12 @@ public class MemberDomainImpl implements MemberDomain {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdate(Member member) {
         MemberEntity entity = memberService.getByUserId(member.getUserId());
-        if (entity == null) return false;
+        if (entity == null) {
+            return false;
+        }
         return memberService.saveOrUpdate(MemberFactory.getSingleton().create(entity, member));
     }
 

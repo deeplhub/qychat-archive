@@ -10,10 +10,7 @@ public interface MessageContentApplication {
 
     /**
      * 根据群ID分页查询会话消息
-     *
-     * @param chatId
-     * @param msgtime
-     * @return
      */
-    Result listByChatId(String chatId, String msgtime);
+    Result listByChatId(String chatId, Integer seq);
+
 }

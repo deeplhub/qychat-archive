@@ -40,7 +40,9 @@ public class VoiptextMessageStrategy implements MessageStrategy {
     }
 
     private String getDuration(Integer callduration) {
-        if (callduration == null) return "";
+        if (callduration == null) {
+            return "";
+        }
 
         long millisecond = callduration * 1000;
         return DateUtil.formatBetween(millisecond);

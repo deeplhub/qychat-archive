@@ -34,10 +34,12 @@ public class MessageContent {
     @ApiModelProperty("群id")
     private String roomid;
     @ApiModelProperty("消息发送时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date msgtime;
     @ApiModelProperty("消息类型")
     private String msgtype;
+    @ApiModelProperty("是否已读，0未读，1已读")
+    private Integer isRead;
     @ApiModelProperty("消息内容")
     private String content;
     @ApiModelProperty("用户ID")
@@ -48,13 +50,20 @@ public class MessageContent {
     private String memberAvatar;
 
     public static List<MessageContent> create(List<ChatDataModel> dataModels) {
-        if (dataModels.isEmpty()) return new ArrayList<>(1);
+        if (dataModels.isEmpty()) {
+            return new ArrayList<>(1);
+        }
         return dataModels.parallelStream().map(o -> getChatData(o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private static MessageContent getChatData(ChatDataModel chatData) {
         // 微盘文件不做处理
-        if ("qydiskfile".equals(chatData.getMsgtype())) return null;
+        if ("qydiskfile".equals(chatData.getMsgtype())) {
+            return null;
+        }
+        if (StrUtil.isBlank(chatData.getRoomid())) {
+            return null;
+        }
 
         MessageContent messageContent = new MessageContent();
 

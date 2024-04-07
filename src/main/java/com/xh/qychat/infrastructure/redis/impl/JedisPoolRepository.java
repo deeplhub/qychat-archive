@@ -182,11 +182,7 @@ public class JedisPoolRepository implements JedisRepository {
         // TODO 该方法未做验证，当使用的时候自行验证
         String res = this.getJedis().set(key, flagId, params);
         log.info(res);
-        if (StrUtil.isNotBlank(res) && res.equals("OK")) {
-            return true;
-        }
-
-        return false;
+        return StrUtil.isNotBlank(res) && res.equals("OK");
     }
 
     //    /**

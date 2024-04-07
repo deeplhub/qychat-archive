@@ -16,11 +16,7 @@ import java.util.Set;
  */
 public interface ChatRoomMemberService extends IService<ChatRoomMemberEntity> {
 
-    @Deprecated
-    boolean removeByChatId(String chatId, Set<String> userIds);
-
     boolean removeByChatId(String chatId);
-
 
     boolean removeBatchByChatId(Set<String> chatIds);
 

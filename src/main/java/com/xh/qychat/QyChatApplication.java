@@ -1,4 +1,4 @@
-package com.xh;
+package com.xh.qychat;
 
 import cn.hutool.core.util.StrUtil;
 import com.xh.qychat.infrastructure.config.EnvAutoConfiguration;
@@ -7,14 +7,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author H.Yang
  * @date 2021/2/23
  */
 @Slf4j
-@EnableAsync
 @SpringBootApplication
 public class QyChatApplication {
 
@@ -36,7 +34,7 @@ public class QyChatApplication {
     }
 
     private static void loadChatSDK(String path) {
-        log.info("satrt load qychat sdk... ");
+        log.info("start load {} sdk... ", path);
 
         log.info(path);
         if (StrUtil.isBlank(path)) {

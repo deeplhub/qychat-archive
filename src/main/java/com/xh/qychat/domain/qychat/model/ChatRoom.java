@@ -54,7 +54,9 @@ public class ChatRoom {
     private String sign = "";
 
     public static List<ChatRoom> create(Set<ChatRoomModel> chatRooms) {
-        if (chatRooms.isEmpty()) return new ArrayList<>(1);
+        if (chatRooms.isEmpty()) {
+            return new ArrayList<>(1);
+        }
         return chatRooms.parallelStream().map(o -> getChatRoom(o)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 

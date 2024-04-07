@@ -1,14 +1,18 @@
 package com.xh.qychat.controller.facade;
 
 import com.xh.qychat.application.service.TaskApplication;
+import com.xh.qychat.controller.schedule.ScheduleTask;
 import com.xh.qychat.infrastructure.common.model.Result;
 import com.xh.qychat.infrastructure.integration.qychat.properties.ChatDataProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.Resource;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * 定时任务
@@ -24,7 +28,7 @@ public class TaskController {
     @Resource
     private TaskApplication taskApplication;
     @Resource
-    private ChatDataProperties chatDataProperties;
+    private ScheduleTask scheduleTask;
 
     /**
      * 拉取聊天数据
@@ -37,16 +41,25 @@ public class TaskController {
         return taskApplication.pullChatData();
     }
 
-    /**
-     * 拉取群详情
-     *
-     * @return
-     */
-    @GetMapping("/pullChatRoom")
-    Result pullChatRoom() {
+    @GetMapping("/pauseTask")
+    Result pauseTask() {
+        boolean status = !scheduleTask.isStatus();
+        scheduleTask.setStatus(status);
 
-        return taskApplication.pullChatRoom();
+        return Result.succeed(status ? "启动任务" : "暂停任务");
     }
+
+
+//    /**
+//     * 拉取群详情
+//     *
+//     * @return
+//     */
+//    @GetMapping("/pullChatRoom")
+//    Result pullChatRoom() {
+//
+//        return taskApplication.pullChatRoom();
+//    }
 
 
     /**

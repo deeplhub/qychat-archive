@@ -3,7 +3,10 @@ package com.xh.qychat.domain.qychat.model.factory;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 import com.xh.qychat.domain.qychat.repository.entity.ChatRoomEntity;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -43,8 +46,9 @@ public class ChatRoomFactory {
     private ChatRoomEntity getChatRoomEntity(ChatRoom chatRoom, ChatRoomEntity chatRoomEntity) {
         chatRoomEntity = (chatRoomEntity == null) ? new ChatRoomEntity() : chatRoomEntity;
 
-        if ((chatRoom.getSign() + "").equals(chatRoomEntity.getSign())) return null;
-
+        if ((chatRoom.getSign() + "").equals(chatRoomEntity.getSign())) {
+            return null;
+        }
 
         return this.toChatRoomEntity(chatRoom, chatRoomEntity);
     }

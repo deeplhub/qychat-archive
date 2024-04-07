@@ -24,7 +24,7 @@ public interface CommonConstants {
 
     int BATCH_SIZE = 1000;
 
-    String RESOURCES_PATH = "/data/qychat_archive/";
+    String RESOURCES_PATH = "/data/qychat_archive";
 
     /**
      * 最大文件

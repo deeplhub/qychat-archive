@@ -44,7 +44,7 @@ public class ChatDataMessageDTO extends MediaMessageDTO {
         return dto;
     }
 
-    public String getFileNameSuffix() {
+    public String getFileName() {
         switch (this.getMsgType()) {
             case "image":
                 return this.getMd5sum() + ".png";

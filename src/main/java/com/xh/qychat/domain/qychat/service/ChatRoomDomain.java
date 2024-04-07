@@ -3,6 +3,7 @@ package com.xh.qychat.domain.qychat.service;
 import com.xh.qychat.domain.qychat.model.ChatRoom;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author H.Yang

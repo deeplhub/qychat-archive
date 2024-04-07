@@ -22,6 +22,8 @@ public interface ChatRoomService extends IService<ChatRoomEntity> {
 
     /**
      * 查询所有群列表
+     * <p>
+     * 根据消息时间排序
      *
      * @return
      */

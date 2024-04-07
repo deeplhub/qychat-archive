@@ -26,7 +26,9 @@ public class WXMsgCrypt {
      * @param receiveId      不同场景含义不同，详见文档
      */
     public WXMsgCrypt(String token, String encodingAesKey, String receiveId) {
-        if (encodingAesKey.length() != 43) throw new RuntimeException("不合法的媒体文件类型");
+        if (encodingAesKey.length() != 43) {
+            throw new RuntimeException("不合法的媒体文件类型");
+        }
 
         this.token = token;
         this.receiveId = receiveId;

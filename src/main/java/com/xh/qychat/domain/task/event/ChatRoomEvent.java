@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ChatRoomEvent {
-    private ExpensiveTaskExecutor taskExecutor;
-    private QyChatAdapter qychatAdapter;
 
     private ChatRoomEvent() {
     }
@@ -32,15 +30,10 @@ public class ChatRoomEvent {
         private static final ChatRoomEvent instance = new ChatRoomEvent();
     }
 
-    public ChatRoomEvent setChatAdapter(QyChatAdapter qychatAdapter) {
-        this.qychatAdapter = qychatAdapter;
-        this.taskExecutor = SpringBeanUtils.getBean(ExpensiveTaskExecutor.class);
-        return this;
-    }
 
     public Set<ChatRoomModel> listChatRoomDetail(Set<String> roomids) {
         long beginTime = System.currentTimeMillis();
-        List<Future<List<ChatRoomModel>>> futureList = exec(new ArrayList<>(roomids));
+        List<Future<List<ChatRoomModel>>> futureList = this.exec(new ArrayList<>(roomids));
 
         Set<ChatRoomModel> listData = new HashSet<>(roomids.size());
         try {
@@ -67,6 +60,9 @@ public class ChatRoomEvent {
         int batchCount = (int) Math.ceil(1.0 * dataSize / batchSize);
 
         List<Future<List<ChatRoomModel>>> futureList = new ArrayList<>();
+
+        ExpensiveTaskExecutor taskExecutor = SpringBeanUtils.getBean(ExpensiveTaskExecutor.class);
+        QyChatAdapter qychatAdapter = SpringBeanUtils.getBean(QyChatAdapter.class);
 
         // 根据批次数遍历数据
         for (int i = 0; i < batchCount; i++) {

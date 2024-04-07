@@ -13,4 +13,4 @@ redis:
 
 qychat:
   sdk:
-    path: D:/Workspace/JavaWorkspace/practice/qychat-archive
+    path: /practice/qychat-archive

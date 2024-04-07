@@ -16,15 +16,11 @@ public interface BaseEnum<K, V, C extends Enum> {
 
     /**
      * 获取枚举编码
-     *
-     * @return
      */
     K getCode();
 
     /**
      * 获取枚举描述
-     *
-     * @return
      */
     V getNote();
 }

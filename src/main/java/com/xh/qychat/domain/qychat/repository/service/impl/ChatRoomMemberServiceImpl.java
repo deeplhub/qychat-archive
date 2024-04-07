@@ -22,16 +22,6 @@ import java.util.Set;
 public class ChatRoomMemberServiceImpl extends ServiceImpl<ChatRoomMemberMapper, ChatRoomMemberEntity> implements ChatRoomMemberService {
 
     @Override
-    public boolean removeByChatId(String chatId, Set<String> userIds) {
-        QueryWrapper<ChatRoomMemberEntity> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.lambda().eq(ChatRoomMemberEntity::getChatId, chatId);
-        queryWrapper.lambda().notIn(ChatRoomMemberEntity::getUserId, userIds);
-
-        return super.remove(queryWrapper);
-    }
-
-    @Override
     public boolean removeByChatId(String chatId) {
         QueryWrapper<ChatRoomMemberEntity> queryWrapper = new QueryWrapper<>();
 

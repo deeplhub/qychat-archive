@@ -2,9 +2,10 @@ package com.xh.qychat.domain.qychat.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xh.qychat.domain.qychat.model.MessageContent;
+import com.xh.qychat.domain.qychat.repository.entity.MessageContentEntity;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author H.Yang
@@ -31,10 +32,6 @@ public interface MessageContentDomain {
 
     /**
      * 根据群ID查询消息
-     *
-     * @param chatId
-     * @param msgtime
-     * @return
      */
-    Map<String, Object> listByChatId(String chatId, String msgtime);
+    List<MessageContent> listByChatId(String chatId, Integer seq);
 }

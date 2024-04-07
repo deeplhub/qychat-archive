@@ -1,5 +1,6 @@
 package com.xh.qychat.domain.qychat.event.strategy;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -40,8 +41,10 @@ public class MediaMessageStrategy implements MessageStrategy {
 
         String fileName = jedisRepository.get(chatDataDto.getMd5sum());
         if (StrUtil.isBlank(fileName)) {
-            fileName = this.getFileName(chatDataDto);
+            fileName = this.getFileName(chatDataDto.getMsgType(), chatDataDto.getFileName());
             qychatAdapter.download(chatDataDto.getSdkfileid(), fileName);
+
+            fileName = fileName.replace(CommonConstants.RESOURCES_PATH, "");
             jedisRepository.setex(chatDataDto.getMd5sum(), fileName, CacheConstants.EXPIRE_TIME_24H);
         }
 
@@ -53,13 +56,17 @@ public class MediaMessageStrategy implements MessageStrategy {
         return response.toString();
     }
 
-    private String getFileName(ChatDataMessageDTO chatDataDto) {
-        String filePath = CommonConstants.RESOURCES_PATH + chatDataDto.getMsgType() + "/";
+    private String getFileName(String msgType, String fileName) {
+        DateTime dateTime = new DateTime();
+        String filePath = StrUtil.format("{}/{}/{}{}/", CommonConstants.RESOURCES_PATH, msgType, dateTime.year(), (dateTime.month() + 1));
 
         // 判断文件夹是否存在，不存在则创建
         File folder = new File(filePath);
-        if (!folder.exists() && !folder.isDirectory()) folder.mkdirs();
+        if (!folder.exists() && !folder.isDirectory()) {
+            folder.mkdirs();
+        }
 
-        return filePath + chatDataDto.getFileNameSuffix();
+        return filePath + fileName;
     }
+
 }

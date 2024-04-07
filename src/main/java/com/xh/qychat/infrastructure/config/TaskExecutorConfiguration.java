@@ -1,11 +1,11 @@
 package com.xh.qychat.infrastructure.config;
 
 import com.xh.qychat.infrastructure.properties.ThreadPoolProperties;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -32,15 +32,13 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2020/1/7
  */
 @Slf4j
-@Component
-@AllArgsConstructor
+@Configuration
+@EnableAsync
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class TaskExecutorConfiguration {
 
-    private final ThreadPoolProperties threadPoolProperties;
-
     @Bean
-    public CommonTaskExecutor commonTaskExecutor() {
+    public CommonTaskExecutor commonTaskExecutor(ThreadPoolProperties threadPoolProperties) {
         this.showSystem();
         this.showMemoryInfo();
         log.info("初始化线程池 Bean 'commonTaskExecutor'");
@@ -62,7 +60,7 @@ public class TaskExecutorConfiguration {
     }
 
     @Bean
-    public ExpensiveTaskExecutor expensiveTaskExecutor() {
+    public ExpensiveTaskExecutor expensiveTaskExecutor(ThreadPoolProperties threadPoolProperties) {
         this.showSystem();
         this.showMemoryInfo();
         log.info("初始化线程池 Bean 'expensiveTaskExecutor'");
@@ -70,7 +68,6 @@ public class TaskExecutorConfiguration {
         ExpensiveTaskExecutor executor = new ExpensiveTaskExecutor();
 
         executor.setCorePoolSize(threadPoolProperties.getCorePoolSize());
-        executor.setAllowCoreThreadTimeOut(true);
         executor.setMaxPoolSize(threadPoolProperties.getMaxPoolSize());
         executor.setQueueCapacity(threadPoolProperties.getQueueCapacity());
         executor.setThreadNamePrefix("expensive-task-worker-");
